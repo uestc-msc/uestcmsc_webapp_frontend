@@ -52,9 +52,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
 
@@ -79,6 +76,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan $SERVER_DOMAIN >> ~/.ssh/known_hosts
 
-      - name: Run SSH Command - git pull
+      - name: Run SSH Command
         run: |
           ssh ${SERVER_USERNAME}@${SERVER_DOMAIN} < .github/workflows/vue-deploy.sh
