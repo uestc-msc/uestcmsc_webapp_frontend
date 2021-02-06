@@ -52,6 +52,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
 
@@ -61,10 +64,21 @@ jobs:
           npm run build
           cp dist/index.html dist/200.html # GitHub Pages 上不存在的 uri 会被重定向到 200.html
 
+      - name: Setup SSH Environment
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan $SERVER_DOMAIN >> ~/.ssh/known_hosts
+
       - name: Deploy 🚀 To GitHub
         uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
         with:
-          ACCESS_TOKEN: ${{ secrets.ACTION_DEPLOY_KEY }}
-          BRANCH: dist # The branch the action should deploy to.
+          SSH: true
+          BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: dist # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
+
+      - name: Run SSH Command - Git Pull
+        run: |
+          ssh ${SERVER_USERNAME}@${SERVER_DOMAIN} < .github/workflows/vue-deploy.sh
