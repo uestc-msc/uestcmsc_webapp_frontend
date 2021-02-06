@@ -1,0 +1,9 @@
+<template>
+  <div class="home">
+    <h1>This is home page</h1>
+  </div>
+</template>
+
+<script lang="ts">
+export default {};
+</script>

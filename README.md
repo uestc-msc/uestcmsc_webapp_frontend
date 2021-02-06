@@ -1,6 +1,6 @@
 # 阮薇薇点名啦 Web 前端
 
-电子科技大学微软学生俱乐部（UESTC-MSC）的 Web 应用的前端，记录每次活动活动的信息。基于 [lutece-awesome/lutece-frontend](https://github.com/lutece-awesome/lutece-frontend) 进行二次开发。
+电子科技大学微软学生俱乐部（UESTC-MSC）的 Web 应用的前端，记录每次活动活动的信息。
 
 
 ## 运行环境

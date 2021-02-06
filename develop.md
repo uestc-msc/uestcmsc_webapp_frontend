@@ -51,3 +51,27 @@ npm install
 
 执行完成后，在微信开发者工具右键点击各子文件夹，点击“上传并部署：所有文件”。
 
+## deploy
+
+### Project setup
+```
+npm install
+```
+
+#### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+#### Compiles and minifies for production
+```
+npm run build
+```
+
+#### Lints and fixes files
+```
+npm run lint
+```
+
+#### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
