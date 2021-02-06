@@ -64,18 +64,7 @@ jobs:
       - name: Deploy 🚀 To GitHub
         uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
         with:
-          GITHUB_TOKEN: ${{ secrets.ACTION_DEPLOY_KEY }}
+          ACCESS_TOKEN: ${{ secrets.ACTION_DEPLOY_KEY }}
           BRANCH: dist # The branch the action should deploy to.
           FOLDER: dist # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
-
-      - name: Setup SSH Environment
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan $SERVER_DOMAIN >> ~/.ssh/known_hosts
-
-      - name: Run SSH Command
-        run: |
-          ssh ${SERVER_USERNAME}@${SERVER_DOMAIN} < .github/workflows/vue-deploy.sh
