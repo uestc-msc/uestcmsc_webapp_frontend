@@ -3,44 +3,32 @@ import Home from '@/views/Home.vue'
 
 const routeConfig: RouteConfig[] = [
   {
-    path: '/activity',
-    name: 'ActivityList',
-    component: Home,
+    path: '/signup',
+    name: 'SignUp',
+    component: Home
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Home
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: Home
+  },
+  {
+    path: '/accounts',
     children: [
       {
-        path: 'create',
-        name: 'CreateActivity',
-        component: Home,
-        children: [
-          {
-            path: 'presenter',
-            name: 'CreateActivityChoosePresenter',
-            component: Home
-          }
-        ]
+        path: '/forgetpassword',
+        name: 'ForgetPassword',
+        component: Home
       },
       {
-        path: ':activityId',
-        name: 'ActivityDetail',
-        component: Home,
-        props: true,
-        children: [
-          {
-            path: 'update',
-            name: 'UpdateActivity',
-            component: Home,
-            props: true,
-            children: [
-              {
-                path: 'presenter',
-                name: 'UpdateActivityChoosePresenter',
-                component: Home,
-                props: true
-              }
-            ]
-          },
-
-        ]
+        path: '/resetpassword',
+        name: 'ResetPassword',
+        component: Home
       }
     ]
   },

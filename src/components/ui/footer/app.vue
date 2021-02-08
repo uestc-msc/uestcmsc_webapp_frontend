@@ -54,7 +54,7 @@ export default {
       icon: '/img/bilibili.svg',
       iconDark: '/img/bilibili-dark.svg',
       iconLocal: true,
-      href: 'https://space.bilibili.com/456910030/'
+      href: 'https://space.bilibili.com/456910030/' // 当 mdi 库中不存在图标时，可以自己提供 png 或 svg
     },
     {
       icon: 'mdi-wechat',

@@ -17,7 +17,7 @@
 
 <script>
 
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 import AppBar from './appbar';
 import Drawer from './drawer';
 
@@ -35,12 +35,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      profile: 'user/profile',
-      isAuthenticated: 'user/isAuthenticated',
-      isProgressBarVisible: 'navbar/visible',
-      title: 'navbar/title',
-    }),
+    // ...mapGetters({
+    //   // profile: 'user/profile',
+    //   // isAuthenticated: 'user/isAuthenticated',
+    //   // isProgressBarVisible: 'navbar/visible',
+    //   // title: 'navbar/title',
+    // }),
   },
 };
 </script>

@@ -14,7 +14,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title  style="font-size:15px">
-            {{verbose_name}}<sub style='color:grey'>v{{version}}</sub>
+            {{appName}}<sub style='color:grey'>v{{appVersion}}</sub>
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { verbose_name, version } from '@/utils'
+import { appName, appVersion } from '@/utils'
 
 export default Vue.extend({
   props: {
@@ -60,8 +60,8 @@ export default Vue.extend({
 
   data() {
     return {
-      verbose_name,
-      version,
+      appName,
+      appVersion,
       drawer: !this.$vuetify.breakpoint.xsOnly,
       items: [
         {

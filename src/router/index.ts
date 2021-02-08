@@ -1,27 +1,29 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '@/views/Home.vue'
-import NotFound from '@/components/sites/404/app.vue'
+
+import userRouteConfig from "./user/router";
+import accountRouteConfig from "./account/router";
+import activityRouteConfig from "./activity/router";
+import galleryRouteConfig from "./gallery/router";
+import cloudRouteConfig from "./cloud/router";
+import notFound from '@/components/sites/404.vue'
+
 Vue.use(VueRouter)
 
-const routes: Array<RouteConfig> = [
+const routes: RouteConfig[] = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect: {name: 'ActivityList'}
   },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
+  ...userRouteConfig,
+  ...accountRouteConfig,
+  ...activityRouteConfig,
+  ...galleryRouteConfig,
+  ...cloudRouteConfig,
   {
     path: '*',
     name: '404',
-    component: NotFound,
+    component: notFound,
   },
 ]
 
