@@ -1,37 +1,30 @@
 import {RouteConfig} from 'vue-router/types/router'
-import Home from '@/views/Home.vue'
+import Login from '@/components/sites/account/login.vue'
+import SignUp from '@/components/sites/account/signup.vue'
+import ResetPassword from '@/components/sites/account/resetpassword.vue'
+import ForgetPassword from '@/components/sites/account/forgetpassword.vue'
 
 const routeConfig: RouteConfig[] = [
   {
     path: '/signup',
     name: 'SignUp',
-    component: Home
+    component: SignUp
   },
   {
     path: '/login',
     name: 'Login',
-    component: Home
+    component: Login
   },
   {
-    path: '/logout',
-    name: 'Logout',
-    component: Home
+    path: '/forgetpassword',
+    name: 'ForgetPassword',
+    component: ForgetPassword
   },
   {
-    path: '/accounts',
-    children: [
-      {
-        path: '/forgetpassword',
-        name: 'ForgetPassword',
-        component: Home
-      },
-      {
-        path: '/resetpassword',
-        name: 'ResetPassword',
-        component: Home
-      }
-    ]
-  },
+    path: '/resetpassword',
+    name: 'ResetPassword',
+    component: ResetPassword
+  }
 ];
 
 export default routeConfig;

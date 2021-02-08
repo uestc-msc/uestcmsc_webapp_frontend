@@ -1,31 +1,15 @@
-<!-- snackbar: 弹出通知 -->
 <template>
-  <v-snackbar v-model="show">
-    {{ message }}
+  <v-snackbar v-model="$store.state.snackbar.visible">
+    {{ $store.state.snackbar.msg }}
     <v-btn
       text
       color="accent"
-      @click.native="show = false">Close</v-btn>
+      @click.native="$store.state.snackbar.visible = false">
+      关闭
+    </v-btn>
   </v-snackbar>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      show: false,
-      message: '',
-    };
-  },
-  created() {
-    this.$store.watch(state => state.snackbar.snack, () => {
-      const msg = this.$store.state.snackbar.snack;
-      if (msg !== '') {
-        this.show = true;
-        this.message = this.$store.state.snackbar.snack;
-        this.$store.commit('snackbar/setSnack', '');
-      }
-    });
-  },
-};
+export default {};
 </script>
