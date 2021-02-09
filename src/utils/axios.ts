@@ -1,30 +1,26 @@
 import axios from "axios";
-import { baseUrl } from "@/utils";
+import Cookies from 'js-cookie';
+
+import { baseUrl, DEBUG } from "@/utils";
 
 // 创建axios实例
 const service = axios.create({
   baseURL: baseUrl,
   timeout: 5000,          // 请求的超时时间
-  withCredentials: true   // 允许携带cookie
+  withCredentials: true,  // 允许携带cookie
 });
-
-// 发送请求前处理 request 数据
-axios.defaults.transformRequest = [function (data) {
-  let newData = ''
-  for (let k in data) {
-    newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&'
-  }
-  return newData
-}];
 
 // request 拦截器
 service.interceptors.request.use(
   config => {
-    // 发送请求之前，要做的业务
+    // 添加 CSRF token 和 sessionid
+    config.headers = {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      // Cookie: Cookies.get('sessionid')
+    };
     return config
   },
   error => {
-    // 错误处理代码
     return Promise.reject(error)
   }
 );
@@ -32,10 +28,21 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    // 数据响应之后，要做的业务
+    console.log(response)
     return response
   },
   error => {
+    if (DEBUG)
+    {
+      console.warn("error: ", error);
+      console.warn("error.response: ", error.response);
+      console.warn("error.message: ", error.message);
+    }
+    // if (error.message == "Network Error")
+    //   error.response = {"data": { "detail": "网络错误，请稍后再试"}}
+    // else if (error.response.status == 401)
+    //   return Promise.reject({"detail": "账号或密码错误"});
+    // return Promise.reject(error.response.data)
     return Promise.reject(error)
   }
 );

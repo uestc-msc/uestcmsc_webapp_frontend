@@ -37,14 +37,13 @@ export default Vue.extend({
   },
 
   data: () => ({
-    //
+    title: ''
   }),
 
   created() {
     if (window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      this.$vuetify.theme.dark = true;
-      // dark mode
+      this.$vuetify.theme.dark = true; // dark mode
     }
   }
 });

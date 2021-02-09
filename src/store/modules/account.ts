@@ -1,26 +1,31 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 import { User } from "@/types";
+import Cookies from "js-cookie";
 
-interface AccountState {
-  token: string,
+export interface AccountState {
+  sessionid: string,
   profile: User
 };
 
 let state: AccountState = {
-  token: localStorage.getItem('USER_TOKEN') || '',
+  sessionid: localStorage.getItem('sessionid') || '',
   profile: {}
 };
 
 const getters = {
-  isAuthenticated: (s: AccountState) => !!s.token,
+
+  isAuthenticated: (s: AccountState) => !!s.sessionid,
 };
 
 const mutations = {
-  set(s: AccountState, profile: User) {
-    s.profile = profile;
+  save(oldState: AccountState, profile: User) {
+    oldState.profile = profile;
+    let sessionid: string = Cookies.get('sessionid') || '';
+    oldState.sessionid = sessionid;
+    localStorage.setItem('sessionid', sessionid)
   },
   clear(s: AccountState) {
-    s.token = '';
+    s.sessionid = '';
     s.profile = {};
   }
 };

@@ -39,5 +39,9 @@ module.exports = {
         args[0].title=verbose_name;
         return args;
       })
+  },
+  
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }

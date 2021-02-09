@@ -1,4 +1,4 @@
-export interface User {
+export declare interface User {
   id?: number,
   email?: string,
   first_name?: string,
@@ -14,7 +14,7 @@ export interface User {
   is_superuser?: boolean,
 }
 
-export interface Activity {
+export declare interface Activity {
   id: number,
   title: string,
   datetime: Date,

@@ -1,17 +1,15 @@
-<template>
-  <div/>
-</template>
-
-
 <script>
-import Store from '@/store/index';
-// import { goBack } from '@/router/utils';
+import Vue from 'vue'
 
-export default {
+import axios from '@/utils/axios';
+import { goBack } from '@/utils/router';
+
+export default Vue.extend({
   mounted() {
-    Store.dispatch('user/logout').then(
-      // () => goBack(),
-    );
+    axios.post('/accounts/logout/').then(() => {
+      this.$store.commit('account/clear');
+      goBack();
+    });
   },
-};
+});
 </script>

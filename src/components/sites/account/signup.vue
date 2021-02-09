@@ -1,19 +1,15 @@
-
 <template>
   <v-container>
-    <v-layout justify-center>
-      <v-flex
-        xs12
-        md8
-      >
+    <v-row class="justify-center">
+      <v-col xs="12" md="8">
         <v-card>
           <v-card-text>
             <v-form @submit.prevent="register">
-              <v-layout column>
-                <v-flex>
+              <v-container>
+                <v-col>
                   <v-text-field
                     v-model="first_name"
-                    :error-messages="getErrorByDelegate('username')"
+                    :rules="firstNameRule"
                     label="姓名 *"
                     autocomplete="off"
                     autocorrect="off"
@@ -21,17 +17,17 @@
                     spellcheck="false"
                     prepend-icon = "mdi-account"
                     required />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                 <v-text-field
-                    v-model="username"
-                    :error-messages = "getErrorByDelegate( 'username' )"
+                    v-model="email"
+                    :rules="emailRule"
                     type="email"
                     label="邮箱 *"
                     prepend-icon = "mdi-email"
                     required />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                 <v-text-field
                     v-model="password"
                     :error-messages = "getErrorByDelegate( 'password' )"
@@ -39,43 +35,41 @@
                     label="密码 *"
                     prepend-icon = "mdi-lock"
                     required />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-text-field
                       v-model="passwordConfirm"
                       type="password"
                       label="重复密码 *"
                       prepend-icon = "mdi-lock-check"
                       required />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-text-field
                       v-model="student_id"
                       label="学号 *"
                       prepend-icon = "mdi-school"
                       required />
-                </v-flex>
-                <v-flex mt-3>
+                </v-col>
+                <v-col mt-3>
                   <v-btn
                     :loading="loading"
                     :color="signup_button_color"
                     block
                     big
                     type="submit">注册</v-btn>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-container>
             </v-form>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
-<script>
-
+<script lang="ts">
 export default {
-  metaInfo() { return { title: 'Sign Up' }; },
   data() {
     return {
       username: '',
@@ -120,7 +114,7 @@ export default {
         .catch((error) => {
           this.error = parseGraphqlError(error);
         })
-        .finally(() => { this.loading = false; });
+        .finally(() => { that.loading = false; });
     },
   },
 };

@@ -1,12 +1,17 @@
 <template>
-  <v-snackbar v-model="$store.state.snackbar.visible">
+  <v-snackbar
+    v-model="$store.state.snackbar.visible"
+  >
     {{ $store.state.snackbar.msg }}
-    <v-btn
-      text
-      color="accent"
-      @click.native="$store.state.snackbar.visible = false">
-      关闭
-    </v-btn>
+    <template v-slot:action="{ attrs }">
+      <v-btn
+        color="pink"
+        text
+        v-bind="attrs"
+        @click.native="$store.state.snackbar.visible = false">
+        关闭
+      </v-btn>
+    </template>
   </v-snackbar>
 </template>
 

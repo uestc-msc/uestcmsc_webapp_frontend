@@ -1,23 +1,23 @@
 <template>
-  <v-container>
-    <v-layout justify-center>
-      <v-flex
+  <v-container fluid>
+    <v-row justify-center>
+      <v-col
           xs12
           md8
       >
         <v-card>
           <v-card-text>
             <v-form @submit.prevent="login">
-              <v-layout column>
-                <v-flex>
+              <v-row column>
+                <v-col>
                   <v-text-field
                       v-model="username"
                       :error-messages = "getErrorByDelegate( 'username' )"
                       label="邮箱"
                       prepend-icon = "mdi-email"
                       required />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-text-field
                       v-model="password"
                       :error-messages = "getErrorByDelegate( 'password' )"
@@ -25,8 +25,8 @@
                       label="密码"
                       prepend-icon = "mdi-form-textbox-password"
                       required />
-                </v-flex>
-                <v-flex
+                </v-col>
+                <v-col
                     class="text-xs-center"
                     mt-3>
                   <v-btn
@@ -37,17 +37,17 @@
                       type="submit">
                     登录
                   </v-btn>
-                </v-flex>
-                <v-flex class="d-flex justify-space-between">
+                </v-col>
+                <v-col class="d-flex justify-space-between">
                   <a @click="signup">忘记密码？ </a>
                   <a @click="signup" style="text-align: right"> 注册</a>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-form>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

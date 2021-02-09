@@ -8,7 +8,8 @@ const routeConfig: RouteConfig[] = [
   {
     path: '/signup',
     name: 'SignUp',
-    component: SignUp
+    // component: SignUp
+    component: Login
   },
   {
     path: '/login',

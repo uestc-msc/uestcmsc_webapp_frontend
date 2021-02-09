@@ -15,13 +15,13 @@
 </template>
 
 
-<script>
+<script lang="ts">
 
-// import { mapGetters } from 'vuex';
-import AppBar from './appbar';
-import Drawer from './drawer';
+import Vue from 'vue'
+import AppBar from './appbar.vue';
+import Drawer from './drawer.vue';
 
-export default {
+export default Vue.extend({
 
   components: {
     AppBar,
@@ -42,5 +42,5 @@ export default {
     //   // title: 'navbar/title',
     // }),
   },
-};
+});
 </script>

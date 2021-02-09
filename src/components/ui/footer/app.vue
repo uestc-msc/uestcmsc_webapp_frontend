@@ -15,7 +15,7 @@
             v-for="item in items"
             :key="item.icon"
             class="mx-4"
-            :href="item.href"
+            @click="window.open(item.href)"
             icon
           >
             <v-icon v-if="!item.iconLocal" size="24px">
@@ -35,7 +35,7 @@
     </v-footer>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data: () => ({
     items: [{
@@ -63,7 +63,8 @@ export default {
     {
       icon: 'mdi-sina-weibo',
       href: 'https://mp.weixin.qq.com/s/0Zf5wau55u2-x4L2ngpSQQ'
-    }]
+    }],
+    window
   }),
 }
 </script>

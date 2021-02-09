@@ -29,32 +29,35 @@
         <v-icon class = "mr-2" >mdi-login</v-icon>
         <span> 登录 </span>
       </v-btn>
-    </v-toolbar-items>
 
+      <user-menu v-else />
+    </v-toolbar-items>
   </v-app-bar>
 </template>
 
 
-<script>
+<script lang="ts">
+// / <reference path="../../../types/index.d.ts" />
 import Vue from 'vue';
-import Router from '@/router/index';
 
-export default Vue.extend({
+import Router from '@/router';
+import userMenu from './user-menu.vue';
+import { isAuthenticated } from '@/utils/permissions.js'
+
+export default {
   props: {
     profile: {
-      type: Object,
-      default: null,
-    },
-    isAuthenticated: {
-      type: Boolean,
-      default: false,
+      type: User,
+      default: {},
     },
   },
 
   computed: {
     title() {
-      return this.$root.title;
+      // return this.$root.title || "阮薇薇点名啦";
+      return "阮薇薇点名啦";
     },
+    isAuthenticated
   },
 
   methods: {
@@ -64,5 +67,5 @@ export default Vue.extend({
       });
     },
   },
-});
+};
 </script>

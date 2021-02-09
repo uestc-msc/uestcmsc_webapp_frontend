@@ -9,7 +9,7 @@ let state: SnackBarState = {
 }
 
 const mutations = {
-  postMessage: function(state: SnackBarState, msg: string) {
+  post: function(state: SnackBarState, msg: string) {
     state.msg = msg;
     state.visible = true;
   }
