@@ -1,56 +1,81 @@
 <template>
-  <v-container fluid>
-    <v-row justify-center>
-      <v-col
-          xs12
-          md8
-      >
+  <v-container>
+    <v-row class="justify-center">
+      <v-col xs="12" md="8">
         <v-card>
           <v-card-text>
-            <v-form @submit.prevent="login">
-              <v-row column>
+            <v-form
+              @submit.prevent="resetPassword"
+              ref="form"
+              v-model="formValid"
+            >
+              <v-container>
+
                 <v-col>
                   <v-text-field
-                      v-model="username"
-                      :error-messages = "getErrorByDelegate( 'username' )"
-                      label="邮箱"
-                      prepend-icon = "mdi-email"
-                      required />
+                    v-model="token"
+                    ref="token"
+                    disabled
+                    :loading="checkingToken"
+                    :rules="tokenRules"
+                    label="token"
+                    prepend-icon="mdi-lock-reset"
+                    required
+                  >
+                    <v-icon
+                      v-if="tokenValid && !checkingToken"
+                      slot="append"
+                      color="green"
+                    >
+                      mdi-check-circle
+                    </v-icon>
+                    <v-icon
+                      v-if="!tokenValid && !checkingToken"
+                      slot="append"
+                      color="red"
+                    >
+                      mdi-alert-circle
+                    </v-icon>
+                  </v-text-field>
                 </v-col>
+
                 <v-col>
-                <v-text-field
+                  <v-text-field
                     v-model="password"
-                    :error-messages = "getErrorByDelegate( 'password' )"
+                    :rules="passwordRules"
                     type="password"
-                    label="密码 *"
-                    prepend-icon = "mdi-lock"
-                    required />
+                    label="新密码 *"
+                    prepend-icon="mdi-lock"
+                    required/>
                 </v-col>
+
                 <v-col>
                   <v-text-field
-                      v-model="passwordConfirm"
-                      type="password"
-                      label="重复密码 *"
-                      prepend-icon = "mdi-lock-check"
-                      required />
+                    v-model="passwordConfirm"
+                    :rules="passwordConfirmRules"
+                    type="password"
+                    label="重复密码 *"
+                    prepend-icon="mdi-lock-check"
+                    required/>
                 </v-col>
-                <v-col
-                    class="text-xs-center"
-                    mt-3>
+
+                <v-col>
                   <v-btn
-                      :loading = "loading"
-                      :color="login_button_color"
-                      block
-                      big
-                      type="submit">
-                    登录
+                    :disabled="!formValid"
+                    :loading="submitting"
+                    :color="this.error ? 'error' : 'primary'"
+                    block
+                    @click="resetPassword"
+                  >
+                    重置密码
                   </v-btn>
                 </v-col>
-                <v-col class="d-flex justify-space-between">
-                  <a @click="signup">忘记密码？ </a>
-                  <a @click="signup" style="text-align: right"> 注册</a>
+
+                <v-col v-if="error">
+                  <v-alert elevation="4" type="error">{{ error }}</v-alert>
                 </v-col>
-              </v-row>
+
+              </v-container>
             </v-form>
           </v-card-text>
         </v-card>
@@ -60,49 +85,74 @@
 </template>
 
 <script>
-
-import { parseGraphqlError, getErrorMessage } from '@/utils';
-// import { goBack } from '@/router/utils';
-import Router from '@/router/index';
-import Store from '@/store/index';
+import {isEmail} from "@/utils/validate_input";
+import md5 from "md5";
+import axios from "@/utils/axios";
+import {goBack} from "@/utils/router";
 
 export default {
-  metaInfo() { return { title: 'Login' }; },
-  data: () => ({
-    loading: false,
-    error: null,
-    username: '',
-    password: '',
-  }),
-  computed: {
-    login_button_color: function () {
-      return this.error ? 'error' : 'primary';
-    }
+  data() {
+    let that = this;
+    return {
+      token: '',
+      password: '',
+      passwordConfirm: '',
+
+      tokenRules: [v => {
+        console.log(that.tokenValid)
+        return that.tokenValid || 'token 错误或已过期'}
+      ],
+      passwordRules: [v => v.length >= 6 || '密码应不少于 6 位'],
+      passwordConfirmRules: [v => v === that.password || '两次输入密码应当相同'],
+
+      checkingToken: true,
+      tokenValid: true,
+      formValid: true,
+      submitting: false,
+      error: null,
+    };
   },
-  methods: {
 
-    getErrorByDelegate(field) {
-      return getErrorMessage(this.error, field);
-    },
-
-    login() {
-      this.loading = true;
-      this.error = null;
-      const { username, password } = this;
-      Store.dispatch('user/login', { username, password })
-        .then(() => {
-          // goBack();
-        })
-        .catch((error) => {
-          this.error = parseGraphqlError(error);
-        })
-        .finally(() => { this.loading = false; });
-    },
-
-    signup() {
-      Router.push({
-        name: 'Signup',
+  activated() {
+    let that = this;
+    // 进入页面，填入 token 并验证有效性
+    this.token = this.$route.query.token;
+    axios.post('/accounts/resetpassword/', {token: that.token})
+      .then(() => {
+        that.tokenValid = true;
+      }).catch(() => {
+        that.tokenValid = false;
+      }).finally(() => {
+        that.checkingToken = false;
+        that.$refs.token.validate(true);
       });
+  },
+
+  methods: {
+    resetPassword() {
+      this.formValid = this.$refs.form.validate();
+      if (!this.formValid)
+        return;
+
+      this.submitting = true;
+      this.error = null;
+      let data = {
+        token: this.token,
+        new_password: md5(this.password),
+      }
+      let that = this;
+      axios.post('/accounts/resetpassword/', data)
+        .then(() => {
+          this.$store.commit('postMsg', '重置成功！请重新登录~');
+          this.$store.commit('clearProfile');
+          this.$router.push('/login/');
+        }).catch(response => {
+          let detail = response.data;
+          this.error = Object.values(detail).join('；');
+        })
+        .finally(() => {
+          that.submitting = false;
+        });
     },
   },
 };

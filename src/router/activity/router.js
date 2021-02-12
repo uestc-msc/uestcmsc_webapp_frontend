@@ -1,7 +1,6 @@
-import {RouteConfig} from 'vue-router/types/router'
 import Home from '@/views/Home.vue'
 
-const routeConfig: RouteConfig[] = [
+const routeConfig = [
   {
     path: '/activity',
     name: 'ActivityList',

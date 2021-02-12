@@ -13,10 +13,10 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
-    // 添加 CSRF token 和 sessionid
+    // 添加 CSRF token
+    // sessionid 会自动添加
     config.headers = {
       'X-CSRFToken': Cookies.get('csrftoken'),
-      // Cookie: Cookies.get('sessionid')
     };
     return config
   },
@@ -38,12 +38,22 @@ service.interceptors.response.use(
       console.warn("error.response: ", error.response);
       console.warn("error.message: ", error.message);
     }
-    // if (error.message == "Network Error")
-    //   error.response = {"data": { "detail": "网络错误，请稍后再试"}}
-    // else if (error.response.status == 401)
-    //   return Promise.reject({"detail": "账号或密码错误"});
-    // return Promise.reject(error.response.data)
-    return Promise.reject(error)
+    if (error.message === "Network Error")
+      return Promise.reject({
+        status: 0,
+        data: "网络错误，请稍后再试"
+      });
+    if (error.message.startsWith('timeout'))
+      return Promise.reject({
+        status: 0,
+        data: "网络超时，请检查网络或稍后再试"
+      });
+    else if (error.response.status === 401)
+      return Promise.reject({
+        status: 401,
+        data: "账户或密码错误"
+      });
+    return Promise.reject(error.response)
   }
 );
 

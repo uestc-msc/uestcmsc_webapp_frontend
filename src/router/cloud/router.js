@@ -1,7 +1,6 @@
-import {RouteConfig} from 'vue-router/types/router'
 import {cloudComponent, cloudAdminComponent} from '@/components/sites/cloud/app'
 
-const routeConfig: RouteConfig[] = [
+const routeConfig = [
   {
     path: '/cloud',
     name: 'Cloud',
@@ -11,6 +10,7 @@ const routeConfig: RouteConfig[] = [
     path: '/cloud-admin',
     name: 'CloudAdmin',
     component: cloudAdminComponent,
+
   }
 ];
 

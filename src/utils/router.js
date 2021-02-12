@@ -6,9 +6,13 @@ export function goBack() {
     router.go(-1);
   else
     router.push('/');
-};
+}
 
-export function requireLogin() {
+export function goHome() {
+  router.push('/');
+}
+
+export function gotoLogin() {
   if (!store.getters.user.isAuthenticated)
     router.push({name: 'Login'});
 }

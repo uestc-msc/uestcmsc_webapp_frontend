@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import VueRouter from 'vue-router'
 
 import userRouteConfig from "./user/router";
 import accountRouteConfig from "./account/router";
@@ -11,7 +11,7 @@ import { goBack } from '@/utils/router';
 
 Vue.use(VueRouter)
 
-const routes: RouteConfig[] = [
+const routes = [
   {
     path: '/',
     redirect: {name: 'ActivityList'}

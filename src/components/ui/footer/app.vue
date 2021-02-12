@@ -2,7 +2,6 @@
 <template>
     <v-footer
       padless
-      fixed
     >
       <v-card
         text
@@ -35,7 +34,7 @@
     </v-footer>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   data: () => ({
     items: [{

@@ -1,48 +1,44 @@
 <template>
-  <v-container fluid>
-    <v-row justify-center>
-      <v-col
-          xs12
-          md8
-      >
+  <!-- 外层的 container、row、col 是为了限制 card 的布局 -->
+  <v-container>
+    <v-row class="justify-center">
+      <v-col xs="12" md="8">
         <v-card>
           <v-card-text>
-            <v-form @submit.prevent="login">
-              <v-row column>
+            <v-form
+              @submit.prevent="submit"
+              ref="forgetPasswordForm"
+              v-model="formValid"
+            >
+              <!-- 内层的 container、col 是为了限制 form 的布局 -->
+              <v-container>
                 <v-col>
                   <v-text-field
-                      v-model="username"
-                      :error-messages = "getErrorByDelegate( 'username' )"
-                      label="邮箱"
-                      prepend-icon = "mdi-email"
-                      required />
+                    v-model="email"
+                    :rules="emailRules"
+                    type="email"
+                    label="邮箱"
+                    prepend-icon="mdi-email"
+                    required />
                 </v-col>
+
                 <v-col>
-                  <v-text-field
-                      v-model="password"
-                      :error-messages = "getErrorByDelegate( 'password' )"
-                      type="password"
-                      label="密码"
-                      prepend-icon = "mdi-form-textbox-password"
-                      required />
-                </v-col>
-                <v-col
-                    class="text-xs-center"
-                    mt-3>
                   <v-btn
-                      :loading = "loading"
-                      :color="login_button_color"
-                      block
-                      big
-                      type="submit">
-                    登录
+                    v-if="status !== 'success'"
+                    :disabled="!formValid"
+                    :loading="submitting"
+                    :color="status==='error' ? 'error' : 'primary'"
+                    block
+                    type="submit"
+                  >
+                    发送邮件
                   </v-btn>
                 </v-col>
-                <v-col class="d-flex justify-space-between">
-                  <a @click="signup">忘记密码？ </a>
-                  <a @click="signup" style="text-align: right"> 注册</a>
+
+                <v-col v-if="status">
+                  <v-alert elevation="4" :type="status">{{ msg }}</v-alert>
                 </v-col>
-              </v-row>
+              </v-container>
             </v-form>
           </v-card-text>
         </v-card>
@@ -52,50 +48,53 @@
 </template>
 
 <script>
+import Vue from 'vue'
 
-import { parseGraphqlError, getErrorMessage } from '@/utils';
-// import { goBack } from '@/router/utils';
-import Router from '@/router/index';
-import Store from '@/store/index';
+import { goBack } from '@/utils/router';
+import router from "@/router/index";
+import axios from '@/utils/axios';
+import md5 from "md5";
+import {isEmail} from "@/utils/validate_input";
 
-export default {
-  metaInfo() { return { title: 'Login' }; },
+export default Vue.extend({
   data: () => ({
-    loading: false,
-    error: null,
-    username: '',
-    password: '',
+    email: "",
+    emailRules: [v => isEmail(v) || '邮箱不合法'],
+
+    formValid: true,
+    submitting: false,
+    status: null,
+    msg: null,
   }),
-  computed: {
-    login_button_color: function () {
-      return this.error ? 'error' : 'primary';
-    }
-  },
+
   methods: {
+    submit() {
+      this.formValid = this.$refs.forgetPasswordForm.validate();
+      if (!this.formValid)
+        return;
 
-    getErrorByDelegate(field) {
-      return getErrorMessage(this.error, field);
-    },
+      this.submitting = true;
+      this.status = null;
+      this.msg = null;
 
-    login() {
-      this.loading = true;
-      this.error = null;
-      const { username, password } = this;
-      Store.dispatch('user/login', { username, password })
-        .then(() => {
-          // goBack();
+      let that = this;
+      let data = {
+        email: this.email
+      };
+      axios.post('/accounts/forgetpassword/', data)
+        .then((response) => {
+          that.msg = response.data;
+          if (that.msg.detail) that.msg = that.msg.detail
+          that.status = 'success';
+          that.submitting = false;
         })
-        .catch((error) => {
-          this.error = parseGraphqlError(error);
+        .catch((response) => {
+          that.msg = response.data;
+          if (that.msg.detail) that.msg = that.msg.detail
+          that.status = 'error';
+          that.submitting = false;
         })
-        .finally(() => { this.loading = false; });
-    },
-
-    signup() {
-      Router.push({
-        name: 'Signup',
-      });
     },
   },
-};
+});
 </script>

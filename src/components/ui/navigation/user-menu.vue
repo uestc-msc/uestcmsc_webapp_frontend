@@ -1,60 +1,32 @@
+<!-- User Menu: 右上角点击头像出现的菜单，连同头像和姓名-->
 <template>
   <v-menu
     open-on-hover
-    light
     offset-y
   >
-    <v-btn
-      slot = "activator"
-      flat
-    >
-      <v-avatar
-        size = "36"
-        contain
-      >
-        <img :src = "profile.gravatar" >
-      </v-avatar>
-      <span
-        class = "ml-2"
-        style = "text-transform: none"
-      >
-        {{ profile.username }}
-      </span>
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" text>
+        <v-avatar size="36" contain>
+          <v-img :src = "profile.avatar_url" />
+        </v-avatar>
+        <span class = "ml-2">
+          {{ profile.first_name }}
+        </span>
+      </v-btn>
+    </template>
 
     <v-list>
-      <v-list-tile
-        :to = "{ name: 'UserDetail' , params: { username: profile.username } }"
-      >
-        <v-icon
-          class = "mr-2"
-          flat
-        >
-          mdi-account
-        </v-icon>
-        <v-list-tile-content>
-          <v-list-tile-title>
-            Profile
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+      <v-list-item
         v-for = "item in items"
         :key = "item.label"
-        :to = "item.to"
+        @click = "item.callback"
+        class="text-center"
       >
-        <v-icon
-          class = "mr-2"
-          flat
-        >
-          {{ item.icon }}
-        </v-icon>
-        <v-list-tile-content>
-          <v-list-tile-title>
-            {{ item.label }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-icon> {{item.icon}} </v-icon>
+        <v-list-item-content>
+          <v-list-item-title v-text="item.label"/>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
@@ -62,32 +34,45 @@
 
 <script>
 export default {
-  props: {
-    profile: {
-      type: Object,
-      default: null,
-    },
-  },
-
-  data() {
+  data: function() {
+    let that = this;
     return {
       items: [
         {
-          icon: 'mdi-settings',
-          label: 'Settings',
-          to: {
-            name: 'UserSettings',
+          icon: 'mdi-brightness-6',
+          label: '切换主题',
+          callback: function () {
+            that.$vuetify.theme.dark = !that.$vuetify.theme.dark;
+          }
+        },
+        {
+          icon: 'mdi-account',
+          label: '个人信息',
+          callback: function () {
+            that.$router.push({
+              name: 'UserDetail',
+              params: {userId: that.userId}
+            })
           },
         },
         {
           icon: 'mdi-logout',
-          label: 'Sign Out',
-          to: {
-            name: 'Signout',
-          },
+          label: '登出账号',
+          callback: function () {
+            that.$router.push({name: 'Logout'})
+          }
         },
       ],
-    };
+    }
+  },
+
+  computed: {
+    profile() {
+      return this.$store.state.profile
+    },
+    userId() {
+      return this.profile.id
+    }
   },
 };
 </script>

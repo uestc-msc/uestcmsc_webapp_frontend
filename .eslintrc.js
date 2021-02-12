@@ -5,7 +5,6 @@ module.exports = {
     "sourceType": "module"
   },
   rules: {
-    indent: [2, 2],
-    '@typescript-eslint/no-var-requires': 0,
+    indent: [2, 2]
   }
 }

@@ -1,17 +1,20 @@
-import {RouteConfig} from 'vue-router/types/router'
 import Home from '@/views/Home.vue'
+import store from '@/store'
 
-const routeConfig: RouteConfig[] = [
+const routeConfig = [
   {
     path: '/user',
     name: 'UserList',
     component: Home,
     children: [
       {
+        path: 'me',
+      },
+      {
         path: ':userId',
         name: 'UserDetail',
         component: Home,
-        props: true,
+        props: true,  // props 表示 userId 参数可以传到组件
         children: [
           {
             path: 'change',
@@ -20,7 +23,7 @@ const routeConfig: RouteConfig[] = [
             props: true,
           },
         ]
-      }
+      },
     ]
   },
 ];

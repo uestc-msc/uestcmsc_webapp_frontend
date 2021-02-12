@@ -7,8 +7,8 @@
     :width = "250"
     fixed
     app
-  >    <!-- clipped -->
-    <v-list-item  class="px-2">
+  >
+    <v-list-item  class="px-2" to="/">
       <v-list-item-avatar>
         <v-img src="/static/icons/favicon-96x96.png" />
       </v-list-item-avatar>
@@ -28,36 +28,27 @@
         :to = "item.to"
         ripple
         active-class = "grey lighten-3"
-        :title = "item.title"
       >
-        <v-list-item-action>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
+        <template v-if="hasPermission(item)">
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </template>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import { appName, appVersion } from '@/utils'
+import {isAdmin, isAuthenticated} from "@/utils/permissions";
 
 export default Vue.extend({
-  props: {
-    title: {
-      type: String,
-      default: null,
-    },
-    toggleEvent: {
-      type: Boolean,
-      default: null,
-    },
-  },
-
   data() {
     return {
       appName,
@@ -76,27 +67,34 @@ export default Vue.extend({
         },
         {
           title: '相册',
-          icon: 'mdi-chart-bar',
+          icon: 'mdi-image-multiple',
           to: '/gallery',
         },
         {
           title: '云盘',
           icon: 'mdi-cloud',
           to: '/cloud',
+          requireLogin: true
         },
         {
           title: '云盘（管理员）',
           icon: 'mdi-cloud-lock',
           to: '/cloud-admin',
+          requireAdmin: true
         },
       ],
     };
   },
 
-  watch: {
-    toggleEvent() {
-      this.drawer = !this.drawer;
-    },
+  computed: {
+    isAuthenticated,
+    isAdmin,
   },
+
+  methods: {
+    hasPermission (item) {
+      return (!item.requireLogin || isAuthenticated()) && (!item.requireAdmin || isAdmin());
+    }
+  }
 });
 </script>
