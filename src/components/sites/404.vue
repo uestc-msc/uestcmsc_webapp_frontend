@@ -1,11 +1,12 @@
 <template>
-  <v-container fluid>
-    <v-alert type="error">
-      404 NOT FOUND
-    </v-alert>
-  </v-container>
+  <error-alert>404 Not Found</error-alert>
 </template>
 
 <script>
-export default {};
+import errorAlert from '../ui/base/error-alert.vue'
+export default {
+  components: {
+    errorAlert
+  }
+};
 </script>

@@ -29,8 +29,12 @@ export default new Vuex.Store({
     },
     // 标题，出现在 Appbar 上
     title: appName,
-    // 需要搜索栏的 component 将 input 函数绑在它上
-    searchCallback: null
+    // 对于支持搜索的页面，将输入搜索关键字的回调函数设为 searchCallback
+    // 即可调用 appbar 的搜索组件
+    searchCallback: null,
+    searchKeyword: '',
+    // appbar 下的 Loading 滚动条
+    appbarLoading: false,
   },
 
   getters: {
@@ -64,8 +68,16 @@ export default new Vuex.Store({
     setSearchCallback(state, callback) {
       state.searchCallback = callback;
     },
-    clearSearchCallback(state, clear) {
+    clearSearchCallback(state) {
       state.searchCallback = null;
+    },
+    setSearchKeyword(state, value) {
+      state.searchKeyword = value;
+      state.searchCallback();
+    },
+
+    setAppbarLoading(state, bool) {
+      state.appbarLoading = bool;
     }
   }
 });

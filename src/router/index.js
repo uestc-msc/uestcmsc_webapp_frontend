@@ -11,6 +11,7 @@ import { goBack } from '@/utils/router';
 
 Vue.use(VueRouter)
 
+
 const routes = [
   {
     path: '/',

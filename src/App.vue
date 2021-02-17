@@ -1,20 +1,17 @@
 <template>
   <v-app>
     <v-main>
-      <app-navigation-bar/>
+      <app-navigation-bar/>   <!-- 整合侧边栏的抽屉 Navigation Drawer 和顶栏 App Bar-->
       <div class="maincontent">
-        <v-fade-transition
-            :duration="100"
-            mode="out-in"
-        >
+        <v-fade-transition :duration="100"  mode="out-in">
           <keep-alive>
             <router-view/>
           </keep-alive>
         </v-fade-transition>
       </div>
     </v-main>
-    <Footer/>
-    <Snackbar/>
+    <Footer/>                 <!-- 页脚 Footer -->
+    <Snackbar/>               <!-- 弹窗消息框  -->
   </v-app>
 </template>
 

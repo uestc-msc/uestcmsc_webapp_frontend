@@ -1,62 +1,51 @@
 <template>
-  <!-- 外层的 container、row、col 是为了限制 card 的布局 -->
-  <v-container>
-    <v-row class="justify-center">
-      <v-col xs="12" md="8">
-        <v-card>
-          <v-card-text>
-            <v-form
-              @submit.prevent="submit"
-              ref="forgetPasswordForm"
-              v-model="formValid"
-            >
-              <!-- 内层的 container、col 是为了限制 form 的布局 -->
-              <v-container>
-                <v-col>
-                  <v-text-field
-                    v-model="email"
-                    :rules="emailRules"
-                    type="email"
-                    label="邮箱"
-                    prepend-icon="mdi-email"
-                    required />
-                </v-col>
+  <SimpleCard>
+    <v-form
+      @submit.prevent="submit"
+      ref="forgetPasswordForm"
+      v-model="formValid"
+    >
+      <!-- 内层的 container、col 是为了限制 form 的布局 -->
+      <v-container>
+        <v-col>
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            type="email"
+            label="邮箱"
+            prepend-icon="mdi-email"
+            required/>
+        </v-col>
 
-                <v-col>
-                  <v-btn
-                    v-if="status !== 'success'"
-                    :disabled="!formValid"
-                    :loading="submitting"
-                    :color="status==='error' ? 'error' : 'primary'"
-                    block
-                    type="submit"
-                  >
-                    发送邮件
-                  </v-btn>
-                </v-col>
+        <v-col>
+          <v-btn
+            v-if="status !== 'success'"
+            :disabled="!formValid"
+            :loading="submitting"
+            :color="status==='error' ? 'error' : 'primary'"
+            block
+            type="submit"
+          >
+            发送邮件
+          </v-btn>
+        </v-col>
 
-                <v-col v-if="status">
-                  <v-alert elevation="4" :type="status">{{ msg }}</v-alert>
-                </v-col>
-              </v-container>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-col v-if="status">
+          <v-alert elevation="4" :type="status">{{ msg }}</v-alert>
+        </v-col>
+      </v-container>
+    </v-form>
+  </SimpleCard>
 </template>
 
 <script>
-import Vue from 'vue'
 
-import { goBack } from '@/utils/router';
-import router from "@/router/index";
 import axios from '@/utils/axios';
-import md5 from "md5";
 import {isEmail} from "@/utils/validate_input";
+import SimpleCard from '@/components/ui/base/simple-card'
 
-export default Vue.extend({
+export default {
+  components: {SimpleCard},
   data: () => ({
     email: "",
     emailRules: [v => isEmail(v) || '邮箱不合法'],
@@ -96,5 +85,5 @@ export default Vue.extend({
         })
     },
   },
-});
+};
 </script>

@@ -1,8 +1,8 @@
-name: Azure Static Web Apps CI/CD
+name: Deploy To Server
 
 on:
   push:
-    branches: [master, lyh543]
+    branches: [master]
 
 jobs:
   build_and_deploy_job:
