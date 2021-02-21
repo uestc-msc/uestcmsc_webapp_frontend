@@ -7,63 +7,77 @@
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
       <v-container>
-        <v-col>
-          <v-text-field
-            v-model="username"
-            :rules="usernameRules"
-            type="email"
-            label="邮箱"
-            prepend-icon="mdi-email"
-            required/>
-        </v-col>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              v-model="username"
+              :rules="usernameRules"
+              :disabled="submitting"
+              type="email"
+              label="邮箱"
+              prepend-icon="mdi-email"
+              required
+            />
+          </v-col>
+        </v-row>
 
-        <v-col>
-          <v-text-field
-            v-model="password"
-            :rules="passwordRules"
-            type="password"
-            label="密码"
-            prepend-icon="mdi-lock"
-            required/>
-        </v-col>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              :disabled="submitting"
+              :type="show_password ? 'text' : 'password'"
+              :append-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="show_password = !show_password"
+              label="密码"
+              prepend-icon="mdi-lock"
+              required
+            />
+          </v-col>
+        </v-row>
 
-        <v-col>
-          <v-btn
-            :loading="submitting"
-            :color="this.error ? 'error' : 'primary'"
-            block
-            type="submit"
-          >
-            登录
-          </v-btn>
-        </v-col>
+        <v-row no-gutters>
+          <v-col>
+            <v-btn
+              :loading="submitting"
+              :color="this.error ? 'error' : 'primary'"
+              block
+              type="submit"
+            >
+              登录
+            </v-btn>
+          </v-col>
+        </v-row>
 
-        <v-col v-if="error">
-          <v-alert elevation="4" type="error">
-            {{ error }}
-          </v-alert>
-        </v-col>
+        <FormErrorAlert
+          v-if="error"
+          :msg="error"
+        />
 
-        <v-col class="d-flex justify-space-between">
-          <v-btn
-            plain
-            color="primary"
-            @click="router.push({ name: 'ForgetPassword' })"
-          >
-            忘记密码
-          </v-btn>
-          <v-btn
-            plain
-            color="primary"
-            @click="router.push({ name: 'SignUp' })"
-          >注册
-          </v-btn
-          >
-        </v-col>
+        <v-row no-gutters>
+          <v-col class="d-flex justify-space-between">
+            <v-btn
+              plain
+              color="primary"
+              @click="router.push({ name: 'ForgetPassword' })"
+            >
+              忘记密码
+            </v-btn>
+            <v-btn
+              plain
+              color="primary"
+              @click="router.push({ name: 'SignUp' })"
+            >
+              注册
+            </v-btn>
+          </v-col>
+        </v-row>
+
 
       </v-container>
     </v-form>
-    </SimpleCard>
+  </SimpleCard>
 </template>
 
 <script>
@@ -73,19 +87,21 @@ import {goBack} from '@/utils/router';
 import router from "@/router/index";
 import axios from '@/utils/axios';
 import md5 from "md5";
-import {isEmail} from "@/utils/validate_input";
+import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
+import FormErrorAlert from "@/components/ui/base/form-error-alert";
 
 export default Vue.extend({
-  components: {SimpleCard},
+  components: {FormErrorAlert, SimpleCard},
   data: () => ({
     valid: true,
     submitting: false,
     error: null,
     username: "",
-    usernameRules: [v => !!v || '邮箱不能为空'],
+    usernameRules: inputRules.user.usernameRules,
     password: "",
-    passwordRules: [v => !!v || '密码不能为空'],
+    passwordRules: inputRules.user.passwordRules,
+    show_password: false,
     router,
   }),
 

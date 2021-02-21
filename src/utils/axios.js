@@ -40,15 +40,20 @@ service.interceptors.response.use(
     }
     if (error.message === "Network Error")
       return Promise.reject({
-        status: 0,
-        data: "网络错误，请稍后再试"
+        status: -1,
+        data: "网络错误，请检查网络或稍后再试"
       });
     if (error.message.startsWith('timeout'))
       return Promise.reject({
-        status: 0,
+        status: -2,
         data: "网络超时，请检查网络或稍后再试"
       });
-    else if (error.response.status === 401)
+    if (error.response.status === 500)
+      return Promise.reject({
+        status: 500,
+        data: "服务器端错误"
+      });
+    if (error.response.status === 401)
       return Promise.reject({
         status: 401,
         data: "账户或密码错误"

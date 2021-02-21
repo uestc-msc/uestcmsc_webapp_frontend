@@ -208,5 +208,6 @@ export default {
       if (index >= 0) this.friends.splice(index, 1)
     },
   },
+
 }
 </script>

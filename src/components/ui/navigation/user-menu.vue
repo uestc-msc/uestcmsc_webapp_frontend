@@ -12,6 +12,10 @@
         <span class = "ml-2">
           {{ profile.first_name }}
         </span>
+        <AdminIcon
+          :user="profile"
+          size="14px"
+        />
       </v-btn>
     </template>
 
@@ -33,7 +37,9 @@
 
 
 <script>
+import AdminIcon from "@/components/ui/base/admin-icon";
 export default {
+  components: {AdminIcon},
   data: function() {
     let that = this;
     return {

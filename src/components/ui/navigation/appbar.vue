@@ -61,7 +61,7 @@
 import {appName} from '@/utils'
 import Router from '@/router';
 import userMenu from './user-menu.vue';
-import {isAuthenticated} from '@/utils/permissions.js'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -76,6 +76,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'isAuthenticated'
+    ]),
     keyword: {
       get() {
         return this.$store.state.searchKeyword;
@@ -90,7 +93,6 @@ export default {
     searchCallback() {
       return this.$store.state.searchCallback;
     },
-    isAuthenticated,
   },
 
   methods: {

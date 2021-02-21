@@ -38,14 +38,17 @@ export default new Vuex.Store({
   },
 
   getters: {
-    isAuthenticated(state) {
-      return state.profile.id > 0;
-    }
+    isAuthenticated: state => state.profile.id > 0,
+    isNotAuthenticated: (state, getters) => !getters.isAuthenticated,
+    isAdmin: state => state.profile.is_staff || state.profile.is_superuser,
+    isSuperuser: state => state.profile.is_superuser,
+    isOwner: state => (id) => state.profile.id === id,
+    isOwnerOrAdmin: (state,getters) => (id) => (getters.isAdmin || getters.isOwner(id)),
   },
 
   mutations: {
     saveProfile(state, profile) {
-      state.profile = { ...state.profile, ...profile};
+      state.profile = {...state.profile, ...profile};
     },
     clearProfile(state) {
       state.profile = {"id": -1};

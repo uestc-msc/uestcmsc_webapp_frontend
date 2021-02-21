@@ -5,7 +5,6 @@ import userRouteConfig from "./user/router";
 import accountRouteConfig from "./account/router";
 import activityRouteConfig from "./activity/router";
 import galleryRouteConfig from "./gallery/router";
-import cloudRouteConfig from "./cloud/router";
 import notFound from '@/components/sites/404.vue'
 import { goBack } from '@/utils/router';
 
@@ -21,7 +20,6 @@ const routes = [
   ...accountRouteConfig,
   ...activityRouteConfig,
   ...galleryRouteConfig,
-  ...cloudRouteConfig,
   {
     path: '*',
     name: '404',
