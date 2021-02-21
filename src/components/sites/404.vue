@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import errorAlert from '../ui/base/error-alert.vue'
+import errorAlert from '../ui/base/component-error-alert.vue'
 export default {
   components: {
     errorAlert

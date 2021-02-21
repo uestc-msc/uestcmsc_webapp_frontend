@@ -1,39 +1,44 @@
 <template>
   <ErrorAlert v-if="error">
-    {{error}}
+    {{ error }}
   </ErrorAlert>
   <SimpleCard v-else>
     <v-simple-table>
-        <thead>
-        <tr>
-          <th
-            v-for="header in headers"
-            :key="header"
-            class="text-center"
-          >
-            {{header}}
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr
-          v-for="user in userData"
-          :key="user.id"
-          @click="gotoUserDetail(user.id)"
+      <thead>
+      <tr>
+        <th
+          v-for="header in headers"
+          :key="header"
           class="text-center"
         >
-          <td>
-            <v-avatar>
-              <v-img :src="user.avatar_url"/>
-            </v-avatar>
-          </td>
-          <td>{{ user.first_name }}</td>
-          <td>{{ user.experience }}</td>
-        </tr>
-        </tbody>
+          {{ header }}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        v-for="user in userData"
+        :key="user.id"
+        @click="gotoUserDetail(user)"
+        class="text-center"
+      >
+        <td>
+          <v-avatar>
+            <v-img :src="user.avatar_url"/>
+          </v-avatar>
+        </td>
+        <td>{{ user.first_name }}
+          <AdminIcon
+            :user="user"
+            size="14px"
+          />
+        </td>
+        <td>{{ user.experience }}</td>
+      </tr>
+      </tbody>
     </v-simple-table>
 
-    <v-pagination  v-model = "page" :length = "length"/>
+    <v-pagination v-model="page" :length="length"/>
   </SimpleCard>
 </template>
 
@@ -42,10 +47,11 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
 import axios from "@/utils/axios";
-import ErrorAlert from "@/components/ui/base/error-alert";
+import ErrorAlert from "@/components/ui/base/component-error-alert";
+import AdminIcon from "@/components/ui/base/admin-icon";
 
 export default {
-  components: {ErrorAlert, SimpleCard},
+  components: {AdminIcon, ErrorAlert, SimpleCard},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
     userData: null,
@@ -79,8 +85,13 @@ export default {
         })
     },
 
-    gotoUserDetail(userId) {
-      this.$router.push({name: 'UserDetail', params: {userId}})
+    gotoUserDetail(user) {
+      this.$router.push({
+        name: 'UserDetail', params: {
+          userProfile: user,
+          userId: user.id
+        }
+      })
     }
   },
 
@@ -92,8 +103,13 @@ export default {
 
   activated() {
     this.fetchData()
-    this.debounceFetchData = debounce(this.fetchData, debounceTime);
-    this.$store.commit('setSearchCallback', this.debounceFetchData);
+    this.debouncedFetchData = debounce(this.fetchData, debounceTime);
+    let that = this;
+    this.$store.commit('setSearchCallback', function () {
+      that.page = 1; // 搜索关键词变化后，记得将页数改为 1
+      that.$store.commit('setAppbarLoading', true); // 立即设置加载条
+      that.debouncedFetchData();
+    });
   },
 
   deactivated() {

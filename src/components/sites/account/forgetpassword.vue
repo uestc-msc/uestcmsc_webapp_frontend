@@ -7,32 +7,39 @@
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
       <v-container>
-        <v-col>
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            type="email"
-            label="邮箱"
-            prepend-icon="mdi-email"
-            required/>
-        </v-col>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              v-model="email"
+              :rules="emailRules"
+              :disabled="submitting"
+              type="email"
+              label="邮箱"
+              prepend-icon="mdi-email"
+              required/>
+          </v-col>
+        </v-row>
 
-        <v-col>
-          <v-btn
-            v-if="status !== 'success'"
-            :disabled="!formValid"
-            :loading="submitting"
-            :color="status==='error' ? 'error' : 'primary'"
-            block
-            type="submit"
-          >
-            发送邮件
-          </v-btn>
-        </v-col>
+        <v-row no-gutters>
+          <v-col>
+            <v-btn
+              v-if="status !== 'success'"
+              :disabled="!formValid"
+              :loading="submitting"
+              :color="status==='error' ? 'error' : 'primary'"
+              block
+              type="submit"
+            >
+              发送邮件
+            </v-btn>
+          </v-col>
+        </v-row>
 
-        <v-col v-if="status">
-          <v-alert elevation="4" :type="status">{{ msg }}</v-alert>
-        </v-col>
+        <FormErrorAlert
+          v-if="status"
+          :type="status"
+          :msg="msg"
+        />
       </v-container>
     </v-form>
   </SimpleCard>
@@ -41,14 +48,15 @@
 <script>
 
 import axios from '@/utils/axios';
-import {isEmail} from "@/utils/validate_input";
+import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
+import FormErrorAlert from "@/components/ui/base/form-error-alert";
 
 export default {
-  components: {SimpleCard},
+  components: {FormErrorAlert, SimpleCard},
   data: () => ({
     email: "",
-    emailRules: [v => isEmail(v) || '邮箱不合法'],
+    emailRules: inputRules.user.usernameRules,
 
     formValid: true,
     submitting: false,

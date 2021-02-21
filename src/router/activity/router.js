@@ -1,32 +1,32 @@
-import Home from '@/views/Home.vue'
+import notFound from '@/components/sites/404.vue'
 
 const routeConfig = [
   {
     path: '/activity',
     name: 'ActivityList',
-    component: Home
+    component: notFound
   },
   {
     path: '/activity/create',
     name: 'CreateActivity',
-    component: Home,
+    component: notFound,
   },
   {
     path: '/activity/:activityId',
     name: 'ActivityDetail',
-    component: Home,
+    component: notFound,
     props: true
   },
   {
     path: '/activity/:activityId/update',
     name: 'UpdateActivity',
-    component: Home,
+    component: notFound,
     props: true
   },
   {
     path: '/activity/checkin',
     name: 'ActivityCheckIn',
-    component: Home
+    component: notFound
   }
 ];
 

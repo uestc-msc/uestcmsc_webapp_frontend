@@ -6,7 +6,7 @@
       v-model="formValid"
     >
       <v-container>
-
+        <v-row no-gutters>
         <v-col>
           <v-text-field
             v-model="token"
@@ -34,27 +34,41 @@
             </v-icon>
           </v-text-field>
         </v-col>
+        </v-row>
 
+        <v-row no-gutters>
         <v-col>
           <v-text-field
             v-model="password"
             :rules="passwordRules"
-            type="password"
+            :disabled="submitting"
+            :type="show_password ? 'text' : 'password'"
+            :append-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="show_password = !show_password"
+            counter
             label="新密码 *"
             prepend-icon="mdi-lock"
             required/>
         </v-col>
+        </v-row>
 
+        <v-row no-gutters>
         <v-col>
           <v-text-field
-            v-model="passwordConfirm"
+            v-model="password_confirm"
             :rules="passwordConfirmRules"
-            type="password"
+            :disabled="submitting"
+            :type="show_password_confirm ? 'text' : 'password'"
+            :append-icon="show_password_confirm ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="show_password_confirm = !show_password_confirm"
+            counter
             label="重复密码 *"
             prepend-icon="mdi-lock-check"
             required/>
         </v-col>
+        </v-row>
 
+        <v-row no-gutters>
         <v-col>
           <v-btn
             :disabled="!formValid"
@@ -66,10 +80,12 @@
             重置密码
           </v-btn>
         </v-col>
+        </v-row>
 
-        <v-col v-if="error">
-          <v-alert elevation="4" type="error">{{ error }}</v-alert>
-        </v-col>
+        <FormErrorAlert
+          v-if="error"
+          :msg="error"
+        />
 
       </v-container>
     </v-form>
@@ -79,22 +95,24 @@
 <script>
 import md5 from "md5";
 import axios from "@/utils/axios";
+import SimpleCard from "@/components/ui/base/simple-card";
+import {inputRules} from "@/utils/validators";
+import FormErrorAlert from "@/components/ui/base/form-error-alert";
 
 export default {
+  components: {FormErrorAlert, SimpleCard},
   data() {
     let that = this;
     return {
       token: '',
       password: '',
-      passwordConfirm: '',
+      show_password: false,
+      password_confirm: '',
+      show_password_confirm: false,
 
-      tokenRules: [v => {
-        console.log(that.tokenValid)
-        return that.tokenValid || 'token 错误或已过期'
-      }
-      ],
-      passwordRules: [v => v.length >= 6 || '密码应不少于 6 位'],
-      passwordConfirmRules: [v => v === that.password || '两次输入密码应当相同'],
+      tokenRules: [v => that.tokenValid || 'token 错误或已过期'],
+      passwordRules: inputRules.user.passwordRules,
+      passwordConfirmRules: inputRules.user.passwordConfirmRules(that),
 
       checkingToken: true,
       tokenValid: true,

@@ -2,6 +2,7 @@
 <template>
     <v-footer
       padless
+      inset
     >
       <v-card
         text
@@ -64,6 +65,6 @@ export default {
       href: 'https://mp.weixin.qq.com/s/0Zf5wau55u2-x4L2ngpSQQ'
     }],
     window
-  }),
+  })
 }
 </script>
