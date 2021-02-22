@@ -1,11 +1,15 @@
 <template>
 <!-- 可以单独作为一个 component 使用 -->
   <v-container fluid>
-    <v-alert
-      elevation="4"
-      type="error">
-      <slot>哎呀，出错了</slot>
-    </v-alert>
+    <v-row justify="center">
+      <v-col xs="12" md="8">
+        <v-alert
+          elevation="4"
+          type="error">
+          <slot>哎呀，出错了</slot>
+        </v-alert>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
