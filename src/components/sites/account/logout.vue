@@ -8,7 +8,7 @@ import {goBack, goHome} from '@/utils/router';
 
 export default Vue.extend({
   activated() {
-    axios.post('/accounts/logout/').then(() => {
+    axios.post('/accounts/logout/').finally(() => {
       this.$store.commit('clearProfile');
       goBack();
     });

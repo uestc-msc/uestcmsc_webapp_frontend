@@ -172,8 +172,6 @@ export default {
   activated() {
     window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
-    console.log(this.data)
-
     this.userProfile = this.$route.params.userProfile;
     this.$store.commit('setAppbarLoading', true);
     this.userId = this.$route.params.userId;

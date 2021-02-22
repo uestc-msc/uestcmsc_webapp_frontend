@@ -4,5 +4,5 @@ export function hasGreaterPermissions(user1, user2) {
     else if (user.is_staff) return 1;
     else return 0;
   }
-  return permissionValue(user1) > permissionValue(user2);
+  return user1.is_superuser || permissionValue(user1) > permissionValue(user2);
 }
