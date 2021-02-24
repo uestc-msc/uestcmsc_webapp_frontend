@@ -10,7 +10,6 @@ const service = axios.create({
   withCredentials: true,        // 允许携带 cookie sessionid 做认证
   xsrfCookieName: 'csrftoken',  // 添加 CSRF token
   xsrfHeaderName: 'X-CSRFToken',
-
 });
 
 // request 拦截器
