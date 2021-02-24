@@ -122,9 +122,7 @@ export default Vue.extend({
       axios.post('/accounts/login/', data)
         .then((response) => {
           that.$store.commit('saveProfile', response.data);
-          console.log(document.cookie)
-          console.log(Cookies.get())
-          console.log(response.data.csrftoken)
+          Cookies.set('sessionid', response.data.sessionid, {expires: 14});
           Cookies.set('csrftoken', response.data.csrftoken, {expires: 360});
           console.log(document.cookie)
           let first_name = response.data.first_name;
