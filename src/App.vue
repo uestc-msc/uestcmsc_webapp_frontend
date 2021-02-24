@@ -41,7 +41,7 @@ export default Vue.extend({
     // 尝试使用上次的 sessionid 自动登录
     axios.get('/users/whoami/')
       .then((response) => {
-        that.$store.commit('saveProfile', response.data)
+        that.$store.commit('setProfile', response.data)
       })
       .catch(() => {})
   }

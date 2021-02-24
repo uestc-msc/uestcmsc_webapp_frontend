@@ -1,5 +1,8 @@
 <template>
-  <SimpleCard md="6">
+  <SimpleCard
+    md="6"
+    v-if="userProfile"
+  >
     <v-form
       @submit.prevent="submit"
       ref="form"
@@ -164,7 +167,7 @@ export default {
         return 'primary';
     },
     canChangePassword() {
-      return (this.$store.state.profile.id = this.userId) ||
+      return (this.$store.state.profile.id === this.userId) ||
         hasGreaterPermissions(this.$store.state.profile, this.userProfile);
     }
   },
@@ -216,7 +219,7 @@ export default {
           that.success = true;
           setTimeout(() => {
             that.success = false;
-          }, 2000);
+          }, 1500);
         })
         .catch(response => {
           let detail = response.data;

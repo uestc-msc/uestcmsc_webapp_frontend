@@ -154,7 +154,7 @@ export default {
       let that = this;
       axios.post('/accounts/resetpassword/', data)
         .then(() => {
-          this.$store.commit('postMsg', '重置成功！请重新登录~');
+          this.$store.commit('setMsg', '重置成功！请重新登录~');
           this.$store.commit('clearProfile');
           this.$router.push('/login/');
         })

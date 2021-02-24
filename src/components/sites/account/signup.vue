@@ -164,9 +164,9 @@ export default {
       axios.post('/accounts/signup/', data)
         .then((response) => {
           if (response.status === 200) // 是微信小程序的用户
-            that.$store.commit('postMsg', `欢迎回来，${response.data.first_name}~`)
+            that.$store.commit('setMsg', `欢迎回来，${response.data.first_name}~`)
           else // 是新注册的用户
-            that.$store.commit('postMsg', '注册成功~')
+            that.$store.commit('setMsg', '注册成功~')
           goBack();
         })
         .catch(response => {
