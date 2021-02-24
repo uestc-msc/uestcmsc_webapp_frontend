@@ -7,7 +7,7 @@ import { baseUrl, DEBUG } from "@/utils";
 const service = axios.create({
   baseURL: baseUrl,
   timeout: 5000,                // 请求的超时时间
-  withCredentials: true,        // 允许携带 cookie sessionid 做认证
+  withCredentials: true,
   xsrfCookieName: 'csrftoken',  // 添加 CSRF token
   xsrfHeaderName: 'X-CSRFToken',
 });
@@ -15,7 +15,6 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
-
     // config.headers = {
     //   'X-CSRFToken': Cookies.get('csrftoken', { domain: 'uestcmsc-webapp.lyh543.cn' }),
     // };

@@ -91,6 +91,7 @@ import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
 import Cookies from 'js-cookie';
+import {serverDomain} from "@/utils";
 
 export default Vue.extend({
   components: {FormErrorAlert, SimpleCard},
@@ -122,9 +123,8 @@ export default Vue.extend({
       axios.post('/accounts/login/', data)
         .then((response) => {
           that.$store.commit('saveProfile', response.data);
-          Cookies.set('sessionid', response.data.sessionid, {expires: 14});
-          Cookies.set('csrftoken', response.data.csrftoken, {expires: 360});
-          console.log(document.cookie)
+          Cookies.set('sessionid', response.data.sessionid, {expires: 14, domain: serverDomain});
+          Cookies.set('csrftoken', response.data.csrftoken, {expires: 360, domain: serverDomain});
           let first_name = response.data.first_name;
           that.$store.commit('postMsg', `欢迎回来，${first_name}~`)
           goBack();
