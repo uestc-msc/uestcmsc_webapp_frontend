@@ -123,8 +123,6 @@ export default Vue.extend({
       axios.post('/accounts/login/', data)
         .then((response) => {
           that.$store.commit('saveProfile', response.data);
-          Cookies.set('sessionid', response.data.sessionid, {expires: 14, domain: serverDomain});
-          Cookies.set('csrftoken', response.data.csrftoken, {expires: 360, domain: serverDomain});
           let first_name = response.data.first_name;
           that.$store.commit('postMsg', `欢迎回来，${first_name}~`)
           goBack();
