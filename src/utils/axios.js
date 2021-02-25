@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from 'js-cookie';
 
 import { baseUrl, DEBUG } from "@/utils";
 
@@ -15,10 +14,6 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
-    // config.headers = {
-    //   'X-CSRFToken': Cookies.get('csrftoken', { domain: 'uestcmsc-webapp.lyh543.cn' }),
-    // };
-    // console.log(document.cookie)
     return config
   },
   error => {

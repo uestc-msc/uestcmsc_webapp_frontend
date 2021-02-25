@@ -1,8 +1,6 @@
 const { verbose_name, version } = require('/package.json');
 const DEBUG = process.env.NODE_ENV === 'development';
-const baseUrl = DEBUG ? 'http://localhost:8000/api' : 'https://uestcmsc-webapp.lyh543.cn/api';
-// const baseUrl = 'https://uestcmsc-webapp.lyh543.cn/api';
-const serverDomain = DEBUG ? 'localhost' : 'uestcmsc-webapp.lyh543.cn'
+const baseUrl = DEBUG ? 'http://localhost:8000/api' : 'https://api.uestc-msc.com/api';
 const debounceTime = 500;
 
 export {
@@ -10,6 +8,5 @@ export {
   version as appVersion,
   DEBUG,
   baseUrl,
-  serverDomain,
   debounceTime
 }

@@ -76,9 +76,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'isAuthenticated'
-    ]),
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated
+    },
     keyword: {
       get() {
         return this.$store.state.searchKeyword;

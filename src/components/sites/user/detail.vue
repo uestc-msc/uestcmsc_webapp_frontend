@@ -34,7 +34,7 @@
 
     <v-list two-line>
 
-      <v-list-item>
+      <v-list-item v-if="email">
         <v-list-item-icon>
           <v-icon color="primary">mdi-email</v-icon>
         </v-list-item-icon>
@@ -136,8 +136,7 @@ export default {
       if (isEmail(this.userProfile.username))
         return this.userProfile.username;
       else
-        return '暂无记录';
-
+        return null;
     },
     last_login() {
       if (typeof (this.userProfile.last_login) == 'string' && this.userProfile.last_login.length)

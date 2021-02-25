@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {appName} from "@/utils";
+import {appName, DEBUG} from "@/utils";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  strict: DEBUG,
   state: {
     // 当前登录用户信息
     profile: {
@@ -47,18 +48,22 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    saveProfile(state, profile) {
-      state.profile = {...state.profile, ...profile};
+    setProfile(state, profile) {
+      Vue.set(state, 'profile', profile);
     },
     clearProfile(state) {
-      state.profile = {"id": -1};
+      // state.profile = {"id": -1};
+      Vue.set(state, 'profile', {id: -1});
     },
 
-    postMsg(state, msg) {
+    setMsg(state, msg) {
       state.snackbar = {
         msg,
         visible: true
       };
+    },
+    clearMsg(state) {
+      state.snackbar.visible = false;
     },
 
     setTitle(state, title) {

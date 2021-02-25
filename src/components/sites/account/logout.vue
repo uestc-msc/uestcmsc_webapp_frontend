@@ -8,8 +8,11 @@ import {goBack, goHome} from '@/utils/router';
 
 export default Vue.extend({
   activated() {
+    this.$store.commit('setAppbarLoading', true);
+    let that = this;
     axios.post('/accounts/logout/').finally(() => {
-      this.$store.commit('clearProfile');
+      that.$store.commit('clearProfile');
+      that.$store.commit('setAppbarLoading', false);
       goBack();
     });
   },

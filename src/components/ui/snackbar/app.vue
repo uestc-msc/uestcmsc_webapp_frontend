@@ -8,7 +8,7 @@
         color="pink"
         text
         v-bind="attrs"
-        @click.native="$store.state.snackbar.visible = false">
+        @click.native="$store.commit('clearMsg')">
         关闭
       </v-btn>
     </template>
