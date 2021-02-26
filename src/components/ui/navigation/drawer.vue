@@ -1,11 +1,10 @@
 <!-- drawer: 侧边栏的抽屉 -->
 <template>
   <v-navigation-drawer
-    expand-on-hover
-    permanent
     :width="250"
     fixed
     app
+    v-model="show"
   >
     <v-list-item class="px-2">
       <v-list-item-avatar>
@@ -77,14 +76,16 @@ import {appName, appVersion, baseUrl} from '@/utils'
 import {mapGetters} from 'vuex'
 
 export default Vue.extend({
+  props: ['toggleEvent'],
   data() {
     return {
       appName,
       appVersion,
+      show: null,   //在移动设备上关闭，在桌面环境下打开
       items: [
         {
           title: '活动',
-          icon: 'mdi-compass',
+          icon: 'mdi-view-dashboard',
           to: '/activity',
         },
         {
@@ -133,6 +134,12 @@ export default Vue.extend({
     hasPermission(item) {
       return (!item.requireLogin || this.isAuthenticated)
         && (!item.requireSuperuser || this.isSuperuser)
+    }
+  },
+
+  watch: {
+    toggleEvent() {
+      this.show = !this.show;
     }
   }
 });

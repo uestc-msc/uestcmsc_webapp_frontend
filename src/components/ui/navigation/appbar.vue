@@ -8,6 +8,8 @@
     color="primary"
   >
 
+    <v-app-bar-nav-icon @click="$emit('toggleDrawer')"/>
+
     <template v-if="searchCallback && showSearchBar">
       <!--  如果搜索框可以使用，并且用户希望展示，就展示给用户  -->
       <v-btn @click="showSearchBar=false" icon>
@@ -27,10 +29,9 @@
 
     <template v-else>
       <!--   否则把标题和搜索按钮展示给用户   -->
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-app-bar-title>{{ title }}</v-app-bar-title>
 
       <v-spacer/>
-
       <v-btn v-if="searchCallback" @click="showSearchBar=true" icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
