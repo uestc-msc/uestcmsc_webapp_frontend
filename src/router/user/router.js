@@ -1,6 +1,6 @@
 import UserList from '@/components/sites/user/list.vue'
 import UserDetail from '@/components/sites/user/detail.vue'
-import EditUserDetail from '@/components/sites/user/detail-edit.vue'
+import EditUserDetail from '@/components/sites/user/detail-edit/app.vue'
 
 const routeConfig = [
   {
