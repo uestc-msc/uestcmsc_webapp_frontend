@@ -20,7 +20,7 @@ import Vue from 'vue';
 import Footer from '@/components/ui/footer/app.vue';
 import AppNavigationBar from '@/components/ui/navigation/app.vue';
 import Snackbar from '@/components/ui/snackbar/app.vue';
-import axios from "@/utils/axios";
+import {getMyProfile} from "@/api/user";
 
 export default Vue.extend({
   name: 'App',
@@ -39,7 +39,7 @@ export default Vue.extend({
       this.$vuetify.theme.dark = true;
     }
     // 尝试使用上次的 sessionid 自动登录
-    axios.get('/users/whoami/')
+    getMyProfile()
       .then((response) => {
         that.$store.commit('setProfile', response.data)
       })

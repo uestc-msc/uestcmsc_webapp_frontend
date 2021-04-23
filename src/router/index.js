@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import userRouteConfig from "./user/router";
-import accountRouteConfig from "./account/router";
-import activityRouteConfig from "./activity/router";
-import galleryRouteConfig from "./gallery/router";
+import userRouteConfig from "./config/user";
+import accountRouteConfig from "./config/account";
+import activityRouteConfig from "./config/activity";
+import galleryRouteConfig from "./config/gallery";
 import notFound from '@/components/sites/404.vue'
-import { goBack } from '@/utils/router';
+import {goHome} from '@/utils/router';
 
 Vue.use(VueRouter)
 
@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
       for (let j = 0; j < routeRecord.meta.need.length; j++) {
         let permissionFunction = routeRecord.meta.need[j];      
         if (!permissionFunction()) {
-          goBack();
+          goHome();
           return;
         }
       }

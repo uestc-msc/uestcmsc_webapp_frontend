@@ -46,6 +46,7 @@
               prepend-icon="mdi-lock"
               @input="$refs.passwordConfirm.validate(true)"
               required/>
+              <!-- @input="$refs.passwordConfirm.validate(true)"  可以在输入密码时比对密码确认框  -->
           </v-col>
         </v-row>
 
@@ -114,11 +115,11 @@
 
 <script>
 import md5 from "md5";
-import axios from "@/utils/axios";
 import {goBack} from "@/utils/router";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import {signup} from "@/api/account";
 
 export default {
   components: {FormErrorAlert, SimpleCard},
@@ -161,7 +162,7 @@ export default {
         student_id: this.student_id
       }
       let that = this;
-      axios.post('/accounts/signup/', data)
+      signup(data)
         .then((response) => {
           if (response.status === 200) // 是微信小程序的用户
             that.$store.commit('setMsg', `欢迎回来，${response.data.first_name}~`)

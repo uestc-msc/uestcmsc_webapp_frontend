@@ -105,11 +105,11 @@
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import axios from "@/utils/axios";
 import ErrorAlert from "@/components/ui/base/component-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {isEmail} from "@/utils/validators";
 import { mapGetters } from 'vuex'
+import {getUserDetail} from "@/api/user";
 
 export default {
   components: {
@@ -168,7 +168,7 @@ export default {
     this.$store.commit('setAppbarLoading', true);
     this.userId = this.$route.params.userId;
     let that = this;
-    axios.get(`/users/${this.userId}/`)
+    getUserDetail(this.userId)
       .then(response => {
         that.userProfile = response.data;
       })

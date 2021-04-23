@@ -47,10 +47,10 @@
 
 <script>
 
-import axios from '@/utils/axios';
 import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import {forgetPassword} from "@/api/account";
 
 export default {
   components: {FormErrorAlert, SimpleCard},
@@ -78,7 +78,7 @@ export default {
       let data = {
         email: this.email
       };
-      axios.post('/accounts/forgetpassword/', data)
+      forgetPassword(data)
         .then((response) => {
           that.msg = response.data;
           if (that.msg.detail) that.msg = that.msg.detail

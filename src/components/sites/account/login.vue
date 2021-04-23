@@ -85,13 +85,12 @@ import Vue from 'vue'
 
 import {goBack} from '@/utils/router';
 import router from "@/router/index";
-import axios from '@/utils/axios';
 import md5 from "md5";
-import {inputRules, isEmail} from "@/utils/validators";
+import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
 import Cookies from 'js-cookie';
-import {serverDomain} from "@/utils";
+import {login} from "@/api/account";
 
 export default Vue.extend({
   components: {FormErrorAlert, SimpleCard},
@@ -120,7 +119,7 @@ export default Vue.extend({
         username: this.username,
         password: md5(this.password)
       };
-      axios.post('/accounts/login/', data)
+      login(data)
         .then((response) => {
           that.$store.commit('setProfile', response.data);
           Cookies.set('csrftoken', response.data.csrftoken);

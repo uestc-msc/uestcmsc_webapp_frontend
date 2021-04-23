@@ -1,6 +1,6 @@
 <template>
   <v-snackbar
-    v-model="$store.state.snackbar.visible"
+    :value="$store.state.snackbar.visible"
   >
     {{ $store.state.snackbar.msg }}
     <template v-slot:action="{ attrs }">

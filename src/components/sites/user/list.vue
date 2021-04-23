@@ -46,9 +46,9 @@
 import SimpleCard from "@/components/ui/base/simple-card";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import axios from "@/utils/axios";
 import ErrorAlert from "@/components/ui/base/component-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
+import {getUserList} from "@/api/user";
 
 export default {
   components: {AdminIcon, ErrorAlert, SimpleCard},
@@ -72,7 +72,7 @@ export default {
       this.$store.commit('setAppbarLoading', true);
       let keyword = this.$store.state.searchKeyword;
       let that = this;
-      axios.get(`/users/?search=${keyword}&page=${this.page}&page_size=${this.pageSize}`)
+      getUserList(keyword, this.page, this.pageSize)
         .then(response => {
           that.count = response.data.count;
           that.userData = response.data.results;
