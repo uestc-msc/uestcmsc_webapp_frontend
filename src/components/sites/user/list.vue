@@ -1,49 +1,58 @@
 <template>
-  <ErrorAlert v-if="error">
-    {{ error }}
-  </ErrorAlert>
-  <SimpleCard v-else>
-    <v-simple-table>
-      <thead>
-      <tr>
-        <th
-          v-for="header in headers"
-          :key="header"
+  <div>
+    <ErrorAlert v-if="error">
+      {{ error }}
+    </ErrorAlert>
+    <SimpleCard v-else>
+      <v-simple-table>
+        <thead>
+        <tr>
+          <th
+            v-for="header in headers"
+            :key="header"
+            class="text-center"
+          >
+            {{ header }}
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr
+          v-for="user in userData"
+          :key="user.id"
+          @click="gotoUserDetail(user)"
           class="text-center"
         >
-          {{ header }}
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr
-        v-for="user in userData"
-        :key="user.id"
-        @click="gotoUserDetail(user)"
-        class="text-center"
-      >
-        <td>
-          <v-avatar>
-            <v-img :src="user.avatar_url"/>
-          </v-avatar>
-        </td>
-        <td>{{ user.first_name }}
-          <AdminIcon
-            :user="user"
-            size="14px"
-          />
-        </td>
-        <td>{{ user.experience }}</td>
-      </tr>
-      </tbody>
-    </v-simple-table>
+          <td>
+            <v-avatar>
+              <v-img :src="user.avatar_url"/>
+            </v-avatar>
+          </td>
+          <td>{{ user.first_name }}
+            <AdminIcon
+              :user="user"
+              size="14px"
+            />
+          </td>
+          <td>{{ user.experience }}</td>
+        </tr>
+        </tbody>
+      </v-simple-table>
 
-    <v-pagination v-model="page" :length="length"/>
-  </SimpleCard>
+      <v-pagination v-model="page" :length="length"/>
+    </SimpleCard>
+    <FloatingActionButton
+      icon="mdi-plus"
+      color="primary"
+      tooltip="编辑"
+      @click="gotoUserDetailEdit"
+    />
+  </div>
 </template>
 
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
+import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
 import ErrorAlert from "@/components/ui/base/component-error-alert";
@@ -51,7 +60,7 @@ import AdminIcon from "@/components/ui/base/admin-icon";
 import {getUserList} from "@/api/user";
 
 export default {
-  components: {AdminIcon, ErrorAlert, SimpleCard},
+  components: {AdminIcon, ErrorAlert, SimpleCard, FloatingActionButton},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
     userData: null,

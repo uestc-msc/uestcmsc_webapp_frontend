@@ -1,6 +1,6 @@
 import UserList from '@/components/sites/user/list.vue'
 import UserDetail from '@/components/sites/user/detail.vue'
-import EditUserDetail from '@/components/sites/user/detail-edit.vue'
+import UserDetailEdit from '@/components/sites/user/detail-edit.vue'
 
 const routeConfig = [
   {
@@ -16,8 +16,8 @@ const routeConfig = [
   },
   {
     path: '/user/:userId/edit',
-    name: 'EditUserDetail',
-    component: EditUserDetail,
+    name: 'UserDetailEdit',
+    component: UserDetailEdit,
     props: true,  // props 表示 userId 参数可以传到组件
   },
 ];

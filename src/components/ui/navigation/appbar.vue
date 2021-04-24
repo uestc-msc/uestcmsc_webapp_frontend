@@ -7,17 +7,20 @@
     short
     color="primary"
   >
-
     <v-app-bar-nav-icon @click="$emit('toggleDrawer')"/>
 
     <template v-if="searchCallback && showSearchBar">
       <!--  如果搜索框可以使用，并且用户希望展示，就展示给用户  -->
+      <!--  TODO: 收起搜索框，过渡动画时标题会出现在偏左的位置，过渡结束后靠右    -->
+      <v-fade-transition hide-on-leave>
       <v-btn @click="showSearchBar=false" icon>
         <v-icon>
           mdi-arrow-left
         </v-icon>
       </v-btn>
+      </v-fade-transition>
 
+      <v-fade-transition hide-on-leave>
       <v-text-field
         hide-details
         prepend-icon="mdi-magnify"
@@ -25,16 +28,24 @@
         @input="searchCallback"
         v-model="keyword"
       />
+      </v-fade-transition>
     </template>
 
     <template v-else>
       <!--   否则把标题和搜索按钮展示给用户   -->
+      <v-fade-transition hide-on-leave>
       <v-app-bar-title>{{ title }}</v-app-bar-title>
+      </v-fade-transition>
 
+      <v-fade-transition hide-on-leave>
       <v-spacer/>
+      </v-fade-transition>
+
+      <v-fade-transition hide-on-leave>
       <v-btn v-if="searchCallback" @click="showSearchBar=true" icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
+      </v-fade-transition>
     </template>
 
     <v-toolbar-items>
