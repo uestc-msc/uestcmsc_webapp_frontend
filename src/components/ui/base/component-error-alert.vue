@@ -1,5 +1,5 @@
-<template>
 <!-- 可以单独作为一个 component 使用 -->
+<template>
   <v-container fluid>
     <v-row justify="center">
       <v-col xs="12" md="8">

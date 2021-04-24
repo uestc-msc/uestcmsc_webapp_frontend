@@ -1,5 +1,6 @@
-<!-- 外层的 container、row、col 是为了限制 card 的布局 -->
+<!-- 对于一个页面，二话不说先摆个 card -->
 <template>
+  <!-- 外层的 container、row、col 是为了限制 card 的布局 -->
   <v-container>
     <v-row class="justify-center">
       <v-col :xs="xs" :md="md">

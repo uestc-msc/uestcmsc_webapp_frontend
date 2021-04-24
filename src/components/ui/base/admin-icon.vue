@@ -1,5 +1,7 @@
+<!-- admin 图标 -->
 <template>
   <v-icon
+    class="admin-icon"
     v-if="isAdmin"
     :size="size"
     :color="color"
@@ -8,9 +10,28 @@
   </v-icon>
 </template>
 
+<style>
+.admin-icon {
+  margin-left: 4px;
+}
+</style>
+
 <script>
 export default {
-  props: ['user', 'color', 'size'],
+  props: {
+    user: {
+      type: Object,
+      required: true
+    },
+    color: {
+      type: String,
+      default: ''
+    },
+    size: {
+      type: String,
+      default: '14px'
+    }
+  },
 
   computed: {
     isAdmin() {

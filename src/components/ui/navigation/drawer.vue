@@ -84,7 +84,7 @@ export default Vue.extend({
       show: null,   //在移动设备上关闭，在桌面环境下打开
       items: [
         {
-          title: '活动',
+          title: '沙龙',
           icon: 'mdi-view-dashboard',
           to: '/activity',
         },

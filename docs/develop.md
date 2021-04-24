@@ -24,41 +24,41 @@ npm run lint
 
 ## 功能、界面描述
 
-### 近期活动页面
+### 近期沙龙页面
 
 路径：`/activities/activities`
 
-展示前几次活动、“查看更多”。以及“创建活动”按钮、“签到”按钮。
+展示前几次沙龙、“查看更多”。以及“创建沙龙”按钮、“签到”按钮。
 
-点击某次活动进入其活动详情页面。
+点击某次沙龙进入其沙龙详情页面。
 
-### 所有活动页面
+### 所有沙龙页面
 
 路径：`/activities/activities_all/activities_all`
 
-查看所有活动。
+查看所有沙龙。
 
-由于微信小程序查询数据库只能返回 20 个记录，因此需要分页查询，一页 20 个活动。函数大致逻辑如下：
+由于微信小程序查询数据库只能返回 20 个记录，因此需要分页查询，一页 20 个沙龙。函数大致逻辑如下：
 
-* `loadOnePage`：读取目前页码 `page_index`，然后向数据库查询 `[page_index*20, (page_index+1)*20)` 范围的活动，并追加到 `activities_arr` 数组，最后 `page_index++`。
+* `loadOnePage`：读取目前页码 `page_index`，然后向数据库查询 `[page_index*20, (page_index+1)*20)` 范围的沙龙，并追加到 `activities_arr` 数组，最后 `page_index++`。
 * `onLoad` 进入页面：设置 `page_index` 为 0、`activities_arr` 为空，然后 `loadOnePage`。
 * `onPullDownRefresh` 下拉刷新：调用 `onLoad`。
 * `onReachBottom` 上拉触底加载更多：调用 `loadOnePage`。
 
-点击一次活动进入其活动详情页面。
+点击一次沙龙进入其沙龙详情页面。
 
-### 活动详情页面
+### 沙龙详情页面
 
 路径：`/activities/activities_detail/activities_detail`
 
-点进卡片显示该次活动的：
+点进卡片显示该次沙龙的：
 
-* 签到按钮（扫码签到，二维码内容为活动的 uuid）
+* 签到按钮（扫码签到，二维码内容为沙龙的 uuid）
 * 查看名称、主讲人、时间、地点、已签到人数（但不能看到名单）
-* 该次活动的公共相册（及上传方法、删除自己上传的图片）
+* 该次沙龙的公共相册（及上传方法、删除自己上传的图片）
 * 管理员界面
 
-### 活动详情（管理员）界面
+### 沙龙详情（管理员）界面
 
 详情页路径：`/activities/activities_detail_admin/activities_detail_admin`
 
@@ -68,7 +68,7 @@ npm run lint
 * 查看、导出签到名单
 * 从签到名单里进行抽奖
 
-#### 新增活动界面
+#### 新增沙龙界面
 
 路径：`/activities/create_activity/create_activity`
 
@@ -78,13 +78,13 @@ npm run lint
 
 路径：`/gallery/gallery`
 
-按活动分类展示相册。由于可能有超过 20 个活动，这里的处理逻辑与[所有活动页面](#所有活动页面)类似。
+按沙龙分类展示相册。由于可能有超过 20 个沙龙，这里的处理逻辑与[所有沙龙页面](#所有沙龙页面)类似。
 
 #### 相册详情界面
 
 路径：`/gallery/gallery`
 
-展示单次活动的图片。由于一个活动可能有超过 20 个图片，这里的处理逻辑与[所有活动页面](#所有活动页面)类似。
+展示单次沙龙的图片。由于一个沙龙可能有超过 20 个图片，这里的处理逻辑与[所有沙龙页面](#所有沙龙页面)类似。
 
 ### 个人管理界面
 
@@ -111,8 +111,8 @@ npm run lint
 
 场景|`modify` 参数|额外参数
 -|-|-
-修改活动的签到名单|`check_in_list`|`id`：活动 id
-修改活动的主讲人|`presener_list`|`id`：活动 id
+修改沙龙的签到名单|`check_in_list`|`id`：沙龙 id
+修改沙龙的主讲人|`presener_list`|`id`：沙龙 id
 修改管理员|`grant_admin`|无
 
 ### 底栏
@@ -151,28 +151,28 @@ npm run lint
 `is_admin`|bool|是否为管理员
 `can_grant_admin`|bool|能授予别人管理员
 `register_date`|string|注册时间
-`exp`|int|参加活动/举办活动能获得经验值
+`exp`|int|参加沙龙/举办沙龙能获得经验值
 
-### 活动信息 activity_info
+### 沙龙信息 activity_info
 
 每一条记录的字段如下：
 
 字段|值|含义
 -|-|-
-`_id`|id|本条记录记录的 id，也是本次活动的 id
+`_id`|id|本条记录记录的 id，也是本次沙龙的 id
 `_openid`|id|创建者的 openid
 `title`|string|标题
 `presenter_list`|Array|主讲人的名单（数组，存储每个人的 openid）
-`date`|string|活动日期
-`time`|string|活动时间
-`location`|string|活动地点
+`date`|string|沙龙日期
+`time`|string|沙龙时间
+`location`|string|沙龙地点
 `check_in_list`|Array|签到名单（数组，存储每个人的 openid）
 `check_in_closed`|bool|管理员是否关闭签到（为空或 `false` 时可以签到；默认为空；该字段不影响管理员手动签到）
-`is_hidden`|bool|活动是否被删除（实际上是隐藏）
+`is_hidden`|bool|沙龙是否被删除（实际上是隐藏）
 
 ### 相册信息 album_info
 
-由于照片分类依据是活动，因此 album_id 等价于 activity_id。
+由于照片分类依据是沙龙，因此 album_id 等价于 activity_id。
 
 每一条记录的字段如下：
 
@@ -180,7 +180,7 @@ npm run lint
 -|-|-
 `_id`|id|本条记录的 id
 `_openid`|id|创建者的 openid
-`album_id`|id|相册 id，即活动 id
+`album_id`|id|相册 id，即沙龙 id
 `url`|string|云存储链接
 
 ### 操作日志 log
@@ -214,14 +214,14 @@ npm run lint
 该集合中仅有一个记录，其字段如下：
 
 字段|值|含义
-`can_upload`|bool|用户是否可以创建活动、上传图片
+`can_upload`|bool|用户是否可以创建沙龙、上传图片
 `can_register`|bool|是否开放注册（在 `init_user` 页面）
 
 ## 云存储
 
 ### 照片存储格式
 
-1.1.0 版本后，照片存储格式为 `/album/${活动 id}/${上传时间戳}_${用户 id}.${文件后缀}`。
+1.1.0 版本后，照片存储格式为 `/album/${沙龙 id}/${上传时间戳}_${用户 id}.${文件后缀}`。
 
 ## Advanced
 

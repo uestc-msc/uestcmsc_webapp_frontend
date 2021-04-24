@@ -1,5 +1,6 @@
+<!--  用于提示后端错误  -->
+<!-- 需要放在 <v-container> 里 -->
 <template>
-<!-- 需要放在 v-container 里 -->
   <v-row no-gutters>
     <v-col>
       <v-alert elevation="4" :type="type">

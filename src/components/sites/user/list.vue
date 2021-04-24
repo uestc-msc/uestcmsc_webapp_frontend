@@ -1,53 +1,48 @@
 <template>
-  <div>
-    <ErrorAlert v-if="error">
-      {{ error }}
-    </ErrorAlert>
-    <SimpleCard v-else>
-      <v-simple-table>
-        <thead>
-        <tr>
-          <th
-            v-for="header in headers"
-            :key="header"
-            class="text-center"
-          >
-            {{ header }}
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr
-          v-for="user in userData"
-          :key="user.id"
-          @click="gotoUserDetail(user)"
+  <ErrorAlert v-if="error">
+    {{ error }}
+  </ErrorAlert>
+  <SimpleCard v-else>
+    <v-simple-table>
+      <thead>
+      <tr>
+        <th
+          v-for="header in headers"
+          :key="header"
           class="text-center"
         >
-          <td>
-            <v-avatar>
-              <v-img :src="user.avatar_url"/>
-            </v-avatar>
-          </td>
-          <td>{{ user.first_name }}
-            <AdminIcon
-              :user="user"
-              size="14px"
-            />
-          </td>
-          <td>{{ user.experience }}</td>
-        </tr>
-        </tbody>
-      </v-simple-table>
+          {{ header }}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        v-for="user in userData"
+        :key="user.id"
+        @click="gotoUserDetail(user)"
+        class="text-center"
+      >
+        <td>
+          <v-avatar>
+            <v-img :src="user.avatar_url"/>
+          </v-avatar>
+        </td>
+        <td>
+          <span>
+            {{ user.first_name }}
+          </span>
+          <AdminIcon
+            :user="user"
+            size="14px"
+          />
+        </td>
+        <td>{{ user.experience }}</td>
+      </tr>
+      </tbody>
+    </v-simple-table>
 
-      <v-pagination v-model="page" :length="length"/>
-    </SimpleCard>
-    <FloatingActionButton
-      icon="mdi-plus"
-      color="primary"
-      tooltip="编辑"
-      @click="gotoUserDetailEdit"
-    />
-  </div>
+    <v-pagination v-model="page" :length="length"/>
+  </SimpleCard>
 </template>
 
 <script>
