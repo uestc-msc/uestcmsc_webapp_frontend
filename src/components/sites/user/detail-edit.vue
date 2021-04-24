@@ -124,7 +124,6 @@
       <template
         v-if="showChangePasswordForm"
       >
-        <v-divider></v-divider>
         <v-scroll-y-reverse-transition>
           <v-form
             @submit.prevent="submitPassword"
@@ -301,8 +300,6 @@ export default {
   },
 
   activated() {
-    console.log(1)
-    // console.log(this.);
     // window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
     this.userId = Number(this.$route.params.userId);
@@ -339,7 +336,9 @@ export default {
         return;
 
       this.submitting = true;
+      this.success = false;
       this.error = null;
+
       let {first_name, last_name, student_id, about, subscribe_email} = this.userProfile;
       let data = {first_name, last_name, student_id, about, subscribe_email};
       let that = this;
@@ -368,7 +367,9 @@ export default {
         return;
 
       this.passwordSubmitting = true;
+      this.passwordSuccess = false;
       this.passwordError = null;
+
       let data = {
         old_password: md5(this.oldPassword),
         new_password: md5(this.password),
@@ -376,7 +377,6 @@ export default {
       let that = this;
       changePassword(this.userProfile.id, data)
         .then(() => {
-          console.log(that.isSelf)
           if (that.isSelf) {
             that.$store.commit('setMsg', '修改成功！请重新登录~');
             that.$store.commit('clearProfile');
@@ -391,6 +391,8 @@ export default {
         })
         .catch(response => {
           that.passwordError = response.data;
+          if (response.status === 403)
+            that.passwordError = "旧密码错误。";
         })
         .finally(() => {
           that.passwordSubmitting = false;

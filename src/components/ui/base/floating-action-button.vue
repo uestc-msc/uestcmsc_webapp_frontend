@@ -1,12 +1,13 @@
 <!-- 鼠标放置按钮之上可以看到提示的 floating-action-button -->
+<!-- 照着 vuetify 官网的 FAB 改的 -->
 <template>
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         fab
-        large
+        x-large
         buttom
-        absolute
+        fixed
         right
         v-bind="{...attrs, ...$attrs}"
         v-on="on"

@@ -1,4 +1,5 @@
 <template>
+  <div>
   <ErrorAlert v-if="error">
     {{ error }}
   </ErrorAlert>
@@ -91,15 +92,17 @@
       </v-list-item>
     </v-list>
 
-    <FloatingActionButton
-      v-if="isOwnerOrAdmin"
-      icon="mdi-pencil"
-      color="primary"
-      tooltip="编辑"
-      @click="gotoEditUserDetail"
-    />
   </SimpleCard>
+  <FloatingActionButton
+    v-if="isOwnerOrAdmin"
+    icon="mdi-pencil"
+    color="primary"
+    tooltip="编辑"
+    @click="gotoEditUserDetail"
+  />
+  </div>
 </template>
+
 
 <script>
 import moment from '@/utils/moment'
