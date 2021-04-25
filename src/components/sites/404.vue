@@ -1,12 +1,12 @@
 <template>
-  <error-alert>404 Not Found</error-alert>
+  <PageErrorAlert>404 Not Found</PageErrorAlert>
 </template>
 
 <script>
-import errorAlert from '../ui/base/component-error-alert.vue'
+import PageErrorAlert from '../ui/base/page-error-alert.vue'
 export default {
   components: {
-    errorAlert
+    PageErrorAlert
   }
 };
 </script>

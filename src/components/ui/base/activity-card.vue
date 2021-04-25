@@ -1,32 +1,28 @@
 <!--  activity card  -->
 <template>
-  <v-card class="mx-auto my-12">
+  <v-card
+    @click="gotoActivityDetail"
+  >
     <v-img
       height="250"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+      :src="topPhotoUrl"
     >
-      <v-card-title class="activity-title">你好，阮薇薇！</v-card-title>
+      <v-card-title class="activity-title">{{activity.title}}</v-card-title>
     </v-img>
 
     <v-card-text>
       <div class="subtitle-1">
-        2021 年 5 月 1 日 20:00
+        {{formattedTime}}
       </div>
       <div class="subtitle-1">
-        品 A403
+        {{activity.location}}
       </div>
     </v-card-text>
 
     <v-divider></v-divider>
 
     <v-card-text>
-      <v-chip-group column>
-        <PeopleChip
-          v-for="user in users"
-          :key="user.id"
-          :user="user"
-        />
-      </v-chip-group>
+      <PeopleChipGroup :users="activity.presenter"/>
     </v-card-text>
 
   </v-card>
@@ -44,27 +40,44 @@
 </style>
 
 <script>
-import PeopleChip from "@/components/ui/base/people-chip";
 import {getUserDetail} from "@/api/user";
+import PeopleChipGroup from "@/components/ui/base/people-chip-group";
 
 export default {
-  components: {PeopleChip},
-  data() {
-    return {
-      users: []
+  components: {PeopleChipGroup},
+  props: {
+    activity: {
+      type: Object,
+      required: true
     }
   },
 
-  created() {
-    let that = this;
-    window.card = that;
-    [9, 14, 15, 16, 17, 119].forEach(i => {
-      getUserDetail(i).then(response => {
-        that.users.push(response.data);
-      })
-    })
+  data() {
+    return {
+      topPhotoUrl: null,
+    };
+  },
+  computed: {
+    formattedTime() {
+      return this.activity.time;
+    }
   },
 
-  methods: {}
+  methods: {
+    gotoActivityDetail() {
+      this.$router.push({
+        name: 'ActivityDetail',
+        params: {
+          activityDetail: activity,
+          activityId: activity.id
+        }
+      })
+    }
+  },
+  activated() {
+    const randomPhotoSize = 19;
+    const randomPhotoIndex = Math.floor(Math.random() * 19) + 1;
+    this.topPhotoUrl = `/img/random/material-${randomPhotoIndex}.png`;
+  }
 }
 </script>

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <ErrorAlert v-if="error">
+    <PageErrorAlert v-if="error">
       {{ error }}
-    </ErrorAlert>
+    </PageErrorAlert>
     <SimpleCard
-      md="6"
       v-else-if="userProfile"
+      md="6"
     >
 
       <v-container>
@@ -108,7 +108,7 @@
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
+import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
@@ -117,7 +117,7 @@ import {getUserDetail} from "@/api/user";
 export default {
   components: {
     AdminIcon,
-    ErrorAlert,
+    PageErrorAlert,
     FloatingActionButton,
     SimpleCard
   },

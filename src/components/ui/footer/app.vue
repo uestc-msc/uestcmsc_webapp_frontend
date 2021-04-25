@@ -3,6 +3,7 @@
     <v-footer
       padless
       inset
+      app
     >
       <v-card
         text

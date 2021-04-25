@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <app-navigation-bar/>   <!-- 整合侧边栏的抽屉 Navigation Drawer 和顶栏 App Bar-->
+      <AppNavigationBar/>   <!-- 整合侧边栏的抽屉 Navigation Drawer 和顶栏 App Bar-->
       <div class="maincontent">
         <v-fade-transition :duration="100"  mode="out-in">
           <keep-alive>

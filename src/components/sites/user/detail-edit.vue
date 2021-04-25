@@ -217,7 +217,7 @@
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
+import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
 import {inputRules} from "@/utils/validators";
@@ -230,7 +230,7 @@ export default {
   components: {
     FormErrorAlert,
     AdminIcon,
-    ErrorAlert,
+    PageErrorAlert,
     FloatingActionButton,
     SimpleCard
   },

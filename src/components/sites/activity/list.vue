@@ -1,16 +1,22 @@
 <template>
   <div>
-    <ErrorAlert v-if="error">
+    <PageErrorAlert v-if="error">
       {{ error }}
-    </ErrorAlert>
+    </PageErrorAlert>
 
-    <v-container>
+    <v-container v-else-if="activityData.length">
       <v-row dense justify="center">
         <v-col :xs="12" :md="10">
-          <ActivityCard />
+          <ActivityCard
+            v-for="activity in activityData"
+            :activity="activity"
+            :key="activity.id"
+          />
         </v-col>
       </v-row>
     </v-container>
+
+    <BottomLine v-else />
 
     <FloatingActionButton
       icon="mdi-plus"
@@ -27,17 +33,18 @@ import ActivityCard from '@/components/ui/base/activity-card';
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
+import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {getUserList} from "@/api/user";
+import BottomLine from "@/components/ui/base/bottom-line";
 
 export default {
-  components: {AdminIcon, ErrorAlert, FloatingActionButton, ActivityCard},
+  components: {BottomLine, AdminIcon, PageErrorAlert, FloatingActionButton, ActivityCard},
   data: () => ({
-    userData: null,
+    activityData: [],
     page: 1,
     pageSize: 12,
-    count: null,
+    count: 0,
     error: false
   }),
 
@@ -55,7 +62,7 @@ export default {
       getUserList(keyword, this.page, this.pageSize)
         .then(response => {
           that.count = response.data.count;
-          that.userData = response.data.results;
+          that.activityData = response.data.results;
         })
         .catch(response => {
           that.error = response.data;
@@ -87,16 +94,16 @@ export default {
     }
   },
 
-  activated() {
-    this.fetchData()
-    this.debouncedFetchData = debounce(this.fetchData, debounceTime);
-    let that = this;
-    this.$store.commit('setSearchCallback', function () {
-      that.page = 1; // 搜索关键词变化后，记得将页数改为 1
-      that.$store.commit('setAppbarLoading', true); // 立即设置加载条
-      that.debouncedFetchData();
-    });
-  },
+  // activated() {
+  //   this.fetchData()
+  //   this.debouncedFetchData = debounce(this.fetchData, debounceTime);
+  //   let that = this;
+  //   this.$store.commit('setSearchCallback', function () {
+  //     that.page = 1; // 搜索关键词变化后，记得将页数改为 1
+  //     that.$store.commit('setAppbarLoading', true); // 立即设置加载条
+  //     that.debouncedFetchData();
+  //   });
+  // },
 
   deactivated() {
     this.$store.commit('clearSearchCallback')

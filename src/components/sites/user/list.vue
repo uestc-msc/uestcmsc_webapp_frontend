@@ -1,8 +1,9 @@
 <template>
-  <ErrorAlert v-if="error">
+  <PageErrorAlert v-if="error">
     {{ error }}
-  </ErrorAlert>
-  <SimpleCard v-else>
+  </PageErrorAlert>
+
+  <SimpleCard v-else-if="userData">
     <v-simple-table>
       <thead>
       <tr>
@@ -43,6 +44,8 @@
 
     <v-pagination v-model="page" :length="length"/>
   </SimpleCard>
+
+  <BottomLine v-else />
 </template>
 
 <script>
@@ -50,18 +53,19 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
+import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {getUserList} from "@/api/user";
+import BottomLine from "@/components/ui/base/bottom-line";
 
 export default {
-  components: {AdminIcon, ErrorAlert, SimpleCard, FloatingActionButton},
+  components: {BottomLine, AdminIcon, PageErrorAlert, SimpleCard, FloatingActionButton},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
-    userData: null,
+    userData: [],
     page: 1,
     pageSize: 12,
-    count: null,
+    count: 0,
     error: false
   }),
 

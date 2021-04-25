@@ -1,5 +1,5 @@
 <!-- 表示用户的 chip，包含头像、姓名和链接  -->
-<!-- 推荐被包含在 <v-chip-group> 中  -->
+<!-- 推荐被包含在 <v-chip-group> 中，或者使用封装的 PeopleChipGroup  -->
 <template>
   <v-chip
     link
@@ -23,7 +23,12 @@
 import AdminIcon from "@/components/ui/base/admin-icon";
 export default {
   components: {AdminIcon},
-  props: ['user'],
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
 
   methods: {
     gotoUserDetail() {
