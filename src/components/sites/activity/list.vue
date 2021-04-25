@@ -4,6 +4,7 @@
       {{ error }}
     </PageErrorAlert>
 
+    <!--  用卡片的形式展示活动，需要考虑活动数为 0 的情况  -->
     <v-container v-else-if="activityData.length">
       <v-row dense justify="center">
         <v-col :xs="12" :md="10">
@@ -37,9 +38,10 @@ import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {getUserList} from "@/api/user";
 import BottomLine from "@/components/ui/base/bottom-line";
+import {getActivityList} from "@/api/activity";
 
 export default {
-  components: {BottomLine, AdminIcon, PageErrorAlert, FloatingActionButton, ActivityCard},
+  components: {BottomLine, PageErrorAlert, FloatingActionButton, ActivityCard},
   data: () => ({
     activityData: [],
     page: 1,
@@ -59,7 +61,7 @@ export default {
       this.$store.commit('setAppbarLoading', true);
       let keyword = this.$store.state.searchKeyword;
       let that = this;
-      getUserList(keyword, this.page, this.pageSize)
+      getActivityList(keyword, this.page, this.pageSize)
         .then(response => {
           that.count = response.data.count;
           that.activityData = response.data.results;
@@ -70,15 +72,6 @@ export default {
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)
         })
-    },
-
-    gotoUserDetail(user) {
-      this.$router.push({
-        name: 'UserDetail', params: {
-          userProfile: user,
-          userId: user.id
-        }
-      })
     },
 
     gotoCreateActivity(user) {
@@ -94,16 +87,16 @@ export default {
     }
   },
 
-  // activated() {
-  //   this.fetchData()
-  //   this.debouncedFetchData = debounce(this.fetchData, debounceTime);
-  //   let that = this;
-  //   this.$store.commit('setSearchCallback', function () {
-  //     that.page = 1; // 搜索关键词变化后，记得将页数改为 1
-  //     that.$store.commit('setAppbarLoading', true); // 立即设置加载条
-  //     that.debouncedFetchData();
-  //   });
-  // },
+  activated() {
+    this.fetchData();
+    this.debouncedFetchData = debounce(this.fetchData, debounceTime);
+    let that = this;
+    this.$store.commit('setSearchCallback', function () {
+      that.page = 1; // 搜索关键词变化后，记得将页数改为 1
+      that.$store.commit('setAppbarLoading', true); // 立即设置加载条
+      that.debouncedFetchData();
+    });
+  },
 
   deactivated() {
     this.$store.commit('clearSearchCallback')

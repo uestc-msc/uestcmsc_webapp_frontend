@@ -3,7 +3,8 @@
     {{ error }}
   </PageErrorAlert>
 
-  <SimpleCard v-else-if="userData">
+  <!--  用表格的形式展示用户，不用考虑用户数为 0 的情况  -->
+  <SimpleCard v-else>
     <v-simple-table>
       <thead>
       <tr>
@@ -44,8 +45,6 @@
 
     <v-pagination v-model="page" :length="length"/>
   </SimpleCard>
-
-  <BottomLine v-else />
 </template>
 
 <script>

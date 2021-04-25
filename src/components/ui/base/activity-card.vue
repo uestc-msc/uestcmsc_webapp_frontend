@@ -40,7 +40,6 @@
 </style>
 
 <script>
-import {getUserDetail} from "@/api/user";
 import PeopleChipGroup from "@/components/ui/base/people-chip-group";
 
 export default {
@@ -68,16 +67,24 @@ export default {
       this.$router.push({
         name: 'ActivityDetail',
         params: {
-          activityDetail: activity,
-          activityId: activity.id
+          activityDetail: this.activity,
+          activityId: this.activity.id
         }
       })
     }
   },
-  activated() {
-    const randomPhotoSize = 19;
-    const randomPhotoIndex = Math.floor(Math.random() * 19) + 1;
-    this.topPhotoUrl = `/img/random/material-${randomPhotoIndex}.png`;
+
+  created() {
+    const activityPhoto = this.activity.photo;
+    if (activityPhoto.length) {
+      const photoIndex = Math.floor(Math.random() * activityPhoto.length);
+      this.topPhotoUrl = activityPhoto[photoIndex].thumbnail;
+    } else {
+      // 从默认照片中随机选一张
+      const randomPhotoSize = 19;
+      const randomPhotoIndex = Math.floor(Math.random() * 19) + 1;
+      this.topPhotoUrl = `/img/random/material-${randomPhotoIndex}.png`;
+    }
   }
 }
 </script>
