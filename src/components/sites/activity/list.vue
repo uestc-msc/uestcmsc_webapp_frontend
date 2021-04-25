@@ -5,19 +5,25 @@
     </PageErrorAlert>
 
     <!--  用卡片的形式展示活动，需要考虑活动数为 0 的情况  -->
-    <v-container v-else-if="activityData.length">
-      <v-row dense justify="center">
-        <v-col :xs="12" :md="10">
-          <ActivityCard
-            v-for="activity in activityData"
-            :activity="activity"
-            :key="activity.id"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <template v-else-if="activityData.length">
+      <v-container>
+        <v-row
+          v-for="activity in activityData"
+          :key="activity.id"
+          justify="center"
+        >
+          <v-col :xs="12" :md="10">
+            <ActivityCard
+              :activity="activity"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
 
-    <BottomLine v-else />
+      <v-pagination v-model="page" :length="length"/>
+    </template>
+
+    <BottomLine v-else/>
 
     <FloatingActionButton
       icon="mdi-plus"
@@ -35,8 +41,6 @@ import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
-import {getUserList} from "@/api/user";
 import BottomLine from "@/components/ui/base/bottom-line";
 import {getActivityList} from "@/api/activity";
 
@@ -45,7 +49,7 @@ export default {
   data: () => ({
     activityData: [],
     page: 1,
-    pageSize: 12,
+    pageSize: 5,
     count: 0,
     error: false
   }),

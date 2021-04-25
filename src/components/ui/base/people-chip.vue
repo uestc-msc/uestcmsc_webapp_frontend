@@ -5,7 +5,7 @@
     link
     text-color="white"
     color="blue-grey lighten-2"
-    @click="gotoUserDetail"
+    @click.stop="gotoUserDetail"
   >
     <v-avatar left>
       <v-img :src="user.avatar_url"></v-img>

@@ -21,7 +21,7 @@
 
     <v-divider></v-divider>
 
-    <v-card-text>
+    <v-card-text class="presenter-list-area">
       <PeopleChipGroup :users="activity.presenter"/>
     </v-card-text>
 
@@ -37,10 +37,16 @@
   position: absolute;
   bottom: 0;
 }
+
+.presenter-list-area {
+  height: 60px;
+  padding-top: 8px;
+}
 </style>
 
 <script>
 import PeopleChipGroup from "@/components/ui/base/people-chip-group";
+import moment from "@/utils/moment";
 
 export default {
   components: {PeopleChipGroup},
@@ -58,7 +64,7 @@ export default {
   },
   computed: {
     formattedTime() {
-      return this.activity.time;
+      return moment(this.activity.datetime).toLocaleString();
     }
   },
 
