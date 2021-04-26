@@ -6,9 +6,9 @@ export function createUploadSession(data) {
 }
 
 export function redirectToLoginOnedrive() {
-  window.open(baseUrl + '/cloud/file/')
+  window.open(baseUrl + '/cloud/login/')
 }
 
-export function getOnedriveStatus(data) {
+export function getOnedriveStatus() {
   return axios.get('/cloud/status/');
 }

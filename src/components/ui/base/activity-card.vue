@@ -7,7 +7,7 @@
       height="250"
       :src="activity.topPhotoUrl"
     >
-      <v-card-title class="activity-title">{{activity.title}}</v-card-title>
+      <v-card-title class="activity-card-title">{{activity.title}}</v-card-title>
     </v-img>
 
     <v-card-text>
@@ -28,23 +28,8 @@
   </v-card>
 </template>
 
-<style>
-.activity-title {
-  color: rgb(250, 250, 250);
-  text-shadow: rgb(68, 68, 68) 1px 1px 8px;
-  font-size: 32px;
-  line-height: 40px;
-  position: absolute;
-  bottom: 0;
-}
-
-.presenter-list-area {
-  height: 60px;
-  padding-top: 8px;
-}
-</style>
-
 <script>
+import '/public/static/css/activity-card.css';
 import PeopleChipGroup from "@/components/ui/base/people-chip-group";
 import moment from "@/utils/moment";
 import {generateTopPhoto} from "@/utils/activity";
@@ -72,7 +57,7 @@ export default {
       this.$router.push({
         name: 'ActivityDetail',
         params: {
-          activityDetail: this.activity,
+          activity: this.activity,
           activityId: this.activity.id
         }
       })

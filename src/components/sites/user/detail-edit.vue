@@ -135,7 +135,6 @@
             <v-row no-gutters>
               <v-col>
                 <v-text-field
-                  v-if="!hasGreaterPermissions"
                   v-model="oldPassword"
                   :rules="passwordRules"
                   :disabled="passwordSubmitting"
@@ -143,7 +142,7 @@
                   :append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="showOldPassword = !showOldPassword"
                   counter
-                  label="旧密码 *"
+                  :label="isSelf ? '旧密码 *' : '您的密码 *'"
                   prepend-icon="mdi-form-textbox-password"
                   required/>
               </v-col>
@@ -160,7 +159,7 @@
                   @click:append="showNewPassword = !showNewPassword"
                   @input="$refs.passwordConfirm.validate(true)"
                   counter
-                  label="新密码 *"
+                  :label="isSelf ? '新密码 *' : '该用户的新密码 *'"
                   prepend-icon="mdi-lock"
                   required/>
                 <!-- @input="$refs.passwordConfirm.validate(true)"  可以在输入密码时比对密码确认框  -->
@@ -177,7 +176,7 @@
                   :append-icon="showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="showPasswordConfirm = !showPasswordConfirm"
                   counter
-                  label="重复密码 *"
+                  label="重复新密码 *"
                   prepend-icon="mdi-lock-check"
                   ref="passwordConfirm"
                   required/>

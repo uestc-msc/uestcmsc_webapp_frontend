@@ -12,7 +12,7 @@
           :key="activity.id"
           justify="center"
         >
-          <v-col :xs="12" :md="10">
+          <v-col xs="12" md="10">
             <ActivityCard
               :activity="activity"
             />
@@ -88,6 +88,12 @@ export default {
   watch: {
     page() {
       this.fetchData();
+      // 页数变化后滑动到顶端
+      window.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   },
 

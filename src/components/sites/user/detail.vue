@@ -94,7 +94,7 @@
 
     </SimpleCard>
     <FloatingActionButton
-      v-if="isOwnerOrAdmin"
+      v-if="isSelfOrAdmin"
       icon="mdi-pencil"
       color="primary"
       tooltip="编辑"
@@ -132,8 +132,8 @@ export default {
 
   computed: {
     ...mapGetters(['isAdmin']),
-    isOwnerOrAdmin() {
-      return this.$store.getters.isOwnerOrAdmin(this.userId)
+    isSelfOrAdmin() {
+      return this.$store.getters.isSelfOrAdmin(this.userId)
     },
     email() {
       if (isEmail(this.userProfile.username))

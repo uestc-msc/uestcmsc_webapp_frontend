@@ -5,7 +5,8 @@ import userRouteConfig from "./config/user";
 import accountRouteConfig from "./config/account";
 import activityRouteConfig from "./config/activity";
 import galleryRouteConfig from "./config/gallery";
-import notFound from '@/components/sites/404.vue'
+import cloudRouteConfig from "./config/cloud";
+import notFound from '@/components/sites/404.vue';
 import {goHome} from '@/utils/router';
 
 Vue.use(VueRouter)
@@ -20,6 +21,7 @@ const routes = [
   ...accountRouteConfig,
   ...activityRouteConfig,
   ...galleryRouteConfig,
+  ...cloudRouteConfig,
   {
     path: '*',
     name: '404',

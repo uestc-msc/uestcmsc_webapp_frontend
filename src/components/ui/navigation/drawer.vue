@@ -99,7 +99,7 @@ export default Vue.extend({
           to: '/gallery',
         },
         {
-          title: '云盘',
+          title: 'Onedrive',
           icon: 'mdi-cloud',
           href: 'https://demo4c-my.sharepoint.com/:f:/g/personal/uestcmsc_demo4c_onmicrosoft_com/Eq4PHVelleJCpDcY2HqjafcB-y6J0cPalW0Pn6J0wBSaXw?e=RJNaaB',
           requireLogin: true,
@@ -107,13 +107,16 @@ export default Vue.extend({
       ],
       itemsAdmin: [
         {
-          title: '云盘（管理员）',
-          icon: 'mdi-cloud-lock',
-          href: 'https://demo4c-my.sharepoint.com/personal/uestcmsc_demo4c_onmicrosoft_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fuestcmsc%5Fdemo4c%5Fonmicrosoft%5Fcom%2FDocuments%2Fcloud%2Fpublic',
+          title: 'Onedrive 状态',
+          to: '/cloud/status'
         },
         {
+          title: '跳转到 Onedrive（管理员）',
+          href: 'https://demo4c-my.sharepoint.com/personal/uestcmsc_demo4c_onmicrosoft_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fuestcmsc%5Fdemo4c%5Fonmicrosoft%5Fcom%2FDocuments%2Fcloud%2Fpublic',
+        },
+
+        {
           title: '后端管理界面',
-          icon: 'mdi-cloud-lock',
           href: baseUrl + '/admin/',
           requireSuperuser: true
         },
@@ -125,7 +128,7 @@ export default Vue.extend({
     ...mapGetters([
       'isAuthenticated',
       'isAdmin',
-      'isOwnerOrAdmin',
+      'isSelfOrAdmin',
       'isSuperuser'
     ]),
   },
