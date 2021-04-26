@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     formattedTime() {
-      return moment(this.activity.datetime).toLocaleString();
+      return moment(this.activity.datetime).toChinese();
     }
   },
 

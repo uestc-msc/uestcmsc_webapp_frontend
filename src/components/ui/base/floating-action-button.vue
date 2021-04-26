@@ -4,9 +4,10 @@
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
       <v-btn
+        class="transition-swing"
         fab
+        bottom
         x-large
-        buttom
         fixed
         right
         v-bind="{...attrs, ...$attrs}"

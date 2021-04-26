@@ -4,6 +4,7 @@
       padless
       inset
       app
+      absolute
     >
       <v-card
         text
