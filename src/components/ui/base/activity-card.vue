@@ -5,7 +5,7 @@
   >
     <v-img
       height="250"
-      :src="topPhotoUrl"
+      :src="activity.topPhotoUrl"
     >
       <v-card-title class="activity-title">{{activity.title}}</v-card-title>
     </v-img>
@@ -47,6 +47,7 @@
 <script>
 import PeopleChipGroup from "@/components/ui/base/people-chip-group";
 import moment from "@/utils/moment";
+import {generateTopPhoto} from "@/utils/activity";
 
 export default {
   components: {PeopleChipGroup},
@@ -58,9 +59,7 @@ export default {
   },
 
   data() {
-    return {
-      topPhotoUrl: null,
-    };
+    return {};
   },
   computed: {
     formattedTime() {
@@ -77,20 +76,17 @@ export default {
           activityId: this.activity.id
         }
       })
+    },
+    generateTopPhoto() {
+      generateTopPhoto(this.activity);
     }
   },
 
   created() {
-    const activityPhoto = this.activity.photo;
-    if (activityPhoto.length) {
-      const photoIndex = Math.floor(Math.random() * activityPhoto.length);
-      this.topPhotoUrl = activityPhoto[photoIndex].thumbnail;
-    } else {
-      // 从默认照片中随机选一张
-      const randomPhotoSize = 19;
-      const randomPhotoIndex = Math.floor(Math.random() * 19) + 1;
-      this.topPhotoUrl = `/img/random/material-${randomPhotoIndex}.png`;
-    }
+    this.generateTopPhoto();
+  },
+  updated() {
+    this.generateTopPhoto();
   }
 }
 </script>

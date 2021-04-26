@@ -92,6 +92,7 @@ export default {
   },
 
   activated() {
+    window.activiList = this;
     this.fetchData();
     this.debouncedFetchData = debounce(this.fetchData, debounceTime);
     let that = this;
