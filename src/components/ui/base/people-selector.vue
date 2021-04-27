@@ -2,17 +2,20 @@
 <!--  参考链接：https://vuetifyjs.com/zh-Hans/components/autocompletes/#section-987976ee548c900962e99879  -->
 <template>
   <v-autocomplete
-    v-model="friends"
-    :disabled="isUpdating"
-    :items="people"
-    filled
-    chips
+    v-model="presenters"
+    :items="candidates"
+    :label="label"
+    :search-input.sync="keyword"
+    cache-items
     color="blue-grey lighten-2"
-    label="Select"
-    item-text="name"
-    item-value="name"
+    item-value="id"
+    :item-text="itemText"
+    :loading="loading"
+    v-bind="$attrs"
+    chips
     multiple
   >
+
     <template v-slot:selection="data">
       <v-chip
         v-bind="data.attrs"
@@ -22,76 +25,105 @@
         @click:close="remove(data.item)"
       >
         <v-avatar left>
-          <v-img :src="data.item.avatar"></v-img>
+          <v-img
+            :src="data.item.avatar_url"
+            :lazy-src="avatarDefault"
+          />
         </v-avatar>
-        {{ data.item.name }}
+        {{ data.item.first_name }}
       </v-chip>
     </template>
+
     <template v-slot:item="data">
       <template v-if="typeof data.item !== 'object'">
         <v-list-item-content v-text="data.item"></v-list-item-content>
       </template>
+
       <template v-else>
         <v-list-item-avatar>
-          <img :src="data.item.avatar">
+          <v-img
+            :src="data.item.avatar_url"
+            :lazy-src="avatarDefault"
+          />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-html="data.item.name"></v-list-item-title>
-          <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
+          <v-list-item-title v-html="data.item.first_name"></v-list-item-title>
+          <v-list-item-subtitle v-html="data.item.student_id"></v-list-item-subtitle>
         </v-list-item-content>
       </template>
     </template>
+
+    <template v-slot:no-data>
+      <v-list-item>
+        <v-list-item-title>
+          找不到对象
+        </v-list-item-title>
+      </v-list-item>
+    </template>
+
   </v-autocomplete>
 </template>
 
 <script>
+import {getUserList} from "@/api/user";
+import debounce from "lodash/debounce";
+import {avatarDefault, debounceTime} from "@/utils";
+
 export default {
   props: {
     value: {
       type: Array,
-      required: true
+      default: []
     },
     label: {
       type: String,
       required: true
-    },
+    }
   },
 
   data () {
-    const srcs = {
-      1: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-      2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-      3: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-      4: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-      5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-    }
-
     return {
-      autoUpdate: true,
-      friends: ['Sandra Adams', 'Britta Holt'],
-      isUpdating: false,
-      people: [
-        { header: 'Group 1' },
-        { name: 'Sandra Adams', group: 'Group 1', avatar: srcs[1] },
-        { name: 'Ali Connors', group: 'Group 1', avatar: srcs[2] },
-        { name: 'Trevor Hansen', group: 'Group 1', avatar: srcs[3] },
-        { name: 'Tucker Smith', group: 'Group 1', avatar: srcs[2] },
-        { divider: true },
-        { header: 'Group 2' },
-        { name: 'Britta Holt', group: 'Group 2', avatar: srcs[4] },
-        { name: 'Jane Smith ', group: 'Group 2', avatar: srcs[5] },
-        { name: 'John Smith', group: 'Group 2', avatar: srcs[1] },
-        { name: 'Sandra Williams', group: 'Group 2', avatar: srcs[3] },
-      ],
-      title: 'The summer breeze',
+      presenters: [...this.value],
+      candidates: [],
+      keyword: '',
+      loading: false,
+      debouncedFetchData: null,
+      avatarDefault
     }
   },
 
   methods: {
-    remove (item) {
-      const index = this.friends.indexOf(item.name)
-      if (index >= 0) this.friends.splice(index, 1)
+    fetchData() {
+      let that = this;
+      that.loading = true;
+      getUserList(that.keyword, 1, 15).then(res => {
+        that.candidates = res.data.results;
+        that.loading = false;
+      })
+    },
+    itemText(user) {
+      // auto-complete 将以该字段作为本地搜索的字段
+      return `${user.id} ${user.first_name} ${user.student_id}`;
+    },
+    remove(user) {
+      const index = this.presenters.indexOf(user.id)
+      if (index >= 0) this.presenters.splice(index, 1)
     },
   },
+
+  watch: {
+    keyword() {
+      this.debouncedFetchData();
+    },
+
+    presenters() {
+      this.$emit('input', this.presenters);
+    }
+  },
+
+  activated() {
+    this.fetchData();
+    this.debouncedFetchData = debounce(this.fetchData, debounceTime);
+  }
 }
 </script>

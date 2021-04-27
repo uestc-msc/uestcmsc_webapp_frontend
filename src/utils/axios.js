@@ -48,7 +48,7 @@ service.interceptors.response.use(
     if (error.response.status === 500)
       return Promise.reject({
         status: 500,
-        data: "服务器端错误"
+        data: "服务器端错误，请联系管理员"
       });
     if (error.response.status === 401)
       return Promise.reject({

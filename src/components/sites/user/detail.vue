@@ -11,8 +11,11 @@
       <v-container>
         <v-row>
           <v-col cols="4">
-            <v-card>
-              <v-img :src="userProfile.avatar_url"/>
+            <v-card width="200px">
+              <v-img
+                :src="userProfile.avatar_url"
+                width="200px"
+              />
             </v-card>
           </v-col>
 
@@ -113,6 +116,7 @@ import AdminIcon from "@/components/ui/base/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
 import {getUserDetail} from "@/api/user";
+import {avatarDefault} from "@/utils";
 
 export default {
   components: {
@@ -127,6 +131,7 @@ export default {
       userId: 0,
       userProfile: null,
       error: false,
+      avatarDefault,
     }
   },
 

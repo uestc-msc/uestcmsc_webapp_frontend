@@ -10,13 +10,23 @@
         v-model="formValid"
       >
         <v-row>
-          <v-col cols="4">
-            <v-card>
-              <v-img :src="userProfile.avatar_url"/>
+          <v-col cols="4" >
+            <v-row justify="center">
+            <v-card width="200px">
+              <!--  这种大头像还是别开 lazy-src=默认了，不然差别太大  -->
+              <v-img
+                :src="userProfile.avatar_url"
+                width="200px"
+              />
             </v-card>
+            </v-row>
+            <v-row>
+              <span>
             我们使用了 Gravatar API。Gravatar 是一项用于提供在全球范围内使用的头像服务。
             您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/">教程</a>，在 Gravatar
             服务器上上传自己的头像，此处的头像就会更新。
+                </span>
+            </v-row>
           </v-col>
 
           <v-col>
@@ -223,7 +233,7 @@ import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {changePassword, getUserDetail, updateUserDetail} from "@/api/user";
 import md5 from "md5";
-import {displayCheckButtonTime} from "@/utils";
+import {avatarDefault, displayCheckButtonTime} from "@/utils";
 
 export default {
   components: {
@@ -266,6 +276,7 @@ export default {
       aboutRules: inputRules.user.aboutRules,
       passwordRules: inputRules.user.passwordRules,
       passwordConfirmRules: inputRules.user.passwordConfirmRules(that),
+      avatarDefault,
     }
   },
 

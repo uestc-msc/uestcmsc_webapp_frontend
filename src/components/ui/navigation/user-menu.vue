@@ -7,7 +7,9 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
         <v-avatar size="36" contain>
-          <v-img :src = "profile.avatar_url" />
+          <v-img
+            :src = "profile.avatar_url"
+          />
         </v-avatar>
         <span class = "ml-2">
           {{ profile.first_name }}
@@ -38,6 +40,7 @@
 
 <script>
 import AdminIcon from "@/components/ui/base/admin-icon";
+import {avatarDefault} from "@/utils";
 export default {
   components: {AdminIcon},
   data: function() {
@@ -69,6 +72,7 @@ export default {
           }
         },
       ],
+      avatarDefault,
     }
   },
 

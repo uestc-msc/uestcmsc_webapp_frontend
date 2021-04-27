@@ -110,7 +110,10 @@
                   @click:close="remove(data.item)"
                 >
                   <v-avatar left>
-                    <v-img :src="data.item.avatar"></v-img>
+                    <v-img
+                      :src="data.item.avatar"
+                      :lazy-src="avatarDefault"
+                    />
                   </v-avatar>
                   {{ data.item.name }}
                 </v-chip>
@@ -121,7 +124,10 @@
                 </template>
                 <template v-else>
                   <v-list-item-avatar>
-                    <img :src="data.item.avatar">
+                    <v-img
+                      :src="data.item.avatar"
+                      :lazy-src="avatarDefault"
+                    />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title v-html="data.item.name"></v-list-item-title>
@@ -162,6 +168,8 @@
 </template>
 
 <script>
+import {avatarDefault} from "@/utils";
+
 export default {
   data () {
     const srcs = {
@@ -173,6 +181,7 @@ export default {
     }
 
     return {
+      avatarDefault,
       autoUpdate: true,
       friends: ['Sandra Adams', 'Britta Holt'],
       isUpdating: false,

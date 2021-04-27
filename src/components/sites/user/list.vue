@@ -26,7 +26,10 @@
       >
         <td>
           <v-avatar>
-            <v-img :src="user.avatar_url"/>
+            <v-img
+              :src="user.avatar_url"
+              :lazy-src="avatarDefault"
+            />
           </v-avatar>
         </td>
         <td>
@@ -51,7 +54,7 @@
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
-import {debounceTime} from "@/utils";
+import {avatarDefault, debounceTime} from "@/utils";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
 import AdminIcon from "@/components/ui/base/admin-icon";
 import {getUserList} from "@/api/user";
@@ -65,7 +68,8 @@ export default {
     page: 1,
     pageSize: 12,
     count: 0,
-    error: false
+    error: false,
+    avatarDefault,
   }),
 
   computed: {

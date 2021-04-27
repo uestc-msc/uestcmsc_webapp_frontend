@@ -8,7 +8,10 @@
     @click.stop="gotoUserDetail"
   >
     <v-avatar left>
-      <v-img :src="user.avatar_url"></v-img>
+      <v-img
+        :src="user.avatar_url"
+        :lazy-src="avatarDefault"
+      />
     </v-avatar>
 
     <span>
@@ -21,6 +24,7 @@
 
 <script>
 import AdminIcon from "@/components/ui/base/admin-icon";
+import {avatarDefault} from "@/utils";
 export default {
   components: {AdminIcon},
   props: {
@@ -28,6 +32,12 @@ export default {
       type: Object,
       required: true
     }
+  },
+
+  data() {
+    return {
+      avatarDefault
+    };
   },
 
   methods: {
