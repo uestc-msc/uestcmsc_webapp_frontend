@@ -57,9 +57,10 @@
               ripple
               active-class="grey lighten-3"
             >
-              <v-list-item-content>
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>{{item.icon}}</v-icon>
+              </v-list-item-icon>
             </v-list-item>
           </template>
 
@@ -108,15 +109,18 @@ export default Vue.extend({
       itemsAdmin: [
         {
           title: 'Onedrive 状态',
+          icon: 'mdi-sync',
           to: '/cloud/status'
         },
         {
-          title: '跳转到 Onedrive（管理员）',
+          title: 'Onedrive 管理',
+          icon: 'mdi-lock-outline',
           href: 'https://demo4c-my.sharepoint.com/personal/uestcmsc_demo4c_onmicrosoft_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fuestcmsc%5Fdemo4c%5Fonmicrosoft%5Fcom%2FDocuments%2Fcloud%2Fpublic',
         },
 
         {
-          title: '后端管理界面',
+          title: '后台管理',
+          icon: 'mdi-account-multiple-outline',
           href: baseUrl + '/admin/',
           requireSuperuser: true
         },
