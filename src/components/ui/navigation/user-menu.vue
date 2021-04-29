@@ -7,9 +7,11 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
         <v-avatar size="36" contain>
-          <v-img
-            :src = "profile.avatar_url"
-          />
+          <v-img :src="profile.avatar_url">
+            <template v-slot:placeholder>
+              <PicturePlaceholder size="36"/>
+            </template>
+          </v-img>
         </v-avatar>
         <span class = "ml-2">
           {{ profile.first_name }}
@@ -39,11 +41,13 @@
 
 
 <script>
-import AdminIcon from "@/components/ui/base/admin-icon";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {avatarDefault} from "@/utils";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+
 export default {
-  components: {AdminIcon},
-  data: function() {
+  components: {PicturePlaceholder, AdminIcon},
+  data: function () {
     let that = this;
     return {
       items: [

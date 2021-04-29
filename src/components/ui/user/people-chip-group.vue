@@ -30,7 +30,7 @@
 </style>
 
 <script>
-import PeopleChip from "@/components/ui/base/people-chip";
+import PeopleChip from "@/components/ui/user/people-chip";
 export default {
   components: {PeopleChip},
   props: {

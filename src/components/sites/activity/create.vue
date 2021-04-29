@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import PeopleSelector from "@/components/ui/base/people-selector";
+import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
 
 export default {

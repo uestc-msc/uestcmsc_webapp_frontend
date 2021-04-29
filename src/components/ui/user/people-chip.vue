@@ -11,7 +11,11 @@
       <v-img
         :src="user.avatar_url"
         :lazy-src="avatarDefault"
-      />
+      >
+        <template v-slot:placeholder>
+          <PicturePlaceholder size="24" width="3"/>
+        </template>
+      </v-img>
     </v-avatar>
 
     <span>
@@ -23,10 +27,11 @@
 </template>
 
 <script>
-import AdminIcon from "@/components/ui/base/admin-icon";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {avatarDefault} from "@/utils";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 export default {
-  components: {AdminIcon},
+  components: {PicturePlaceholder, AdminIcon},
   props: {
     user: {
       type: Object,

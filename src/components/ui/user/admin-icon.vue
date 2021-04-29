@@ -1,7 +1,7 @@
 <!-- admin 图标 -->
 <template>
   <v-icon
-    class="admin-icon"
+    class="ml-1"
     v-if="isAdmin"
     :size="size"
     :color="color"
@@ -9,12 +9,6 @@
     mdi-badge-account-horizontal
   </v-icon>
 </template>
-
-<style>
-.admin-icon {
-  margin-left: 4px;
-}
-</style>
 
 <script>
 export default {

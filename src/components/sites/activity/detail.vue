@@ -55,27 +55,49 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-file</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ activity.location }}</v-list-item-title>
-            <v-list-item-subtitle>文件</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-if="activity.file.length">
+          <v-list-item
+            v-for="(file, index) in activity.file"
+            :key="file.id"
+          >
+            <v-list-item-icon>
+              <v-icon color="primary">{{ index === 0 ? "mdi-file" : "" }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ file.filename }}</v-list-item-title>
+              <v-list-item-subtitle>{{ formatBytes(file.size) }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn
+                text
+                icon
+                @click="downloadFile(file.download_link)"
+              >
+                <v-icon color="primary">mdi-download</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider inset></v-divider>
+        </template>
 
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-link</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title><a href="https://space.bilibili.com/456910030/">https://space.bilibili.com/456910030/</a></v-list-item-title>
-            <v-list-item-subtitle>链接</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-if="activity.link.length">
+          <v-list-item
+            v-for="(link, index) in activity.link"
+            :key="link.id"
+          >
+            <v-list-item-icon>
+              <v-icon color="primary">{{ index === 0 ? "mdi-link" : "" }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                <a :href="link.url">{{ link.url }}</a>
+              </v-list-item-title>
+              <v-list-item-subtitle>{{ index === 0 ? '链接' : '' }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-        <v-divider inset></v-divider>
+          <v-divider inset></v-divider>
+        </template>
 
         <v-list-item>
           <v-list-item-icon>
@@ -98,10 +120,30 @@
           <v-list-item-icon>
             <v-icon color="primary">mdi-image</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title><a href="https://space.bilibili.com/456910030/">https://space.bilibili.com/456910030/</a></v-list-item-title>
-            <v-list-item-subtitle>相册</v-list-item-subtitle>
-          </v-list-item-content>
+
+          <v-container>
+            <v-row
+              v-for="r in [0, 3, 6]"
+              :key="r"
+            >
+              <v-col
+                v-for="n in [r, r+1, r+2]"
+                :key="n"
+                cols="4"
+              >
+                <v-img
+                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
+                >
+                  <template v-slot:placeholder>
+                    <PicturePlaceholder size="64"/>
+                    </template>
+                </v-img>
+              </v-col>
+            </v-row>
+          </v-container>
+
         </v-list-item>
 
       </v-list>
@@ -119,20 +161,22 @@
 
 
 <script>
-import '/public/static/css/activity-card.css';
+import '@/components/ui/activity/activity-card.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
-import {isEmail} from "@/utils/validators";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
-import PeopleChipGroup from "@/components/ui/base/people-chip-group";
+import PeopleChipGroup from "@/components/ui/user/people-chip-group";
+import {downloadFile, formatBytes} from "@/utils/file";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
   components: {
+    PicturePlaceholder,
     PeopleChipGroup,
     AdminIcon,
     PageErrorAlert,
@@ -145,6 +189,8 @@ export default {
       activityId: 0,
       activity: null,
       error: false,
+      formatBytes,
+      downloadFile,
     }
   },
 
@@ -192,6 +238,30 @@ export default {
       .then(response => {
         that.activity = response.data;
         generateTopPhoto(this.activity);
+        var file = {
+          "id": "string",
+          "activity_id": "string",
+          "filename": "string",
+          "size": 23333,
+          "thumbnail": "/img/ruanweiwei.jpg",
+          "download_link": "/img/ruanweiwei.jpg",
+          "uploader": {
+            "id": 0,
+            "first_name": "string",
+            "last_name": "string",
+            "is_staff": true,
+            "is_superuser": true,
+            "avatar_url": "string"
+          }
+        };
+        var link = {
+          "id": 0,
+          "url": "https://space.bilibili.com/456910030/"
+        };
+        that.activity.file = [file, file, file];
+        that.activity.photo = [file, file];
+        that.activity.link = [link, link];
+        console.log(that.activity);
       })
       .catch(response => {
         that.error = response.data;

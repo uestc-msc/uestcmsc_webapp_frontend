@@ -13,11 +13,16 @@
           <v-col cols="4" >
             <v-row justify="center">
             <v-card width="200px">
-              <!--  这种大头像还是别开 lazy-src=默认了，不然差别太大  -->
+              <!--  这种大头像还是别开 lazy-src=默认头像了，不然差别太大  -->
+              <!--  用滚圈圈作为占位符还是挺不错  -->
               <v-img
                 :src="userProfile.avatar_url"
                 width="200px"
-              />
+              >
+                <template v-slot:placeholder>
+                    <PicturePlaceholder size="64"/>
+                </template>
+              </v-img>
             </v-card>
             </v-row>
             <v-row>
@@ -227,16 +232,18 @@
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import FormErrorAlert from "@/components/ui/base/form-error-alert";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {changePassword, getUserDetail, updateUserDetail} from "@/api/user";
 import md5 from "md5";
 import {avatarDefault, displayCheckButtonTime} from "@/utils";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
   components: {
+    PicturePlaceholder,
     FormErrorAlert,
     AdminIcon,
     PageErrorAlert,

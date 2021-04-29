@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import ActivityCard from '@/components/ui/base/activity-card';
+import ActivityCard from '@/components/ui/activity/activity-card';
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";

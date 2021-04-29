@@ -1,3 +1,5 @@
+<!--  TODO: detail 和 detail-edit  的 v-img 转圈圈不知道转到哪里去了 反正看不见  nmdwsm
+推荐断网测试  -->
 <template>
   <div>
     <PageErrorAlert v-if="error">
@@ -11,11 +13,15 @@
       <v-container>
         <v-row>
           <v-col cols="4">
-            <v-card width="200px">
+            <v-card width="200px" height="200px">
               <v-img
                 :src="userProfile.avatar_url"
                 width="200px"
-              />
+              >
+                <template v-slot:placeholder>
+                  <PicturePlaceholder :size="64" :width="6"/>
+                </template>
+              </v-img>
             </v-card>
           </v-col>
 
@@ -112,14 +118,18 @@ import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
 import {getUserDetail} from "@/api/user";
 import {avatarDefault} from "@/utils";
+import PeopleChipGroup from "@/components/ui/user/people-chip-group";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
   components: {
+    PicturePlaceholder,
+    PeopleChipGroup,
     AdminIcon,
     PageErrorAlert,
     FloatingActionButton,

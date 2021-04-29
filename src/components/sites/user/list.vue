@@ -29,7 +29,11 @@
             <v-img
               :src="user.avatar_url"
               :lazy-src="avatarDefault"
-            />
+            >
+              <template v-slot:placeholder>
+                  <PicturePlaceholder size="48"/>
+              </template>
+            </v-img>
           </v-avatar>
         </td>
         <td>
@@ -56,12 +60,13 @@ import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {avatarDefault, debounceTime} from "@/utils";
 import PageErrorAlert from "@/components/ui/base/page-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {getUserList} from "@/api/user";
 import BottomLine from "@/components/ui/base/bottom-line";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
-  components: {BottomLine, AdminIcon, PageErrorAlert, SimpleCard, FloatingActionButton},
+  components: {PicturePlaceholder, BottomLine, AdminIcon, PageErrorAlert, SimpleCard, FloatingActionButton},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
     userData: [],

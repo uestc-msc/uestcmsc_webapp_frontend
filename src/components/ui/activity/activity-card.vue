@@ -7,7 +7,12 @@
       height="250"
       :src="activity.topPhotoUrl"
     >
-      <v-card-title class="activity-card-title">{{activity.title}}</v-card-title>
+      <template v-slot:placeholder>
+        <v-container>
+          <PicturePlaceholder size="24" width="3"/>
+        </v-container>
+      </template>
+      <v-card-title class="activity-card-title">{{ activity.title }}</v-card-title>
     </v-img>
 
     <v-card-text>
@@ -29,13 +34,14 @@
 </template>
 
 <script>
-import '/public/static/css/activity-card.css';
-import PeopleChipGroup from "@/components/ui/base/people-chip-group";
+import './activity-card.css';
+import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import moment from "@/utils/moment";
 import {generateTopPhoto} from "@/utils/activity";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
-  components: {PeopleChipGroup},
+  components: {PicturePlaceholder, PeopleChipGroup},
   props: {
     activity: {
       type: Object,
