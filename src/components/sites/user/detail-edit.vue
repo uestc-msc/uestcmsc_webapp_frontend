@@ -238,7 +238,7 @@ import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {changePassword, getUserDetail, updateUserDetail} from "@/api/user";
 import md5 from "md5";
-import {avatarDefault, displayCheckButtonTime} from "@/utils";
+import {lazyAvatar, displaySuccessTime} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
@@ -283,7 +283,7 @@ export default {
       aboutRules: inputRules.user.aboutRules,
       passwordRules: inputRules.user.passwordRules,
       passwordConfirmRules: inputRules.user.passwordConfirmRules(that),
-      avatarDefault,
+      avatarDefault: lazyAvatar,
     }
   },
 
@@ -317,7 +317,7 @@ export default {
   },
 
   activated() {
-    // window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
+    window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
     this.userId = Number(this.$route.params.userId);
     this.userProfile = this.$route.params.userProfile;
@@ -365,7 +365,7 @@ export default {
           that.success = true;
           setTimeout(() => {
             that.success = false;
-          }, displayCheckButtonTime);
+          }, displaySuccessTime);
         })
         .catch(response => {
           let detail = response.data;
@@ -403,7 +403,7 @@ export default {
             that.passwordSuccess = true;
             setTimeout(() => {
               that.passwordSuccess = false;
-            }, displayCheckButtonTime);
+            }, displaySuccessTime);
           }
         })
         .catch(response => {

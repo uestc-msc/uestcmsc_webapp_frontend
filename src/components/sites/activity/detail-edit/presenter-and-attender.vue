@@ -1,21 +1,15 @@
 <template>
-  <SimpleCard>
-    <v-row>
-      <v-col>
-        <PeopleSelector
-          v-model="presenterList"
-          label="选择主讲人 *"
-          prepend-icon="mdi-account"
-        />
-      </v-col>
-    </v-row>
-
-<!--    <v-row>-->
-<!--      <v-col>-->
-<!--        <FileUploader/>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
-  </SimpleCard>
+  <!--  已经上传/正在上传的文件  -->
+  <!--  TODO: :key -->
+  <v-form>
+    <v-col>
+      <PeopleSelector
+        v-model="presenterList"
+        label="选择主讲人 *"
+        prepend-icon="mdi-account"
+      />
+    </v-col>
+  </v-form>
 </template>
 
 <script>
@@ -34,4 +28,4 @@ export default {
   activated() {
   }
 }
-</script>
+</script>ipt>

@@ -1,5 +1,6 @@
 <!--  TODO: detail 和 detail-edit  的 v-img 转圈圈不知道转到哪里去了 反正看不见  nmdwsm
 推荐断网测试  -->
+<!--  TODO: detail 和 detail-edit 的 vcard 不是方形的  -->
 <template>
   <div>
     <PageErrorAlert v-if="error">
@@ -122,7 +123,7 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
 import {getUserDetail} from "@/api/user";
-import {avatarDefault} from "@/utils";
+import {lazyAvatar} from "@/utils";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
@@ -141,7 +142,7 @@ export default {
       userId: 0,
       userProfile: null,
       error: false,
-      avatarDefault,
+      avatarDefault: lazyAvatar,
     }
   },
 

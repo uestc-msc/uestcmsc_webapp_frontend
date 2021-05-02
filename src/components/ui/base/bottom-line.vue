@@ -4,7 +4,7 @@
     <div class="bottom-line-text">
       本薇薇也是有底线的
     </div>
-    <v-divider class="bottom-line" />
+    <v-divider class="ma-5"/>
   </div>
 </template>
 

@@ -8,6 +8,7 @@
       md="10"
     >
       <template v-slot:before-card-text>
+        <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
         <v-parallax
           height="300"
           :src="activity.topPhotoUrl"
@@ -71,7 +72,7 @@
               <v-btn
                 text
                 icon
-                @click="downloadFile(file.download_link)"
+                :href="file.download_link"
               >
                 <v-icon color="primary">mdi-download</v-icon>
               </v-btn>
@@ -92,7 +93,7 @@
               <v-list-item-title>
                 <a :href="link.url">{{ link.url }}</a>
               </v-list-item-title>
-              <v-list-item-subtitle>{{ index === 0 ? '链接' : '' }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ '链接 ' + (index + 1) }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -132,7 +133,7 @@
                 cols="4"
               >
                 <v-img
-                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                  src="http://localhost:8000/api/cloud/file/01XX4NZVLBTHGF3O7PGBBKCHW6MK6LOUW6/download/"
                   aspect-ratio="1"
                   class="grey lighten-2"
                 >

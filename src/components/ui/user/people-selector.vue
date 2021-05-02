@@ -2,7 +2,7 @@
 <!--  参考链接：https://vuetifyjs.com/zh-Hans/components/autocompletes/#section-987976ee548c900962e99879  -->
 <template>
   <v-autocomplete
-    v-model="presenters"
+    v-model="selected"
     :items="candidates"
     :label="label"
     :search-input.sync="keyword"
@@ -67,7 +67,7 @@
 <script>
 import {getUserList} from "@/api/user";
 import debounce from "lodash/debounce";
-import {avatarDefault, debounceTime} from "@/utils";
+import {lazyAvatar, debounceTime} from "@/utils";
 
 export default {
   props: {
@@ -83,12 +83,12 @@ export default {
 
   data () {
     return {
-      presenters: [...this.value],
+      selected: [],
       candidates: [],
       keyword: '',
       loading: false,
       debouncedFetchData: null,
-      avatarDefault
+      avatarDefault: lazyAvatar
     }
   },
 
@@ -106,8 +106,8 @@ export default {
       return `${user.id} ${user.first_name} ${user.student_id}`;
     },
     remove(user) {
-      const index = this.presenters.indexOf(user.id)
-      if (index >= 0) this.presenters.splice(index, 1)
+      const index = this.selected.indexOf(user.id)
+      if (index >= 0) this.selected.splice(index, 1)
     },
   },
 
@@ -116,14 +116,16 @@ export default {
       this.debouncedFetchData();
     },
 
-    presenters() {
-      this.$emit('input', this.presenters);
+    selected() {
+      this.$emit('input', this.selected);
     }
   },
 
-  activated() {
+  created() {
+    // console.log('created');
     this.fetchData();
     this.debouncedFetchData = debounce(this.fetchData, debounceTime);
-  }
+    this.selected = [...this.value]; // 将最新的数据复制一遍
+  },
 }
 </script>

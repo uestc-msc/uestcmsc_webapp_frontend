@@ -28,7 +28,7 @@
 
 <script>
 import AdminIcon from "@/components/ui/user/admin-icon";
-import {avatarDefault} from "@/utils";
+import {lazyAvatar} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 export default {
   components: {PicturePlaceholder, AdminIcon},
@@ -41,7 +41,7 @@ export default {
 
   data() {
     return {
-      avatarDefault
+      avatarDefault: lazyAvatar
     };
   },
 
