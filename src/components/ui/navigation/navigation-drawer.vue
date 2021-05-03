@@ -1,6 +1,5 @@
 <!-- drawer: 侧边栏的抽屉 -->
 <template>
-<!--  TODO: 图标变化也太帅了  -->
   <v-navigation-drawer
     :width="250"
     fixed
@@ -25,13 +24,15 @@
         <template v-for="item in items">
           <v-list-item
             v-if="hasPermission(item)"
+            v-model="item.value"
             :to="item.to"
             :href="item.href"
+            :target="item.href ? '_blank' : '_self'"
             ripple
             active-class="grey lighten-3"
           >
             <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon>{{ item.value ? (item.iconOn || item.iconOff) : item.iconOff }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -41,26 +42,29 @@
 
         <v-list-group
           v-if="isAdmin"
-          prepend-icon="mdi-cog"
+          v-model="settingsOn"
+          :prepend-icon="settingsOn ? 'mdi-cog' : 'mdi-cog-outline'"
           no-action
         >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>设置</v-list-item-title>
+              <v-list-item-title>管理</v-list-item-title>
             </v-list-item-content>
           </template>
 
           <template v-for="item in itemsAdmin">
             <v-list-item
               v-if="hasPermission(item)"
+              v-model="item.value"
               :to="item.to"
               :href="item.href"
+              :target="item.href ? '_blank' : '_self'"
               ripple
               active-class="grey lighten-3"
             >
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
               <v-list-item-icon>
-                <v-icon>{{item.icon}}</v-icon>
+                <v-icon>{{ item.value ? (item.iconOn || item.iconOff) : item.iconOff }}</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </template>
@@ -84,46 +88,61 @@ export default Vue.extend({
       appName,
       appVersion,
       show: null,   //在移动设备上关闭，在桌面环境下打开
+      settingsOn: false,
       items: [
         {
           title: '沙龙',
-          icon: 'mdi-view-dashboard',
+          iconOn: 'mdi-view-dashboard',
+          iconOff: 'mdi-view-dashboard-outline',
           to: '/activity',
+          value: false,
         },
         {
           title: '用户',
-          icon: 'mdi-account-multiple',
+          iconOn: 'mdi-account-multiple',
+          iconOff: 'mdi-account-multiple-outline',
           to: '/user',
+          value: false,
         },
         {
           title: '相册',
-          icon: 'mdi-image-multiple',
+          iconOn: 'mdi-image-multiple',
+          iconOff: 'mdi-image-multiple-outline',
           to: '/gallery',
+          value: false,
         },
         {
           title: 'Onedrive',
-          icon: 'mdi-cloud',
+          iconOn: 'mdi-cloud',
+          iconOff: 'mdi-cloud-outline',
           href: 'https://demo4c-my.sharepoint.com/:f:/g/personal/uestcmsc_demo4c_onmicrosoft_com/Eq4PHVelleJCpDcY2HqjafcB-y6J0cPalW0Pn6J0wBSaXw?e=RJNaaB',
           requireLogin: true,
+          value: false,
         },
       ],
       itemsAdmin: [
         {
           title: 'Onedrive 状态',
-          icon: 'mdi-sync',
-          to: '/cloud/status'
+          iconOn: 'mdi-sync',
+          iconOff: 'mdi-cached',
+          to: '/cloud/status',
+          value: false,
         },
         {
           title: 'Onedrive 管理',
-          icon: 'mdi-lock-outline',
+          iconOn: 'mdi-lock',
+          iconOff: 'mdi-lock-outline',
           href: 'https://demo4c-my.sharepoint.com/personal/uestcmsc_demo4c_onmicrosoft_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fuestcmsc%5Fdemo4c%5Fonmicrosoft%5Fcom%2FDocuments%2Fcloud%2Fpublic',
+          value: false,
         },
 
         {
           title: '后台管理',
-          icon: 'mdi-account-multiple-outline',
+          iconOn: 'mdi-account-cog',
+          iconOff: 'mdi-account-cog-outline',
           href: baseUrl + '/admin/',
-          requireSuperuser: true
+          requireSuperuser: true,
+          value: false,
         },
       ]
     };
