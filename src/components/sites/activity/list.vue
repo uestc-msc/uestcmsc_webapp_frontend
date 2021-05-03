@@ -13,9 +13,7 @@
           justify="center"
         >
           <v-col xs="12" md="10">
-            <ActivityCard
-              :activity="activity"
-            />
+            <ActivityCard :activity="activity"/>
           </v-col>
         </v-row>
       </v-container>

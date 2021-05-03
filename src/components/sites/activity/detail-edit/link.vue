@@ -3,24 +3,24 @@
     <!--  已经存在的链接  -->
     <v-slide-y-transition group>
       <v-text-field
-        v-for="(status, index) in linkStatuses"
-        :key="status.key"
-        v-model="status.value"
-        :readonly="!status.editing"
-        :loading="status.progressLine"
-        :messages="status.msg"
-        :error-messages="status.errorMsg"
+        v-for="(link, index) in linkArray"
+        :key="link.key"
+        v-model="link.value"
+        :readonly="link.status !== Status.editing"
+        :loading="link.showProgressLine"
+        :messages="link.msg"
+        :error-messages="link.errorMsg"
         prepend-icon="mdi-link"
-        @keydown.enter="updateLink(status)"
+        @keydown.enter="updateLink(link)"
       >
         <template v-slot:append-outer>
-          <template v-if="status.editing">
+          <template v-if="link.status === Status.editing">
             <v-fade-transition hide-on-leave>
               <v-btn
-                v-if="status === '' || status.modified"
+                v-if="link === '' || link.modified"
                 text
                 icon
-                @click="updateLink(status)"
+                @click="updateLink(link)"
               >
                 <v-icon color="grey">mdi-check</v-icon>
               </v-btn>
@@ -30,20 +30,20 @@
               <v-btn
                 text
                 icon
-                @click="status.editing=false; status.value=status.info.url"
+                @click="link.status=Status.default; link.value=link.info.url"
               >
                 <v-icon color="grey">mdi-close</v-icon>
               </v-btn>
             </v-fade-transition>
           </template>
 
-          <template v-else-if="!status.progressLine">
+          <template v-else-if="!link.showProgressLine">
             <v-fade-transition hide-on-leave>
               <v-btn
                 key="pencil"
                 text
                 icon
-                @click="status.editing=true;"
+                @click="link.status=Status.editing"
               >
                 <v-icon color="grey">mdi-pencil</v-icon>
               </v-btn>
@@ -54,7 +54,7 @@
                 key="open-in-new"
                 text
                 icon
-                @click="openLink(status)"
+                @click="openLink(link)"
               >
                 <v-icon color="grey">mdi-open-in-new</v-icon>
               </v-btn>
@@ -62,7 +62,7 @@
 
             <ConfirmDialog
               key="delete-forever"
-              @confirm="deleteLink(status)"
+              @confirm="deleteLink(link)"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-fade-transition hide-on-leave>
@@ -84,10 +84,8 @@
             <v-progress-linear
               absolute
               value="100"
-              :indeterminate="status.updating"
-              :color="status.error ? 'error' :
-                status.success ? 'success' :
-                'primary'"
+              :indeterminate="link.status === Status.submitting"
+              :color="StatusColor[link.status]"
             />
           </v-fade-transition>
         </template>
@@ -125,15 +123,13 @@ import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {addActivityLink, deleteActivityLink, updateActivityLink} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
+import {Status, StatusColor} from "@/utils/status";
 
-class LinkStatus {
+class Link {
   constructor(info = null, value = '') {
     this.info = info ? info : {url: value};
     this.value = value ? value : info.url;  // info 和 value 二者有其一就可以互补
-    this.editing = false;
-    this.updating = false;
-    this.success = false;
-    this.error = false;
+    this.status = Status.default;
     this.msg = '';                            // msg 放提交时的状态（包括正确/错误状态）
     this.errorMsg = '';                       // errorMsg 放提交前 validate 发现的错误
     this.key = Math.random();                 // 随机生成的 id
@@ -143,8 +139,8 @@ class LinkStatus {
     return this.info.url !== this.value;
   }
 
-  get progressLine() {                      // 显示 progress line
-    return this.updating || this.success || this.error;
+  get showProgressLine() {
+    return [Status.submitting, Status.success, Status.error].includes(this.status);
   }
 }
 
@@ -161,9 +157,12 @@ export default {
   data() {
     let that = this;
     return {
-      linkStatuses: [],
+      linkArray: [],
       inputValue: '',
       inputErrorMsg: '',
+
+      Status,
+      StatusColor,
     };
   },
 
@@ -171,7 +170,7 @@ export default {
 
   methods: {
     uniqueUrl(url) {
-      return this.linkStatuses.find(status => status.info.url === url) === undefined;
+      return this.linkArray.find(status => status.info.url === url) === undefined;
     },
 
     //TODO displayerrortime
@@ -187,129 +186,121 @@ export default {
 
       let url = this.inputValue;
       this.inputValue = '';
-      // 将链接状态存到 status 里并丢进 linkStatuses
-      let status = new LinkStatus(null, url);
-      this.linkStatuses.push(status);
+      // 将链接状态存到 link 里并丢进 linkArray
+      let link = new Link(null, url);
+      this.linkArray.push(link);
 
-      status.updating = true;
+      link.status = Status.submitting;
       let data = {
         url,
         activity_id: this.activity.id
       };
       addActivityLink(data)
         .then(async res => {
-          status.msg = '添加成功';
-          status.success = true;
-          status.updating = false;
-          status.info = res.data;
+          link.msg = '添加成功';
+          link.status = Status.success;
+          link.info = res.data;
 
           await sleep(displaySuccessTime);
-          status.msg = '';
-          status.success = false;
+          link.msg = '';
+          link.status = Status.default;
           that.updateActivity();
         })
         .catch(async res => {
-          status.error = true;
-          status.updating = false;
-          status.msg = res.data;
+          link.status = Status.error;
+          link.msg = res.data;
 
-          await sleep(displaySuccessTime);
-          let index = that.linkStatuses.indexOf(status);
+          await sleep(displayErrorTime);
+          let index = that.linkArray.indexOf(link);
           if (index !== -1)
-            that.linkStatuses.splice(index, 1);
+            that.linkArray.splice(index, 1);
         });
     },
 
-    updateLink(status) {
+    async updateLink(link) {
       let that = this;
       // 检测是否是可提交状态
-      if (status.editing === false || status.value === '')
+      if (link.status !== Status.editing || link.value === '')
         return;
       // 提交时检测是否有重复；输入时检测重复的性能开销太大，长按连续输入/删除字符时有明显卡顿
-      if (!this.uniqueUrl(status.value)) {
-        status.errorMsg = '链接已存在';
-        // 3s 后去掉错误提示
-        setTimeout(() => status.errorMsg = '', displayErrorTime)
+      if (!this.uniqueUrl(link.value)) {
+        link.errorMsg = '链接已存在';
+        await sleep(displayErrorTime);
+        link.errorMsg = '';
         return;
       }
 
-      status.editing = false;
-      status.updating = true;
-      status.info.url = status.value;
-      updateActivityLink(status.info.id, {url: status.value})
+      link.status = Status.submitting;
+      updateActivityLink(link.info.id, {url: link.value})
         .then(async res => {
-          status.updating = false;
-          status.success = true;
-          status.msg = '更新成功';
-          status.info = res.data;
+          link.status = Status.success;
+          link.msg = '更新成功';
+          link.info = res.data;
           that.updateActivity();
           await sleep(displaySuccessTime);
-          status.success = false;
-          status.msg = '';
+          link.status = Status.default;
+          link.msg = '';
         })
         .catch(async res => {
-          status.updating = false;
-          status.error = true;
-          status.msg = res.data;
+          link.status = Status.error;
+          link.msg = res.data;
           await sleep(displayErrorTime);
-          status.error = false;
-          status.msg = '';
+          link.status = Status.default;
+          link.msg = '';
         });
     },
 
-    deleteLink(status) {
-      status.updating = true;
+    deleteLink(link) {
+      link.status = Status.submitting;
       let that = this;
-      deleteActivityLink(status.info.id)
+      deleteActivityLink(link.info.id)
         .then(async res => {
-          status.updating = false;
-          status.success = true;
-          status.msg = '删除成功';
+          link.status = Status.success;
+          link.msg = '删除成功';
 
           await sleep(displaySuccessTime);
-          status.success = false;
-          let index = that.linkStatuses.indexOf(status);
+          link.status = Status.default;
+          let index = that.linkArray.indexOf(link);
           if (index !== -1)
-            that.linkStatuses.splice(index, 1);
+            that.linkArray.splice(index, 1);
           that.updateActivity();
         })
         .catch(async res => {
-          status.updating = false;
-          status.error = true;
-          status.msg = res.data;
+          link.status = Status.error;
+          link.msg = res.data;
 
-          await sleep(displaySuccessTime);
-          status.error = false;
-          status.msg = '';
+          await sleep(displayErrorTime);
+          link.status = Status.default;
+          link.msg = '';
         });
     },
 
-    openLink(status) {
-      let link = status.info.url;
-      if (link.indexOf('://') === -1)
-        link = 'https://' + link;
-      window.open(link);
+    openLink(link) {
+      let url = link.info.url;
+      if (url.indexOf('://') === -1)
+        url = 'https://' + url;
+      window.open(url);
     },
 
-    updateLinkStatus() {   // 根据 activity 更新 linkStatus
-      this.linkStatuses = this.activity.link.map(info => new LinkStatus(info));
+    updateLinkArray() {   // 根据 activity 更新 linkArray
+      this.linkArray = this.activity.link.map(info => new Link(info));
     },
 
-    updateActivity() {   // 根据 status 更新 activity
+    updateActivity() {   // 根据 linkArray 更新 activity
       let new_activity = {...this.activity};
-      new_activity.file = this.linkStatuses.map(status => status.info);
+      new_activity.link = this.linkArray.map(status => status.info);
       this.$emit('update', new_activity);
     }
   },
 
   watch: {
     activity() {
-      this.updateLinkStatus()
+      this.updateLinkArray()
     }
   },
 
   created() {
-    this.updateLinkStatus();
+    this.updateLinkArray();
   },
 };
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <ErrorAlertPage v-if="error">
+    <ErrorAlertComponent v-if="error">
       {{ error }}
-    </ErrorAlertPage>
+    </ErrorAlertComponent>
     <SimpleCard
       v-else
       md="10">
@@ -64,9 +64,13 @@ import ActivityLink from "@/components/sites/activity/detail-edit/link";
 import Gallery from "@/components/sites/activity/detail-edit/gallery";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import {DEBUG} from "@/utils";
+import ErrorAlertRow from "@/components/ui/base/error-alert-row";
+import ErrorAlertComponent from "@/components/ui/base/error-alert-component";
 
 export default {
   components: {
+    ErrorAlertComponent,
+    ErrorAlertRow,
     FloatingActionButton,
     Gallery, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
   },

@@ -273,6 +273,7 @@ export default {
       passwordConfirm: '',
       showPasswordConfirm: false,
 
+      // 用 Status 重构 User 和 Account 部分的所有提交
       passwordFormValid: true,
       passwordSubmitting: false,
       passwordError: null,
@@ -343,12 +344,11 @@ export default {
       let data = {first_name, last_name, student_id, about, subscribe_email};
       let that = this;
       updateUserDetail(that.userId, data)
-        .then((response) => {
+        .then(async (response) => {
           that.userProfile = response.data;
           that.success = true;
-          setTimeout(() => {
-            that.success = false;
-          }, displaySuccessTime);
+          await sleep(displaySuccessTime);
+          that.success = false;
         })
         .catch(response => {
           let detail = response.data;
@@ -376,7 +376,7 @@ export default {
       };
       let that = this;
       changePassword(this.userProfile.id, data)
-        .then(() => {
+        .then(async () => {
           if (that.isSelf) {
             that.$store.commit('setMsg', '修改成功！请重新登录~');
             that.$store.commit('clearProfile');
@@ -384,9 +384,8 @@ export default {
           } else {
             that.$store.commit('setMsg', '修改成功！');
             that.passwordSuccess = true;
-            setTimeout(() => {
-              that.passwordSuccess = false;
-            }, displaySuccessTime);
+            await sleep(displaySuccessTime);
+            that.passwordSuccess = false;
           }
         })
         .catch(response => {

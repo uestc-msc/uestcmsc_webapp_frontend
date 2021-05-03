@@ -20,7 +20,7 @@
 
       <v-card>
         <v-card-title>
-          {{ real_warning }}
+          {{ real_tips }}
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -51,15 +51,15 @@ export default {
       type: String,
       default: '删除',
     },
-    warning: {
+    tips: {
       type: String,
       default: null
     }
   },
 
   computed: {
-    real_warning() {
-      return this.warning || `您真的要${this.operation}吗？这是不可逆的喔！`;
+    real_tips() {
+      return this.tips || `您真的要${this.operation}吗？这是不可逆的喔！`;
     }
   },
 
