@@ -50,7 +50,7 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlertRow
           v-if="error"
           :msg="error"
         />
@@ -88,12 +88,12 @@ import router from "@/router/index";
 import md5 from "md5";
 import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import Cookies from 'js-cookie';
 import {login} from "@/api/account";
 
 export default Vue.extend({
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlertRow, SimpleCard},
   data: () => ({
     valid: true,
     submitting: false,

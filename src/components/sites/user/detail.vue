@@ -3,31 +3,33 @@
 <!--  TODO: detail 和 detail-edit 的 vcard 不是方形的  -->
 <template>
   <div>
-    <PageErrorAlert v-if="error">
+    <ErrorAlertPage v-if="error">
       {{ error }}
-    </PageErrorAlert>
+    </ErrorAlertPage>
     <SimpleCard
       v-else-if="userProfile"
       md="6"
     >
 
       <v-container>
-        <v-row>
+        <v-row align="end">
           <v-col cols="4">
-            <v-card width="200px" height="200px">
+            <v-row justify="start">
+            <v-card width="200px">
               <v-img
                 :src="userProfile.avatar_url"
                 width="200px"
               >
                 <template v-slot:placeholder>
-                  <PicturePlaceholder :size="64" :width="6"/>
+                  <PicturePlaceholderAlt/>
                 </template>
               </v-img>
             </v-card>
+            </v-row>
           </v-col>
 
           <v-col>
-            <v-card-title class="display-1 justify-end pt-16">
+            <v-card-title class="display-1 justify-end">
               {{ userProfile.first_name }}
             </v-card-title>
 
@@ -36,7 +38,7 @@
               <AdminIcon :user="userProfile" size="24px"/>
             </v-card-subtitle>
 
-            <v-card-text class="text-right">
+            <v-card-text v-if="userProfile.about" class="text-right">
               {{ userProfile.about }}
             </v-card-text>
           </v-col>
@@ -118,7 +120,7 @@
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import PageErrorAlert from "@/components/ui/base/page-error-alert";
+import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
@@ -126,13 +128,15 @@ import {getUserDetail} from "@/api/user";
 import {lazyAvatar} from "@/utils";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 
 export default {
   components: {
+    PicturePlaceholderAlt,
     PicturePlaceholder,
     PeopleChipGroup,
     AdminIcon,
-    PageErrorAlert,
+    ErrorAlertPage,
     FloatingActionButton,
     SimpleCard
   },

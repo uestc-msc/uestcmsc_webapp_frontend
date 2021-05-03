@@ -103,7 +103,7 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlertRow
           v-if="error"
           :msg="error"
         />
@@ -118,11 +118,11 @@ import md5 from "md5";
 import {goBack} from "@/utils/router";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {signup} from "@/api/account";
 
 export default {
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlertRow, SimpleCard},
   data() {
     let that = this;
     return {

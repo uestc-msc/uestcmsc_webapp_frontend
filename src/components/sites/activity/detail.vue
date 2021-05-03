@@ -1,20 +1,24 @@
 <template>
   <div>
-    <PageErrorAlert v-if="error">
+    <ErrorAlertPage v-if="error">
       {{ error }}
-    </PageErrorAlert>
+    </ErrorAlertPage>
     <SimpleCard
       v-else-if="activity"
       md="10"
     >
       <template v-slot:before-card-text>
+        <!-- 不使用 parallax 的原因，一是效果不明显，二是 parallax 不支持 placeholder -->
         <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
-        <v-parallax
+        <v-img
           height="300"
           :src="activity.topPhotoUrl"
         >
+          <template v-slot:placeholder>
+            <PicturePlaceholderAlt/>
+          </template>
           <v-card-title class="activity-card-title">{{activity.title}}</v-card-title>
-        </v-parallax>
+        </v-img>
       </template>
 
       <v-list two-line>
@@ -123,6 +127,7 @@
           </v-list-item-icon>
 
           <v-container>
+            <!-- 三行三列  -->
             <v-row
               v-for="r in [0, 3, 6]"
               :key="r"
@@ -138,8 +143,8 @@
                   class="grey lighten-2"
                 >
                   <template v-slot:placeholder>
-                    <PicturePlaceholder size="64"/>
-                    </template>
+                    <PicturePlaceholderAlt aspect-ratio="1"/>
+                  </template>
                 </v-img>
               </v-col>
             </v-row>
@@ -162,11 +167,11 @@
 
 
 <script>
-import '@/components/ui/activity/activity-card.css';
+import '@/assets/common/common.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import PageErrorAlert from "@/components/ui/base/page-error-alert";
+import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
@@ -174,13 +179,15 @@ import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import {downloadFile, formatBytes} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 
 export default {
   components: {
+    PicturePlaceholderAlt,
     PicturePlaceholder,
     PeopleChipGroup,
     AdminIcon,
-    PageErrorAlert,
+    ErrorAlertPage,
     FloatingActionButton,
     SimpleCard
   },

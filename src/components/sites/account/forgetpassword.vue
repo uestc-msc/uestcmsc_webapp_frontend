@@ -35,7 +35,7 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlertRow
           v-if="status"
           :type="status"
           :msg="msg"
@@ -49,11 +49,11 @@
 
 import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {forgetPassword} from "@/api/account";
 
 export default {
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlertRow, SimpleCard},
   data: () => ({
     email: "",
     emailRules: inputRules.user.usernameRules,

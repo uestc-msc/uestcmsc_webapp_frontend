@@ -39,15 +39,15 @@ export function addActivityLink(data) {
 }
 
 export function getActivityLink(linkId) {
-  return axios.get(`/activities/link/${linkId}`);
+  return axios.get(`/activities/link/${linkId}/`);
 }
 
 export function updateActivityLink(linkId, data) {
-  return axios.patch(`/activities/link/${linkId}`, data);
+  return axios.patch(`/activities/link/${linkId}/`, data);
 }
 
 export function deleteActivityLink(linkId) {
-  return axios.delete(`/activities/link/${linkId}`);
+  return axios.delete(`/activities/link/${linkId}/`);
 }
 
 //////////////////////////////  沙龙文件部分  //////////////////////////////
@@ -57,7 +57,7 @@ export function addActivityFile(data) {
 }
 
 export function deleteActivityFile(fileId) {
-  return axios.delete(`/activities/file/${fileId}`);
+  return axios.delete(`/activities/file/${fileId}/`);
 }
 
 //////////////////////////////  沙龙图片部分  //////////////////////////////
@@ -67,5 +67,5 @@ export function addActivityPhoto(data) {
 }
 
 export function deleteActivityPhoto(photoId) {
-  return axios.delete(`/activities/photo/${photoId}`);
+  return axios.delete(`/activities/photo/${photoId}/`);
 }

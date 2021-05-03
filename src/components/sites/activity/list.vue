@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PageErrorAlert v-if="error">
+    <ErrorAlertPage v-if="error">
       {{ error }}
-    </PageErrorAlert>
+    </ErrorAlertPage>
 
     <!--  用卡片的形式展示活动，需要考虑活动数为 0 的情况  -->
     <template v-else-if="activityData.length">
@@ -40,12 +40,12 @@ import ActivityCard from '@/components/ui/activity/activity-card';
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import PageErrorAlert from "@/components/ui/base/page-error-alert";
+import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import BottomLine from "@/components/ui/base/bottom-line";
 import {getActivityList} from "@/api/activity";
 
 export default {
-  components: {BottomLine, PageErrorAlert, FloatingActionButton, ActivityCard},
+  components: {BottomLine, ErrorAlertPage, FloatingActionButton, ActivityCard},
   data: () => ({
     activityData: [],
     page: 1,

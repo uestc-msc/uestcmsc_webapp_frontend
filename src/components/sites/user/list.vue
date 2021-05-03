@@ -1,7 +1,7 @@
 <template>
-  <PageErrorAlert v-if="error">
+  <ErrorAlertPage v-if="error">
     {{ error }}
-  </PageErrorAlert>
+  </ErrorAlertPage>
 
   <!--  用表格的形式展示用户，不用考虑用户数为 0 的情况  -->
   <SimpleCard v-else>
@@ -59,14 +59,14 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {lazyAvatar, debounceTime} from "@/utils";
-import PageErrorAlert from "@/components/ui/base/page-error-alert";
+import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {getUserList} from "@/api/user";
 import BottomLine from "@/components/ui/base/bottom-line";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
-  components: {PicturePlaceholder, BottomLine, AdminIcon, PageErrorAlert, SimpleCard, FloatingActionButton},
+  components: {PicturePlaceholder, BottomLine, AdminIcon, ErrorAlertPage, SimpleCard, FloatingActionButton},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
     userData: [],

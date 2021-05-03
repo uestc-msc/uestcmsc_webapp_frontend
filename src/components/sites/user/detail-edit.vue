@@ -90,14 +90,12 @@
         <v-row align="center">
           <v-col cols="4">
             <v-row justify="center">
-              <v-fade-transition>
                 <v-btn
                   color="warning"
                   @click="showChangePasswordForm=!showChangePasswordForm"
                 >
                   {{ showChangePasswordForm ? '不想改了' : '修改密码' }}
                 </v-btn>
-              </v-fade-transition>
             </v-row>
           </v-col>
 
@@ -113,23 +111,26 @@
 
           <v-col cols="4">
             <v-row justify="center">
-              <v-btn
-                :disabled="!formValid"
-                :loading="submitting"
-                :color="submitColor"
-                @click="submit"
-              >
-                <v-icon v-if="success">
-                  mdi-check
-                </v-icon>
-                <template v-else>
+              <v-fade-transition hide-on-leave>
+                <v-btn
+                  v-if="!success"
+                  :disabled="!formValid"
+                  :loading="submitting"
+                  :color="error ? 'error' : 'primary'"
+                  @click="submit"
+                >
                   更新信息
-                </template>
-              </v-btn>
+                </v-btn>
+                <v-btn v-else color="success">
+                  <v-icon v-if="success">
+                    mdi-check
+                  </v-icon>
+                </v-btn>
+              </v-fade-transition>
             </v-row>
           </v-col>
         </v-row>
-        <FormErrorAlert
+        <ErrorAlertRow
           v-if="error"
           :msg="error"
         />
@@ -201,22 +202,21 @@
             <v-row no-gutters>
               <v-col>
                 <v-btn
+                  v-if="!passwordSuccess"
                   :disabled="!passwordFormValid"
                   :loading="passwordSubmitting"
-                  :color="passwordSubmitColor"
+                  :color="passwordError ? 'error' : 'primary'"
                   block
                   @click="submitPassword"
                 >
-                  <v-icon v-if="passwordSuccess">
-                    mdi-check
-                  </v-icon>
-                  <template v-else>
-                    修改密码
-                  </template>
+                  修改密码
+                </v-btn>
+                <v-btn v-else color="success" block>
+                  <v-icon>mdi-check</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
-            <FormErrorAlert
+            <ErrorAlertRow
               v-if="passwordError"
               :msg="passwordError"
             />
@@ -231,22 +231,22 @@
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import PageErrorAlert from "@/components/ui/base/page-error-alert";
+import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import AdminIcon from "@/components/ui/user/admin-icon";
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {changePassword, getUserDetail, updateUserDetail} from "@/api/user";
 import md5 from "md5";
-import {lazyAvatar, displaySuccessTime} from "@/utils";
+import {displaySuccessTime, lazyAvatar} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
   components: {
     PicturePlaceholder,
-    FormErrorAlert,
+    ErrorAlertRow,
     AdminIcon,
-    PageErrorAlert,
+    ErrorAlertPage,
     FloatingActionButton,
     SimpleCard
   },
@@ -288,23 +288,6 @@ export default {
   },
 
   computed: {
-    submitColor() {
-      if (this.error)
-        return 'error';
-      else if (this.success)
-        return 'success';
-      else
-        return 'primary';
-    },
-    passwordSubmitColor() {
-      if (this.passwordError)
-        return 'error';
-      else if (this.passwordSuccess)
-        return 'success';
-      else
-        return 'primary';
-    },
-
     hasGreaterPermissions() {
       return hasGreaterPermissions(this.$store.state.profile, this.userProfile);
     },

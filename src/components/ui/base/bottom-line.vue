@@ -1,22 +1,18 @@
 <template>
   <div>
   <v-divider class="ma-5" />
-    <div class="bottom-line-text">
+    <div class="bottom-tips">
       本薇薇也是有底线的
     </div>
     <v-divider class="ma-5"/>
   </div>
 </template>
 
-<style>
-.bottom-line-text {
-  text-align: center;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.4);
-}
-</style>
+
 
 <script>
+import '../../../assets/common/common.css';
+
 export default {
 
 }

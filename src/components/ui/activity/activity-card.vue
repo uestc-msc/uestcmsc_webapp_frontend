@@ -8,9 +8,7 @@
       :src="activity.topPhotoUrl"
     >
       <template v-slot:placeholder>
-        <v-container>
-          <PicturePlaceholder size="24" width="3"/>
-        </v-container>
+        <PicturePlaceholderAlt/>
       </template>
       <v-card-title class="activity-card-title">{{ activity.title }}</v-card-title>
     </v-img>
@@ -34,14 +32,15 @@
 </template>
 
 <script>
-import './activity-card.css';
+import '../../../assets/common/common.css';
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import moment from "@/utils/moment";
 import {generateTopPhoto} from "@/utils/activity";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 
 export default {
-  components: {PicturePlaceholder, PeopleChipGroup},
+  components: {PicturePlaceholderAlt, PicturePlaceholder, PeopleChipGroup},
   props: {
     activity: {
       type: Object,

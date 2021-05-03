@@ -151,8 +151,15 @@ export async function uploadFile(
 
 // 表示文件上传状态的类
 export class FileStatus {
-  constructor(file = null) {
-    this.file = file;             // 本地文件对应的 file 类
+  constructor(file = null, info = null) {
+    this.file = file ? file :
+      new File([], info.filename);
+    this.info = info ? info : {
+      filename: file.name,
+      size: file.size
+    };
+    // info 和 file 二者有其一就可以互补
+
     this.uploading = false;       // 正在上传
     this.deleting = false;        // 正在删除
     this.progress = 0;            // 上传进度的百分比（100 为完成）
@@ -160,11 +167,6 @@ export class FileStatus {
     this.success = false;         // 上传成功
     this.error = null;            // 上传错误
     this.msg = '';                // 成功/错误信息
-
-    if (file) this.fileInfo = {
-      filename: file.name,
-      size: file.size
-    };                            // 后端给的文件信息
-    else this.fileInfo = null;
+    this.key = Math.random()      // 随机生成的 id
   }
 }

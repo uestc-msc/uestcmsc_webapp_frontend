@@ -55,6 +55,14 @@ service.interceptors.response.use(
         status: 401,
         data: "账户或密码错误"
       });
+    // 一些错误信息在 response.data 里，一些在 response.data.detail
+    // 这里统一放在 response.data 里
+    if (error.response.data && error.response.data.detail) {
+      return Promise.reject({
+        status: error.response.status,
+        data: error.response.data.detail
+      });
+    }
     return Promise.reject(error.response)
   }
 );
