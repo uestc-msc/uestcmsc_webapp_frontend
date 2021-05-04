@@ -73,7 +73,7 @@ export default {
     this.internalValue = val ? val : 'system';
 
     if (this.matchMedia)
-      matchMedia.onchange = ({matches}) => {
+      this.matchMedia.onchange = ({matches}) => {
         if (this.system)
           this.dark = matches;
       }
