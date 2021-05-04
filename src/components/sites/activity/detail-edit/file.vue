@@ -82,7 +82,7 @@
 
 <script>
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
-import {downloadFile, FileStatus, formatBytes, formatFileUploaderInput, uploadFile} from "@/utils/file";
+import {FileStatus, formatBytes, formatFileUploaderInput, uploadFile} from "@/utils/file";
 import {displayErrorTime, displaySuccessTime, sleep, totalRetryTimes} from "@/utils";
 import {addActivityFile, deleteActivityFile} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
@@ -172,7 +172,6 @@ export default {
       that.fileInputValue = [];
     },
 
-    downloadFile,
 
     cancelUpload(fileStatus) {
       // Todo: cancel upload

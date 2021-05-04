@@ -77,6 +77,7 @@
                 text
                 icon
                 :href="file.download_link"
+                target="_blank"
               >
                 <v-icon color="primary">mdi-download</v-icon>
               </v-btn>
@@ -95,7 +96,7 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
-                <a :href="link.url">{{ link.url }}</a>
+                <a :href="link.url" target="_blank">{{ link.url }}</a>
               </v-list-item-title>
               <v-list-item-subtitle>{{ '链接 ' + (index + 1) }}</v-list-item-subtitle>
             </v-list-item-content>
@@ -246,29 +247,6 @@ export default {
       .then(response => {
         that.activity = response.data;
         generateTopPhoto(this.activity);
-        var file = {
-          "id": "string",
-          "activity_id": "string",
-          "filename": "string",
-          "size": 23333,
-          "thumbnail": "/img/ruanweiwei.jpg",
-          "download_link": "/img/ruanweiwei.jpg",
-          "uploader": {
-            "id": 0,
-            "first_name": "string",
-            "last_name": "string",
-            "is_staff": true,
-            "is_superuser": true,
-            "avatar_url": "string"
-          }
-        };
-        var link = {
-          "id": 0,
-          "url": "https://space.bilibili.com/456910030/"
-        };
-        that.activity.file = [file, file, file];
-        that.activity.photo = [file, file];
-        that.activity.link = [link, link];
         console.log(that.activity);
       })
       .catch(response => {

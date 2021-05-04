@@ -7,7 +7,7 @@
     short
     color="primary"
   >
-    <v-app-bar-nav-icon @click="$emit('toggleDrawer')"/>
+    <v-app-bar-nav-icon @click="$emit('toggleNavigation')"/>
 
     <template v-if="searchCallback && showSearchBar">
       <!--  如果搜索框可以使用，并且用户希望展示，就展示给用户  -->
@@ -48,14 +48,27 @@
       </v-fade-transition>
     </template>
 
-    <v-toolbar-items>
-      <v-btn v-if="!isAuthenticated" text @click="toLogin">
-        <v-icon class="mr-2">mdi-login</v-icon>
-        <span> 登录 </span>
-      </v-btn>
+    <template v-if="isAuthenticated">
+        <v-avatar size="36" contain>
+          <v-img :src="profile.avatar_url">
+            <template v-slot:placeholder>
+              <PicturePlaceholder size="36"/>
+            </template>
+          </v-img>
+        </v-avatar>
+        <span class = "ml-2">
+          {{ profile.first_name }}
+        </span>
+        <AdminIcon
+          class="mr-4"
+          :user="profile"
+          size="14px"
+        />
+    </template>
 
-      <user-menu v-else/>
-    </v-toolbar-items>
+    <v-btn icon @click="$emit('toggleSettings')">
+      <v-icon>mdi-cog-outline</v-icon>
+    </v-btn>
 
     <v-progress-linear
       :active="$store.state.appbarLoading"
@@ -70,24 +83,33 @@
 
 
 <script>
-import {appName} from '@/utils'
+import {appName, lazyAvatar} from '@/utils'
 import Router from '@/router';
-import userMenu from './user-menu.vue';
 import { mapGetters } from 'vuex'
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import AdminIcon from "@/components/ui/user/admin-icon";
 
 export default {
   components: {
-    userMenu
+    AdminIcon,
+    PicturePlaceholder,
   },
 
   data() {
     return {
       showSearchBar: false,
-      appName
+      appName,
+
     }
   },
 
   computed: {
+    profile() {
+      return this.$store.state.profile
+    },
+    userId() {
+      return this.profile.id
+    },
     isAuthenticated() {
       return this.$store.getters.isAuthenticated
     },

@@ -1,30 +1,33 @@
 <!-- 整合侧边栏的抽屉、顶栏 -->
 <template>
   <div>
-    <Drawer
-      :toggleEvent="toggleEvent"
-    />
+    <NavigationDrawer :toggleEvent="toggleNavigation"/>
     <AppBar
-      @toggleDrawer="toggleEvent=!toggleEvent"
+      @toggleNavigation="toggleNavigation=!toggleNavigation"
+      @toggleSettings="toggleSettings=!toggleSettings"
     />
+    <SettingsDrawer :toggleEvent="toggleSettings"/>
   </div>
+  <!-- TODO: localstorage 的存储以及读取-->
 </template>
-
 
 <script>
 import Vue from 'vue'
 import AppBar from './appbar.vue';
-import Drawer from './drawer.vue';
+import NavigationDrawer from './navigation-drawer.vue';
+import SettingsDrawer from './settings-drawer/app.vue';
 
 export default Vue.extend({
   components: {
     AppBar,
-    Drawer,
+    NavigationDrawer,
+    SettingsDrawer
   },
   data: () => ({
     // 因为事件只能向上传递，值只能向下传递
     // 这里向下传递 toggleEvent 触发下面的事件，达到“向下传递事件”的效果
-    toggleEvent: false
+    toggleNavigation: false,
+    toggleSettings: false
   })
 });
 </script>

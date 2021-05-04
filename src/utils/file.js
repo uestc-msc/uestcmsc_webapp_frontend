@@ -154,6 +154,7 @@ export async function uploadFile(
 
 // 自动下载 url 对应的文件
 export function downloadFile(url) {
+  // 其实设定 <a :href="url" target="_blank"> 就可以了
   window.open(url);
   // let a = document.createElement('A');
   // a.href = url;

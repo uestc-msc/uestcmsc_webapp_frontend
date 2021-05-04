@@ -28,7 +28,7 @@
             <v-row>
               <span>
             我们使用了 Gravatar API。Gravatar 是一项用于提供在全球范围内使用的头像服务。
-            您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/">教程</a>，在 Gravatar
+            您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/" target="_blank">教程</a>，在 Gravatar
             服务器上上传自己的头像，此处的头像就会更新。
                 </span>
             </v-row>

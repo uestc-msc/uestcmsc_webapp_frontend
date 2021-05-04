@@ -17,7 +17,8 @@
             v-for="item in items"
             :key="item.icon"
             class="mx-4"
-            @click="window.open(item.href)"
+            :href="item.href"
+            target="_blank"
             icon
           >
             <v-icon v-if="!item.iconLocal" size="24px">
