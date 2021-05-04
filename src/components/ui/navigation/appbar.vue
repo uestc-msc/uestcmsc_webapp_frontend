@@ -72,7 +72,7 @@
 
     <v-progress-linear
       :active="$store.state.appbarLoading"
-      :indeterminate="$store.state.appbarLoading"
+      indeterminate
       absolute
       bottom
       color="yellow accent-4"
