@@ -33,18 +33,14 @@ export default Vue.extend({
 
   created() {
     let that = this;
-    // 配置黑暗模式
-    // TODO: 能自动切换吗
-    if (window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      this.$vuetify.theme.dark = true;
-    }
     // 尝试使用上次的 sessionid 自动登录
     getMyProfile()
-      .then((response) => {
-        that.$store.commit('setProfile', response.data)
+      .then((res) => {
+        that.$store.commit('setProfile', res.data);
       })
-      .catch(() => {})
+      .catch((res) => {
+
+      });
   }
 });
 </script>

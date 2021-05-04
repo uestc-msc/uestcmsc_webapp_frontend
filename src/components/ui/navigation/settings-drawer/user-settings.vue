@@ -5,7 +5,6 @@
     </span>
 
     <v-item-group
-      v-model="internalValue"
       class="mx-auto row row--dense"
       mandatory
     >
@@ -14,10 +13,9 @@
         :key="item.text"
         cols="6"
       >
-            <!--              :dark="!dark && active"-->
             <v-card
               class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
-              :color="`grey ${dark ? 'darken' : 'lighten'}-3`"
+              :color="`grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
               ripple
               rounded
               flat
@@ -30,11 +28,9 @@
     </v-item-group>
   </div>
 </template>
-<script>
-import SettingsGroup from "@/components/ui/navigation/settings-drawer/settings-groups";
 
+<script>
 export default {
-  extends: SettingsGroup,
 
   data() {
     let that = this;
@@ -80,12 +76,6 @@ export default {
     items() {
       return this.$store.getters.isAuthenticated ? this.itemsForAuthenticated : this.itemsForNotAuthenticated;
     },
-    internalValue: {
-      set(val) {
-        const set = this.items.find(item => item.text === val)
-        set.callback()
-      }
-    }
   },
 
   activated() {

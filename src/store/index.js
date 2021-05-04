@@ -37,9 +37,6 @@ export default new Vuex.Store({
     searchKeyword: '',
     // appbar 下的 Loading 滚动条
     appbarLoading: false,
-    //
-    dark: false,
-    system: true,
   },
 
   getters: {

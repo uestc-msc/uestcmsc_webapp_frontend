@@ -2,7 +2,6 @@
 // Extensions
 import SettingsGroup from './settings-groups'
 
-
 export default {
   name: 'ThemeSettings',
 
@@ -16,80 +15,68 @@ export default {
           value: 'light',
           text: '浅色主题',
           icon: 'mdi-white-balance-sunny',
-          callback: () => this.setTheme(),
+          callback: () => this.setTheme(false, false),
         },
         {
           value: 'dark',
           text: '深色主题',
           icon: 'mdi-weather-night',
-          callback: () => this.setTheme(true),
+          callback: () => this.setTheme(true, false),
         },
         {
           value: 'system',
           text: '跟随系统',
           icon: 'mdi-desktop-tower-monitor',
-          callback: () => this.setSystemTheme(),
+          callback: () => this.setTheme(false, true),
         },
-      ]
+      ],
+      dark: null,
+      system: null,
+      matchMedia: (window.matchMedia) ? window.matchMedia('(prefers-color-scheme: dark)') : false,
     };
   },
 
   computed: {
-
+    // 完成 internalValue 和 this.system & this.dark 的双向绑定
     internalValue: {
       get() {
-        return this.system ? '跟随系统' :
-          this.dark ? '深色主题' : '浅色主题';
+        return this.system ? 'system' :
+          this.dark ? 'dark' : 'light';
       },
       set(val) {
         const set = this.items.find(item => item.value === val)
-
-        set.callback()
+        set.callback();
+        localStorage.setItem('darkMode', val);
       },
     },
   },
 
   watch: {
-    '$vuetify.theme.dark'(val) {
-      this.dark = val
-    },
     dark(val) {
-      this.$vuetify.theme.dark = val
+      this.$vuetify.theme.dark = val;
+    },
+    system() {
+      if (this.system && this.matchMedia)
+        this.dark = this.matchMedia.matches;
+    },
+  },
+
+  methods: {
+    setTheme(dark = false, system = false) {
+      this.dark = dark;
+      this.system = system;
     },
   },
 
   created() {
-    const matchMedia = this.getMatchMedia()
-    if (!matchMedia) return
+    const val = localStorage.getItem('darkMode');
+    this.internalValue = val ? val : 'system';
 
-    if (this.internalValue === 'system') {
-      this.dark = matchMedia.matches
-    }
-
-    matchMedia.onchange = ({matches}) => {
-      if (this.system) {
-        this.dark = matches
+    if (this.matchMedia)
+      matchMedia.onchange = ({matches}) => {
+        if (this.system)
+          this.dark = matches;
       }
-    }
-  },
-
-  methods: {
-    getMatchMedia() {
-      return (window.matchMedia) ? window.matchMedia('(prefers-color-scheme: dark)') : false
-    },
-    setTheme(
-      dark = false,
-      system = false,
-    ) {
-      this.dark = dark
-      this.system = system
-    },
-    setSystemTheme() {
-      const matchMedia = this.getMatchMedia()
-      if (!matchMedia) return
-
-      this.setTheme(matchMedia.matches, true)
-    },
-  },
+  }
 }
 </script>

@@ -17,11 +17,9 @@
       >
         <v-item :value="item.value">
           <template v-slot:default="{ active, toggle }">
-
-            <!--              :dark="!dark && active"-->
             <v-card
               class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
-              :color="active ? 'primary' : `grey ${dark ? 'darken' : 'lighten'}-3`"
+              :color="active ? 'primary' : `grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
               rounded
               flat
               @click="toggle"
@@ -39,11 +37,5 @@
 <script>
 export default {
   name: 'SettingsGroup',
-
-  computed: {
-    dark() {
-      return this.$vuetify.theme.dark;
-    }
-  },
 }
 </script>
