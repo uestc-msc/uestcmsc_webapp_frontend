@@ -48,6 +48,10 @@ export function formatFileUploaderInput(input) {
 }
 
 
+export function formatUrl(url) {
+  return url.includes('://') ? url : 'https://' + url;
+}
+
 /**
  * 调用后端接口，将文件上传至 onedrive。
  * 参考文档：https://docs.microsoft.com/zh-cn/graph/api/driveitem-createuploadsession

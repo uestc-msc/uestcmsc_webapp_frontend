@@ -54,7 +54,8 @@
                 key="open-in-new"
                 text
                 icon
-                @click="openLink(link)"
+                :href="formatUrl(link.info.url)"
+                target="_blank"
               >
                 <v-icon color="grey">mdi-open-in-new</v-icon>
               </v-btn>
@@ -124,6 +125,7 @@ import {displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {addActivityLink, deleteActivityLink, updateActivityLink} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
 import {Status, StatusColor} from "@/utils/status";
+import {formatUrl} from "@/utils/file";
 
 class Link {
   constructor(info = null, value = '') {
@@ -163,6 +165,7 @@ export default {
 
       Status,
       StatusColor,
+      formatUrl,
     };
   },
 
@@ -273,13 +276,6 @@ export default {
           link.status = Status.default;
           link.msg = '';
         });
-    },
-
-    openLink(link) {
-      let url = link.info.url;
-      if (url.indexOf('://') === -1)
-        url = 'https://' + url;
-      window.open(url);
     },
 
     updateData() {   // 根据 activity 更新 linkArray

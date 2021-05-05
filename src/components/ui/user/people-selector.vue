@@ -5,23 +5,24 @@
     chips
     multiple
     :label="label"
-    :loading="real_loading"
+    :loading="loading || search_loading"
     color="blue-grey lighten-2"
 
     v-model="selected"
     @input="add"
     :items="candidates"
     item-value="id"
+    :item-text="u => u.first_name + u.student_id"
     :search-input.sync="keyword"
 
     no-data-text="找不到对象"
-    no-filter
     cache-items
   >
 
     <!--  在已选择的框里的 chip 元素  -->
     <template v-slot:selection="data">
       <v-chip
+        ripple
         v-bind="data.attrs"
         :input-value="data.selected"
         close
@@ -34,6 +35,7 @@
           />
         </v-avatar>
         {{ data.item.first_name }}
+        <AdminIcon :user="data.item"/>
       </v-chip>
     </template>
 
@@ -51,7 +53,10 @@
           />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-html="data.item.first_name"></v-list-item-title>
+          <v-list-item-title>
+            <span>{{data.item.first_name}}</span>
+            <AdminIcon :user="data.item"/>
+          </v-list-item-title>
           <v-list-item-subtitle v-html="data.item.student_id"></v-list-item-subtitle>
         </v-list-item-content>
       </template>
@@ -60,11 +65,13 @@
 </template>
 
 <script>
-import {getUserList} from "@/api/user";
+import {getUserDetail, getUserList} from "@/api/user";
 import debounce from "lodash/debounce";
 import {debounceTime, lazyAvatar} from "@/utils";
+import AdminIcon from "@/components/ui/user/admin-icon";
 
 export default {
+  components: {AdminIcon},
   props: {
     value: {
       type: Array,
@@ -93,10 +100,6 @@ export default {
   },
 
   computed: {
-    real_loading() {
-      console.log(this.loading, this.search_loading, this.loading || this.search_loading)
-      return this.loading || this.search_loading;
-    }
   },
 
   methods: {
@@ -107,6 +110,10 @@ export default {
         that.candidates = res.data.results;
         that.search_loading = false;
       })
+    },
+
+    updateData() {
+      this.selected = [...this.value]; // 将最新的数据复制一遍
     },
 
     add() {
@@ -132,14 +139,24 @@ export default {
     },
 
     value() {
-      this.selected = [...this.value];
+      this.updateData()
     }
   },
 
   created() {
+    window.uploader = this;
     this.fetchData();
     this.debouncedFetchData = debounce(this.fetchData, debounceTime);
-    this.selected = [...this.value]; // 将最新的数据复制一遍
+    this.updateData();
+    // todo 下面能暂时解决在名单的人初始化不能被加载
+    //  但是不能解决第二次进入该控件时刷新
+    // 如果把这段加入 updated，函数压力有亿点大
+    // 不如考虑缓存 userList
+    this.value.forEach(id => {
+      getUserDetail(id).then(res => {
+        this.candidates = [res.data];
+      })
+    })
   },
 
 }

@@ -96,7 +96,10 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
-                <a :href="link.url" target="_blank">{{ link.url }}</a>
+                <a
+                  :href="formatUrl(link.url)"
+                  target="_blank"
+                >{{ link.url }}</a>
               </v-list-item-title>
               <v-list-item-subtitle>{{ '链接 ' + (index + 1) }}</v-list-item-subtitle>
             </v-list-item-content>
@@ -178,7 +181,7 @@ import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
-import {downloadFile, formatBytes} from "@/utils/file";
+import {downloadFile, formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 
@@ -199,17 +202,18 @@ export default {
       activity: null,
       error: false,
       formatBytes,
-      downloadFile,
+      formatUrl,
     }
   },
 
   computed: {
     ...mapGetters(['isAdmin']),
     isPresenterOrAdmin() {
+      let that = this;
       // TODO: 测试正确性
       return this.isAdmin ||
         this.activity && this.activity.presenter.find(function(user) {
-          return user.id === this.$store.state.profile.id;
+          return user.id === that.$store.state.profile.id;
         })
     },
 
