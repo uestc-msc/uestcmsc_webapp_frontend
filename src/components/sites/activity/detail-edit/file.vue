@@ -200,7 +200,7 @@ export default {
         });
     },
 
-    updateFileStatusArray() {   // 根据 activity 更新 fileStatus
+    updateData() {   // 根据 activity 更新 fileStatus
       this.fileStatusArray = this.activity.file.map(info => new FileStatus(null, info));
     },
 
@@ -213,12 +213,12 @@ export default {
 
   watch: {
     activity() {
-      this.updateFileStatusArray();
+      this.updateData();
     }
   },
 
   created() {
-    this.updateFileStatusArray();
+    this.updateData();
   }
 };
 </script>

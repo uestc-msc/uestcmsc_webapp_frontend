@@ -1,7 +1,7 @@
 <!--  用于提示后端错误  -->
 <!-- 需要放在 <v-container> 里 -->
 <template>
-  <v-row no-gutters>
+  <v-row>
     <v-col>
       <v-alert elevation="4" :type="type">
         {{ msg }}

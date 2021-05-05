@@ -1,4 +1,5 @@
 import axios from '@/utils/axios';
+import {xhrTimeout} from "@/utils";
 
 export function getActivityList(keyword, page, pageSize) {
   return axios.get(`/activities/?search=${keyword}&page=${page}&page_size=${pageSize}`);
@@ -24,8 +25,8 @@ export function getActivityAdminDetail(activityId) {
   return axios.get(`/activities/${activityId}/admin/`);
 }
 
-export function updateActivityCheckInList(activityId, data) {
-  return axios.patch(`/activities/${activityId}/admin/checkin/`, data);
+export function updateActivityAttender(activityId, data) {
+  return axios.patch(`/activities/${activityId}/attender/`, data);
 }
 
 export function checkInActivity(activityId, data) {
@@ -53,7 +54,8 @@ export function deleteActivityLink(linkId) {
 //////////////////////////////  沙龙文件部分  //////////////////////////////
 
 export function addActivityFile(data) {
-  return axios.post('/activities/file/', data);
+  // 服务器端要多次访问 Onedrive API
+  return axios.post('/activities/file/', data, {timeout: 2 * xhrTimeout});
 }
 
 export function deleteActivityFile(fileId) {

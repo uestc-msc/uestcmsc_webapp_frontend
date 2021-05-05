@@ -21,24 +21,24 @@
 
       <v-tabs-items v-model="currentTab">
         <v-tab-item>
-          <ActivityInfo :activity="activity" @updated="updateActivity"/>
+          <ActivityInfo :activity.sync="activity"/>
           <div class="bottom-tips">{{bottomTips[0]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <ActivityPresenterAndAttender :activity="activity" @updated="updateActivity"/>
+          <ActivityPresenterAndAttender :activity.sync="activity"/>
           <div class="bottom-tips">{{bottomTips[1]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <ActivityFile :activity="activity" @updated="updateActivity"/>
+          <ActivityFile :activity.sync="activity"/>
           <v-divider/>
-          <ActivityLink :activity="activity" @updated="updateActivity"/>
+          <ActivityLink :activity.sync="activity"/>
           <div class="bottom-tips">{{bottomTips[2]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <Gallery :activity="activity" @updated="updateActivity"/>
+          <Gallery :activity.sync="activity"/>
           <div class="bottom-tips">{{bottomTips[3]}}</div>
         </v-tab-item>
 
@@ -79,9 +79,9 @@ export default {
       tabNames: ['沙龙信息', '主讲人和参与人', '文件和链接', '相册'],
       bottomTips: [
         '修改完成后请记得保存哦~',
-        '修改完成后请记得保存哦~',
-        '文件和链接都会即时保存，不用担心数据丢失~',
-        '相册会即时保存，不用担心图片丢失~'
+        '参与人名单会即时提交，修改主讲人后请记得保存哦~',
+        '文件和链接都会即时提交，不用担心数据丢失~',
+        '相册会即时提交，不用担心图片丢失~'
       ],
       currentTab: null,
       activity: null,
@@ -89,15 +89,7 @@ export default {
     };
   },
 
-  methods: {
-    updateActivity(value) {
-      console.log('activity updated');
-      this.activity = value;
-    }
-  },
-
   activated() {
-    // TODO: 从一个活动切到另一个活动，数据没有刷新
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.activity = this.$route.params.activity;

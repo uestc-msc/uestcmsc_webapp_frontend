@@ -83,11 +83,11 @@
 
 
 <script>
-import {appName, lazyAvatar} from '@/utils'
+import {appName} from '@/utils'
 import Router from '@/router';
-import { mapGetters } from 'vuex'
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import AdminIcon from "@/components/ui/user/admin-icon";
+import {getMyProfile} from "@/api/user";
 
 export default {
   components: {
@@ -136,5 +136,14 @@ export default {
       });
     },
   },
+
+  created() {
+    let that = this;
+    // 尝试使用上次的 sessionid 自动登录
+    getMyProfile().then((res) => {
+      that.$store.commit('setProfile', res.data);
+    }).catch((res) => {
+    });
+  }
 };
 </script>

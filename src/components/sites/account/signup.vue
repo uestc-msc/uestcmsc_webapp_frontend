@@ -1,4 +1,5 @@
 <template>
+  <!-- todo 初始化时学号为空 按钮为蓝色 但不可提交-->
   <SimpleCard>
     <v-form
       @submit.prevent="signup"

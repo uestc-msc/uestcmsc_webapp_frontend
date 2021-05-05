@@ -30,17 +30,5 @@ export default Vue.extend({
     Footer,
     Snackbar,
   },
-
-  created() {
-    let that = this;
-    // 尝试使用上次的 sessionid 自动登录
-    getMyProfile()
-      .then((res) => {
-        that.$store.commit('setProfile', res.data);
-      })
-      .catch((res) => {
-
-      });
-  }
 });
 </script>

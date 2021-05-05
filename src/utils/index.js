@@ -3,7 +3,8 @@ const { verbose_name, version } = require('/package.json');
 export const DEBUG = process.env.NODE_ENV === 'development';
 export const baseUrl = DEBUG ? `http://${window.location.hostname}:8000/api` : 'https://api.uestc-msc.com/api';
 
-export const debounceTime = 500;
+export const xhrTimeout = 5000;           // xhr 的超时
+export const debounceTime = 500;          // 频繁请求被转换为 0.5 秒请求一次
 export const displaySuccessTime = 1500;   // 操作成功提示的持续时间
 export const displayErrorTime = 3000;     // 操作失败提示的持续时间
 export const totalRetryTimes = 5;         // 上传失败的重试次数

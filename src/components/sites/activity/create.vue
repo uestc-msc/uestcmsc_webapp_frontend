@@ -27,7 +27,7 @@ export default {
   components: {FileUploader, SimpleCard, PeopleSelector},
   data() {
     return {
-      presenterList: []
+      presenterArray: []
     }
   },
 

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-import { baseUrl, DEBUG } from "@/utils";
+import {baseUrl, DEBUG, xhrTimeout} from "@/utils";
 
 // 创建axios实例
 const service = axios.create({
   baseURL: baseUrl,
-  timeout: 5000,                // 请求的超时时间
+  timeout: xhrTimeout,
   withCredentials: true,
   xsrfCookieName: 'csrftoken',  // 添加 CSRF token
   xsrfHeaderName: 'X-CSRFToken',

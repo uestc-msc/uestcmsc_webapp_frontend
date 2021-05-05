@@ -173,14 +173,14 @@ export default {
       return this.linkArray.find(status => status.info.url === url) === undefined;
     },
 
-    //TODO displayerrortime
-    createLink() {
+    async createLink() {
       let that = this;
       // 提交时检测是否有重复；输入时检测重复的性能开销太大，长按连续输入/删除字符时有明显卡顿
       if (!this.uniqueUrl(this.inputValue)) {
         this.inputErrorMsg = '链接已存在';
         // 3s 后去掉错误提示
-        setTimeout(() => that.inputErrorMsg = '', displayErrorTime)
+        await sleep(displayErrorTime);
+        this.inputErrorMsg = '';
         return;
       }
 
@@ -282,7 +282,7 @@ export default {
       window.open(url);
     },
 
-    updateLinkArray() {   // 根据 activity 更新 linkArray
+    updateData() {   // 根据 activity 更新 linkArray
       this.linkArray = this.activity.link.map(info => new Link(info));
     },
 
@@ -295,12 +295,13 @@ export default {
 
   watch: {
     activity() {
-      this.updateLinkArray()
+      this.updateData();
     }
   },
 
   created() {
-    this.updateLinkArray();
+    this.updateData();
   },
+
 };
 </script>
