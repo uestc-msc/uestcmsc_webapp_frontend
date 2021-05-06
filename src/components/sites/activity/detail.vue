@@ -31,7 +31,7 @@
             <v-list-item-title>
               <PeopleChipGroup
                 listitem
-                :users="activity.presenter"
+                :userId="activity.presenter"
               />
             </v-list-item-title>
             <v-list-item-subtitle>主讲人</v-list-item-subtitle>
@@ -116,7 +116,7 @@
             <v-list-item-title>
               <PeopleChipGroup
                 listitem
-                :users="activity.attender"
+                :userId="activity.attender"
               />
             </v-list-item-title>
             <v-list-item-subtitle>参与者（共 {{activity.attender.length}} 人）</v-list-item-subtitle>
@@ -212,9 +212,7 @@ export default {
       let that = this;
       // TODO: 测试正确性
       return this.isAdmin ||
-        this.activity && this.activity.presenter.find(function(user) {
-          return user.id === that.$store.state.profile.id;
-        })
+        this.activity && this.activity.presenter.includes(that.$store.state.profile.id);
     },
 
     clockIcon() {
@@ -251,7 +249,6 @@ export default {
       .then(response => {
         that.activity = response.data;
         generateTopPhoto(this.activity);
-        console.log(that.activity);
       })
       .catch(response => {
         that.error = response.data;

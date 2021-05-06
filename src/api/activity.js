@@ -2,6 +2,7 @@ import axios from '@/utils/axios';
 import {xhrTimeout} from "@/utils";
 
 export function getActivityList(keyword, page, pageSize) {
+  if (!keyword) keyword = '';
   return axios.get(`/activities/?search=${keyword}&page=${page}&page_size=${pageSize}`);
 }
 

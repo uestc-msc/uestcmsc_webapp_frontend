@@ -10,7 +10,7 @@
     <v-avatar left>
       <v-img
         :src="user.avatar_url"
-        :lazy-src="avatarDefault"
+        :lazy-src="lazyAvatar"
       >
         <template v-slot:placeholder>
           <PicturePlaceholder size="24" width="3"/>
@@ -30,18 +30,20 @@
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {lazyAvatar} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import {getUserDetail} from "@/api/user";
 export default {
   components: {PicturePlaceholder, AdminIcon},
   props: {
-    user: {
-      type: Object,
+    userId: {
+      type: Number,
       required: true
     }
   },
 
   data() {
     return {
-      avatarDefault: lazyAvatar
+      user: {},
+      lazyAvatar
     };
   },
 
@@ -55,5 +57,10 @@ export default {
       })
     }
   },
+
+  async created() {
+    let res = await getUserDetail(this.userId, true)
+    this.user = res.data;
+  }
 }
 </script>

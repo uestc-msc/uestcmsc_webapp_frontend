@@ -6,9 +6,9 @@
     column
   >
     <PeopleChip
-      v-for="user in users"
-      :key="user.id"
-      :user="user"
+      v-for="id in userId"
+      :key="id"
+      :userId="id"
     />
   </v-chip-group>
 </template>
@@ -34,7 +34,7 @@ import PeopleChip from "@/components/ui/user/people-chip";
 export default {
   components: {PeopleChip},
   props: {
-    users: {
+    userId: {
       type: Array,
       required: true
     },

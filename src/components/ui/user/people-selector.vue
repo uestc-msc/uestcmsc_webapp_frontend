@@ -112,8 +112,14 @@ export default {
       })
     },
 
-    updateData() {
+    async updateData() {
       this.selected = [...this.value]; // 将最新的数据复制一遍
+      let detail = [];
+      for (let id of this.value) {
+        let res = await getUserDetail(id, true);
+        detail.push(res.data);
+      }
+      this.candidates = detail;
     },
 
     add() {
@@ -129,8 +135,6 @@ export default {
       // 删除元素显然不会破坏有序性
       this.$emit('input', this.selected);
     },
-
-
   },
 
   watch: {
@@ -140,7 +144,7 @@ export default {
 
     value() {
       this.updateData()
-    }
+    },
   },
 
   created() {
@@ -148,15 +152,6 @@ export default {
     this.fetchData();
     this.debouncedFetchData = debounce(this.fetchData, debounceTime);
     this.updateData();
-    // todo 下面能暂时解决在名单的人初始化不能被加载
-    //  但是不能解决第二次进入该控件时刷新
-    // 如果把这段加入 updated，函数压力有亿点大
-    // 不如考虑缓存 userList
-    this.value.forEach(id => {
-      getUserDetail(id).then(res => {
-        this.candidates = [res.data];
-      })
-    })
   },
 
 }

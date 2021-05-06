@@ -133,7 +133,7 @@ export default {
       show_password: false,
       password_confirm: '',
       show_password_confirm: false,
-      student_id: null,
+      student_id: '',
 
       firstNameRules: inputRules.user.firstNameRules,
       usernameRules: inputRules.user.usernameRules,

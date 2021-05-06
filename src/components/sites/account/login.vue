@@ -67,7 +67,7 @@
             <v-btn
               plain
               color="primary"
-              @click="router.push({ name: 'SignUp' })"
+              @click="router.push({ name: 'Signup' })"
             >
               注册
             </v-btn>

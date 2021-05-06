@@ -15,7 +15,7 @@
       >
             <v-card
               class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
-              :color="`grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
+              :color="item.active() ? 'primary' : `grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
               ripple
               rounded
               flat
@@ -40,18 +40,29 @@ export default {
         {
           text: '登录',
           icon: 'mdi-login',
+          active: () => that.$route.name === 'Login',
           callback() {
             that.$router.push({name: 'Login'});
             that.$emit('hide');
           }
         },
+        {
+          text: '注册',
+          icon: 'mdi-account-plus',
+          active: () => that.$route.name === 'Signup',
+          callback() {
+            that.$router.push({name: 'Signup'});
+            that.$emit('hide');
+          }
+        },
       ],
+
       itemsForAuthenticated: [
         {
           text: '个人信息',
           icon: 'mdi-account',
+          active: () => that.$route.name === 'UserDetail',
           callback() {
-            console.log(that.$store.state.profile.id)
             that.$router.push({
               name: 'UserDetail',
               params: {userId: that.$store.state.profile.id}
@@ -62,6 +73,7 @@ export default {
         {
           text: '登出账号',
           icon: 'mdi-logout',
+          active: () => that.$route.name === 'Logout',
           callback() {
             that.$router.push({name: 'Logout'});
             that.$emit('hide');
@@ -71,15 +83,10 @@ export default {
     };
   },
 
-
   computed: {
     items() {
       return this.$store.getters.isAuthenticated ? this.itemsForAuthenticated : this.itemsForNotAuthenticated;
     },
   },
-
-  activated() {
-    this.internalValue = -1;
-  }
 }
 </script>

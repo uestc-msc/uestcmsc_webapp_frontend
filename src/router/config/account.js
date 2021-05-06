@@ -1,5 +1,5 @@
 import Login from '@/components/sites/account/login.vue'
-import SignUp from '@/components/sites/account/signup.vue'
+import Signup from '@/components/sites/account/signup.vue'
 import Logout from '@/components/sites/account/logout.vue'
 import ResetPassword from '@/components/sites/account/resetpassword.vue'
 import ForgetPassword from '@/components/sites/account/forgetpassword.vue'
@@ -7,8 +7,8 @@ import ForgetPassword from '@/components/sites/account/forgetpassword.vue'
 const routeConfig = [
   {
     path: '/signup',
-    name: 'SignUp',
-    component: SignUp
+    name: 'Signup',
+    component: Signup
   },
   {
     path: '/login',

@@ -1,5 +1,4 @@
 <template>
-<!--  todo 去 debounce -->
   <v-form>
     <v-col>
       <PeopleSelector
@@ -107,15 +106,15 @@ export default {
     },
 
     updateData() {   // 根据 activity 更新 presenterList attenderList
-      this.presenterArray = this.activity.presenter.map(u => u.id);
-      this.attenderArray = this.activity.attender.map(u => u.id);
+      this.presenterArray = this.activity.presenter;
+      this.attenderArray = this.activity.attender;
       this.lastAttenderArray = [...this.attenderArray];
       this.attenderUpdatingCount = 0;
     },
 
     updateActivity() {   // 根据 presenterList 更新 activity
       let new_activity = {...this.activity};
-      new_activity.presenter = this.presenterArray.map(id => ({id}));
+      new_activity.presenter = this.presenterArray;
       // attenderArray 的数据不能交给 activity，因为 updateAttenderArray 的逻辑是
       // 比对 val 和 attenderArray 计算出差值然后增量更新，如果更新 attenderArray 可能导致增量出现误差
       // new_activity.attender = this.attenderArray.map(id => ({id: id}));

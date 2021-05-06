@@ -1,6 +1,5 @@
 <!--  TODO: detail 和 detail-edit  的 v-img 转圈圈不知道转到哪里去了 反正看不见  nmdwsm
 推荐断网测试  -->
-<!--  TODO: detail 和 detail-edit 的 vcard 不是方形的  -->
 <template>
   <div>
     <ErrorAlertPage v-if="error">
@@ -143,7 +142,6 @@ export default {
 
   data() {
     return {
-      userId: 0,
       userProfile: null,
       error: false,
       avatarDefault: lazyAvatar,
@@ -151,6 +149,9 @@ export default {
   },
 
   computed: {
+    userId() {
+      return this.$route.params.userId;
+    },
     ...mapGetters(['isAdmin']),
     isSelfOrAdmin() {
       return this.$store.getters.isSelfOrAdmin(this.userId)
@@ -183,24 +184,34 @@ export default {
           userProfile: this.userProfile
         }
       });
+    },
+
+    fetchData() {
+      this.$store.commit('setAppbarLoading', true);
+      let that = this;
+      getUserDetail(this.userId)
+        .then(response => {
+          that.userProfile = response.data;
+        })
+        .catch(response => {
+          that.error = response.data;
+        })
+        .finally(() => {
+          that.$store.commit('setAppbarLoading', false)
+        })
+    }
+  },
+
+  watch: {
+    userId() {
+      if (this.userId)
+        this.fetchData();
     }
   },
 
   activated() {
     this.userProfile = this.$route.params.userProfile;
-    this.$store.commit('setAppbarLoading', true);
-    this.userId = this.$route.params.userId;
-    let that = this;
-    getUserDetail(this.userId)
-      .then(response => {
-        that.userProfile = response.data;
-      })
-      .catch(response => {
-        that.error = response.data;
-      })
-      .finally(() => {
-        that.$store.commit('setAppbarLoading', false)
-      })
+    this.fetchData();
   }
 };
 </script>
