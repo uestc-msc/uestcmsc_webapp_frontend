@@ -1,83 +1,99 @@
 <template>
-  <form>
-    <!--  已经上传/正在上传的文件  -->
-    <v-slide-y-transition group>
-      <v-text-field
-        readonly
-        v-for="fileStatus in fileStatusArray"
-        :key="fileStatus.key"
-        :loading="fileStatus.showProgressLine"
-        :value="fileLabel(fileStatus)"
-        :messages="fileStatus.msg"
-        prepend-icon="mdi-file"
-      >
-        <template v-slot:append-outer>
-          <v-btn
-            v-if="fileStatus.status === Status.default"
-            text
-            icon
-            :href="fileStatus.info.download_link"
-          >
-            <v-icon color="grey">mdi-download</v-icon>
-          </v-btn>
+  <v-container>
+    <form>
+      <!--  已经上传/正在上传的文件  -->
+      <v-slide-y-transition group>
+        <v-row
+          no-gutters
+          v-for="fileStatus in fileStatusArray"
+          :key="fileStatus.key"
+        >
+          <v-col>
+            <v-text-field
+              readonly
+              :loading="fileStatus.showProgressLine"
+              :disabled="disabled"
+              :value="fileLabel(fileStatus)"
+              :messages="fileStatus.msg"
+              prepend-icon="mdi-file"
+            >
+              <template v-slot:append-outer>
+                <v-btn
+                  v-if="fileStatus.status === Status.default"
+                  text
+                  icon
+                  :disabled="disabled"
+                  :href="fileStatus.info.download_link"
+                >
+                  <v-icon color="grey">mdi-download</v-icon>
+                </v-btn>
 
-          <ConfirmDialog
-            v-if="fileStatus.status === Status.default"
-            @confirm="deleteFile(fileStatus)"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                text
-                icon
-                v-on="on"
-                v-bind="attrs"
-              >
-                <v-icon color="grey">mdi-delete-forever</v-icon>
-              </v-btn>
-            </template>
-          </ConfirmDialog>
+                <ConfirmDialog
+                  v-if="fileStatus.status === Status.default"
+                  @confirm="deleteFile(fileStatus)"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      text
+                      icon
+                      :disabled="disabled"
+                      v-on="on"
+                      v-bind="attrs"
+                    >
+                      <v-icon color="grey">mdi-delete-forever</v-icon>
+                    </v-btn>
+                  </template>
+                </ConfirmDialog>
 
-          <ConfirmDialog
-            v-if="fileStatus.status === Status.uploading"
-            operation="取消"
-            tips="您真的取消吗？取消了就要重新上传哦"
-            war
-            @confirm="cancelUpload(fileStatus)"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                text
-                icon
-                v-on="on"
-                v-bind="attrs"
-              >
-                <v-icon color="grey">mdi-close</v-icon>
-              </v-btn>
-            </template>
-          </ConfirmDialog>
-        </template>
+                <ConfirmDialog
+                  v-if="fileStatus.status === Status.uploading"
+                  operation="取消"
+                  tips="您真的取消吗？取消了就要重新上传哦"
+                  war
+                  @confirm="cancelUpload(fileStatus)"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      text
+                      icon
+                      v-on="on"
+                      v-bind="attrs"
+                    >
+                      <v-icon color="grey">mdi-close</v-icon>
+                    </v-btn>
+                  </template>
+                </ConfirmDialog>
+              </template>
 
-        <template v-slot:progress>
-          <v-fade-transition>
-            <v-progress-linear
-              absolute
-              :value="fileStatus.status === Status.uploading ? fileStatus.progress : 100"
-              :indeterminate="fileStatus.status === Status.submitting"
-              :color="StatusColor[fileStatus.status]"
-            />
-          </v-fade-transition>
-        </template>
-      </v-text-field>
-    </v-slide-y-transition>
-    <!--  用户上传新文件的地方  -->
-    <v-file-input
-      multiple
-      @change="uploadNewFile"
-      :value="fileInputValue"
-      prepend-icon="mdi-upload"
-      placeholder="选择文件上传..."
-    />
-  </form>
+              <template v-slot:progress>
+                <v-fade-transition>
+                  <v-progress-linear
+                    absolute
+                    :value="fileStatus.status === Status.uploading ? fileStatus.progress : 100"
+                    :indeterminate="fileStatus.status === Status.submitting"
+                    :color="StatusColor[fileStatus.status]"
+                  />
+                </v-fade-transition>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-slide-y-transition>
+      <!--  用户上传新文件的地方  -->
+      <v-row no-gutters>
+        <v-col>
+          <v-file-input
+            multiple
+            @change="uploadNewFile"
+            :value="fileInputValue"
+            :disabled="disabled"
+            prepend-icon="mdi-upload"
+            placeholder="选择文件上传..."
+          />
+        </v-col>
+      </v-row>
+    </form>
+  </v-container>
 </template>
 
 <script>
@@ -162,7 +178,7 @@ export default {
             await sleep(displaySuccessTime);
             fileStatus.msg = '';
             fileStatus.status = Status.default;
-            this.updateActivity();
+            this.updateData();
           })
           .catch(async res => {
             fileStatus.msg = res.data;
@@ -193,7 +209,7 @@ export default {
           let index = that.fileStatusArray.indexOf(fileStatus);
           if (index !== -1)
             that.fileStatusArray.splice(index, 1);
-          this.updateActivity();
+          this.updateData();
         })
         .catch(async res => {
           fileStatus.status = Status.error;
@@ -204,11 +220,11 @@ export default {
         });
     },
 
-    updateData() {   // 根据 activity 更新 fileStatus
+    fetchData() {   // 根据 activity 更新 fileStatus
       this.fileStatusArray = this.activity.file.map(info => new FileStatus(null, info));
     },
 
-    updateActivity() {   // 根据 status 更新 activity
+    updateData() {   // 根据 status 更新 activity
       let new_activity = {...this.activity};
       new_activity.file = this.fileStatusArray.map(fileStatus => fileStatus.info)
       this.$emit('update', new_activity)
@@ -217,12 +233,12 @@ export default {
 
   watch: {
     activity() {
-      this.updateData();
+      this.fetchData();
     }
   },
 
   created() {
-    this.updateData();
+    this.fetchData();
   }
 };
 </script>

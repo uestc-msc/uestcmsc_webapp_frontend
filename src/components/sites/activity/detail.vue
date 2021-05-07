@@ -180,9 +180,6 @@
   </div>
 </template>
 
-<script type="text/javascript" src="http://static.runoob.com/assets/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
-
 <script>
 import '@/assets/common/common.css';
 import moment from '@/utils/moment'
@@ -199,7 +196,7 @@ import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import {generateQRCode} from "@/utils/qrcode";
 import {iconPath} from "@/utils";
-// import QRCode from '@/components/sites/activity/qrcode.js'
+import {getTimeIcon} from '@/utils/datetime';
 
 export default {
   components: {
@@ -232,12 +229,7 @@ export default {
     },
 
     clockIcon() {
-      const hourEnglish = [
-        'twelve', 'one', 'two', 'three',
-        'four', 'five', 'six', 'seven',
-        'eight', 'nine', 'ten', 'eleven'];
-      let hour = moment(this.activity.datetime).hour();
-      return `mdi-clock-time-${hourEnglish[hour % 12]}`;
+      return getTimeIcon(moment(this.activity.datetime).hour());
     },
     formattedTime() {
       return moment(this.activity.datetime).toChinese();

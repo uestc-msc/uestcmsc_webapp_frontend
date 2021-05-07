@@ -1,36 +1,43 @@
 <template>
-  <v-form>
-    <v-col>
-      <PeopleSelector
-        v-model="presenterArray"
-        label="选择主讲人 *"
-        prepend-icon="mdi-account"
-        :disabled="disabled"
-        @input="updateActivity"
-      />
-    </v-col>
-    <v-col>
-      <PeopleSelector
-        v-model="attenderArray"
-        label="选择参与人 *"
-        prepend-icon="mdi-account-multiple"
-        :disabled="disabled"
-        :loading="!!attenderUpdatingCount"
-        @input="updateAttenderArray"
-      />
-    </v-col>
-    <ErrorAlertRow
-      v-if="attenderUpdateError"
-      msg="更新参与人名单失败，请点击右下角保存按钮、保存其他数据后刷新重试"/>
-  </v-form>
+  <v-container>
+    <v-form>
+      <v-row no-gutters>
+        <v-col>
+          <PeopleSelector
+            v-model="presenterArray"
+            label="选择主讲人 *"
+            prepend-icon="mdi-account"
+            :disabled="disabled"
+            @input="updateData"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col>
+          <PeopleSelector
+            v-model="attenderArray"
+            label="选择参与人 *"
+            prepend-icon="mdi-account-multiple"
+            :disabled="disabled"
+            :loading="!!attenderUpdatingCount"
+            @input="updateAttenderArray"
+          />
+        </v-col>
+      </v-row>
+
+      <ErrorAlertRow
+        v-if="attenderUpdateError"
+        msg="更新参与人名单失败，请点击右下角保存按钮、保存其他数据后刷新重试"/>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
 import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
-import debounce from 'lodash/debounce'
-import {debounceTime, DEBUG, totalRetryTimes} from "@/utils";
-import {updateActivityAttender} from "@/api/activity";
+import {DEBUG, totalRetryTimes} from "@/utils";
+import {updateDataAttender} from "@/api/activity";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 
 export default {
@@ -93,7 +100,7 @@ export default {
       let res;
       for (let i = 1; i <= totalRetryTimes; i++) {
         try {
-          res = await updateActivityAttender(this.activity.id, {add, remove});
+          res = await updateDataAttender(this.activity.id, {add, remove});
           this.attenderUpdatingCount--;
           if (this.attenderUpdatingCount === 0)   // 如果没有别的更新请求，就用服务器给的名单覆盖
             this.attenderArray = res.data.attender.map(u => u.id);
@@ -111,14 +118,14 @@ export default {
 
     },
 
-    updateData() {   // 根据 activity 更新 presenterList attenderList
+    fetchData() {   // 根据 activity 更新 presenterList attenderList
       this.presenterArray = this.activity.presenter;
       this.attenderArray = this.activity.attender;
       this.lastAttenderArray = [...this.attenderArray];
       this.attenderUpdatingCount = 0;
     },
 
-    updateActivity() {   // 根据 presenterList 更新 activity
+    updateData() {   // 根据 presenterList 更新 activity
       let new_activity = {...this.activity};
       new_activity.presenter = this.presenterArray;
       // attenderArray 的数据不能交给 activity，因为 updateAttenderArray 的逻辑是
@@ -130,12 +137,12 @@ export default {
 
   watch: {
     activity() {
-      this.updateData();
+      this.fetchData();
     }
   },
 
   created() {
-    this.updateData();
+    this.fetchData();
   },
 }
 </script>ipt>

@@ -2,7 +2,7 @@ import {createUploadSession} from "@/api/cloud";
 import axios from "@/utils/axios";
 import {firstDelay, sleep, totalRetryTimes} from "@/utils/index";
 import {humanReadableFileSize} from "vuetify/lib/util/helpers";
-import moment from "moment";
+import moment from "@/utils/moment";
 import {Status} from "@/utils/status";
 
 // 文件分块大小为 50 MiB

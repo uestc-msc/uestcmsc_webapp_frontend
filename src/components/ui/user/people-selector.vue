@@ -6,6 +6,7 @@
     multiple
     :label="label"
     :loading="loading || search_loading"
+    :disabled="disabled"
     color="blue-grey lighten-2"
 
     v-model="selected"
@@ -41,11 +42,6 @@
 
     <!-- 在候选列表里面的 list-item 元素  -->
     <template v-slot:item="data">
-      <template v-if="typeof data.item !== 'object'">
-        <v-list-item-content v-text="data.item"></v-list-item-content>
-      </template>
-
-      <template v-else>
         <v-list-item-avatar>
           <v-img
             :src="data.item.avatar_url"
@@ -59,7 +55,6 @@
           </v-list-item-title>
           <v-list-item-subtitle v-html="data.item.student_id"></v-list-item-subtitle>
         </v-list-item-content>
-      </template>
     </template>
   </v-autocomplete>
 </template>
@@ -84,7 +79,11 @@ export default {
     loading: {
       type: Boolean,
       default: false
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
 
   data () {

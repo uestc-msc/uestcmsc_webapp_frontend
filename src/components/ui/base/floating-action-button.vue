@@ -3,19 +3,21 @@
 <template>
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        class="transition-swing"
-        fab
-        bottom
-        x-large
-        fixed
-        right
-        v-bind="{...attrs, ...$attrs}"
-        v-on="on"
-        @click="$emit('click')"
-      >
-        <v-icon>{{ icon }}</v-icon>
-      </v-btn>
+      <v-fab-transition>
+        <v-btn
+          class="transition-swing"
+          fab
+          bottom
+          x-large
+          fixed
+          right
+          v-bind="{...attrs, ...$attrs}"
+          v-on="on"
+          @click="$emit('click')"
+        >
+          <v-icon>{{ icon }}</v-icon>
+        </v-btn>
+      </v-fab-transition>
     </template>
     <span>{{ tooltip }}</span>
   </v-tooltip>

@@ -1,128 +1,148 @@
 <template>
-  <form>
-    <!--  已经存在的链接  -->
-    <v-slide-y-transition group>
-      <v-text-field
-        v-for="(link, index) in linkArray"
-        :key="link.key"
-        v-model="link.value"
-        :readonly="link.status !== Status.editing"
-        :loading="link.showProgressLine"
-        :messages="link.msg"
-        :error-messages="link.errorMsg"
-        prepend-icon="mdi-link"
-        @keydown.enter="updateLink(link)"
-      >
-        <template v-slot:append-outer>
-          <template v-if="link.status === Status.editing">
-            <v-fade-transition hide-on-leave>
-              <v-btn
-                v-if="link === '' || link.modified"
-                text
-                icon
-                @click="updateLink(link)"
-              >
-                <v-icon color="grey">mdi-check</v-icon>
-              </v-btn>
-            </v-fade-transition>
-
-            <v-fade-transition hide-on-leave>
-              <v-btn
-                text
-                icon
-                @click="link.status=Status.default; link.value=link.info.url"
-              >
-                <v-icon color="grey">mdi-close</v-icon>
-              </v-btn>
-            </v-fade-transition>
-          </template>
-
-          <template v-else-if="!link.showProgressLine">
-            <v-fade-transition hide-on-leave>
-              <v-btn
-                key="pencil"
-                text
-                icon
-                @click="link.status=Status.editing"
-              >
-                <v-icon color="grey">mdi-pencil</v-icon>
-              </v-btn>
-            </v-fade-transition>
-
-            <v-fade-transition hide-on-leave>
-              <v-btn
-                key="open-in-new"
-                text
-                icon
-                :href="formatUrl(link.info.url)"
-                target="_blank"
-              >
-                <v-icon color="grey">mdi-open-in-new</v-icon>
-              </v-btn>
-            </v-fade-transition>
-
-            <ConfirmDialog
-              key="delete-forever"
-              @confirm="deleteLink(link)"
+  <v-container>
+    <form>
+      <!--  已经存在的链接  -->
+      <v-slide-y-transition group>
+        <v-row
+          no-gutters
+          v-for="(link, index) in linkArray"
+          :key="link.key"
+        >
+          <v-col>
+            <v-text-field
+              v-model="link.value"
+              :readonly="link.status !== Status.editing"
+              :disabled="disabled"
+              :loading="link.showProgressLine"
+              :messages="link.msg"
+              :error-messages="link.errorMsg"
+              prepend-icon="mdi-link"
+              @keydown.enter="updateLink(link)"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:append-outer>
+                <template v-if="link.status === Status.editing">
+                  <v-fade-transition hide-on-leave>
+                    <v-btn
+                      v-if="link === '' || link.modified"
+                      text
+                      icon
+                      :disabled="disabled"
+                      @click="updateLink(link)"
+                    >
+                      <v-icon color="grey">mdi-check</v-icon>
+                    </v-btn>
+                  </v-fade-transition>
+
+                  <v-fade-transition hide-on-leave>
+                    <v-btn
+                      text
+                      icon
+                      :disabled="disabled"
+                      @click="link.status=Status.default; link.value=link.info.url"
+                    >
+                      <v-icon color="grey">mdi-close</v-icon>
+                    </v-btn>
+                  </v-fade-transition>
+                </template>
+
+                <template v-else-if="!link.showProgressLine">
+                  <v-fade-transition hide-on-leave>
+                    <v-btn
+                      key="pencil"
+                      text
+                      icon
+                      :disabled="disabled"
+                      @click="link.status=Status.editing"
+                    >
+                      <v-icon color="grey">mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-fade-transition>
+
+                  <v-fade-transition hide-on-leave>
+                    <v-btn
+                      key="open-in-new"
+                      text
+                      icon
+                      :disabled="disabled"
+                      :href="formatUrl(link.info.url)"
+                      target="_blank"
+                    >
+                      <v-icon color="grey">mdi-open-in-new</v-icon>
+                    </v-btn>
+                  </v-fade-transition>
+
+                  <ConfirmDialog
+                    key="delete-forever"
+                    @confirm="deleteLink(link)"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-fade-transition hide-on-leave>
+                        <v-btn
+                          text
+                          icon
+                          :disabled="disabled"
+                          v-on="on"
+                          v-bind="attrs"
+                        >
+                          <v-icon color="grey">mdi-delete-forever</v-icon>
+                        </v-btn>
+                      </v-fade-transition>
+                    </template>
+                  </ConfirmDialog>
+                </template>
+              </template>
+              <template v-slot:progress>
+                <v-fade-transition>
+                  <v-progress-linear
+                    absolute
+                    value="100"
+                    :indeterminate="link.status === Status.submitting"
+                    :color="StatusColor[link.status]"
+                  />
+                </v-fade-transition>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-slide-y-transition>
+
+      <!--  用户创建新链接的地方  -->
+      <v-slide-y-transition>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              v-model="inputValue"
+              prepend-icon="mdi-link-plus"
+              placeholder="添加新的链接..."
+              :error-messages="inputErrorMsg"
+              :disabled="disabled"
+              @keydown.enter="createLink"
+            >
+              <template v-slot:append-outer>
                 <v-fade-transition hide-on-leave>
                   <v-btn
+                    v-if="inputValue"
                     text
                     icon
-                    v-on="on"
-                    v-bind="attrs"
+                    :disabled="disabled"
+                    @click="createLink"
                   >
-                    <v-icon color="grey">mdi-delete-forever</v-icon>
+                    <v-icon color="grey">mdi-plus</v-icon>
                   </v-btn>
                 </v-fade-transition>
               </template>
-            </ConfirmDialog>
-          </template>
-        </template>
-        <template v-slot:progress>
-          <v-fade-transition>
-            <v-progress-linear
-              absolute
-              value="100"
-              :indeterminate="link.status === Status.submitting"
-              :color="StatusColor[link.status]"
-            />
-          </v-fade-transition>
-        </template>
-      </v-text-field>
-    </v-slide-y-transition>
-
-    <!--  用户创建新链接的地方  -->
-    <v-slide-y-transition>
-      <v-text-field
-        v-model="inputValue"
-        prepend-icon="mdi-link-plus"
-        placeholder="添加新的链接..."
-        :error-messages="inputErrorMsg"
-        @keydown.enter="createLink"
-      >
-        <template v-slot:append-outer>
-          <v-fade-transition hide-on-leave>
-            <v-btn
-              v-if="inputValue"
-              text
-              icon
-              @click="createLink"
-            >
-              <v-icon color="grey">mdi-plus</v-icon>
-            </v-btn>
-          </v-fade-transition>
-        </template>
-      </v-text-field>
-    </v-slide-y-transition>
-  </form>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-slide-y-transition>
+    </form>
+  </v-container>
 </template>
 
 <script>
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {displayErrorTime, displaySuccessTime, sleep} from "@/utils";
-import {addActivityLink, deleteActivityLink, updateActivityLink} from "@/api/activity";
+import {addActivityLink, deleteActivityLink, updateDataLink} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
 import {Status, StatusColor} from "@/utils/status";
 import {formatUrl} from "@/utils/file";
@@ -210,7 +230,7 @@ export default {
           await sleep(displaySuccessTime);
           link.msg = '';
           link.status = Status.default;
-          that.updateActivity();
+          that.updateData();
         })
         .catch(async res => {
           link.status = Status.error;
@@ -237,12 +257,12 @@ export default {
       }
 
       link.status = Status.submitting;
-      updateActivityLink(link.info.id, {url: link.value})
+      updateDataLink(link.info.id, {url: link.value})
         .then(async res => {
           link.status = Status.success;
           link.msg = '更新成功';
           link.info = res.data;
-          that.updateActivity();
+          that.updateData();
           await sleep(displaySuccessTime);
           link.status = Status.default;
           link.msg = '';
@@ -269,7 +289,7 @@ export default {
           let index = that.linkArray.indexOf(link);
           if (index !== -1)
             that.linkArray.splice(index, 1);
-          that.updateActivity();
+          that.updateData();
         })
         .catch(async res => {
           link.status = Status.error;
@@ -281,11 +301,11 @@ export default {
         });
     },
 
-    updateData() {   // 根据 activity 更新 linkArray
+    fetchData() {   // 根据 activity 更新 linkArray
       this.linkArray = this.activity.link.map(info => new Link(info));
     },
 
-    updateActivity() {   // 根据 linkArray 更新 activity
+    updateData() {   // 根据 linkArray 更新 activity
       let new_activity = {...this.activity};
       new_activity.link = this.linkArray.map(status => status.info);
       this.$emit('update', new_activity);
@@ -294,12 +314,12 @@ export default {
 
   watch: {
     activity() {
-      this.updateData();
+      this.fetchData();
     }
   },
 
   created() {
-    this.updateData();
+    this.fetchData();
   },
 
 };

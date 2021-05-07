@@ -8,10 +8,19 @@ export const Status = Object.freeze({
 })
 
 export const StatusColor = Object.freeze({
-  0: 'primary',
-  1: 'primary',
-  2: 'primary',
-  3: 'primary',
-  4: 'success',
-  5: 'error',
+  [Status.default]: 'primary',
+  [Status.editing]: 'primary',
+  [Status.submitting]: 'primary',
+  [Status.uploading]: 'primary',
+  [Status.success]: 'success',
+  [Status.error]: 'error',
+})
+
+export const StatusIcon = Object.freeze({
+  [Status.default]: 'mdi-pencil',
+  [Status.editing]: 'mdi-content-save',
+  [Status.submitting]: '',
+  [Status.uploading]: '',
+  [Status.success]: 'mdi-check',
+  [Status.error]: 'mdi-close',
 })

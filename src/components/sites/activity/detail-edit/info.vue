@@ -1,20 +1,60 @@
 <template>
-  <form>
-    <v-text-field
-    append-icon="mdi-book-open-page-variant"
-    v-mode="title"
-    label="主题"
-    />
+  <v-container>
+    <form>
+      <v-row no-gutters>
+        <v-col>
+          <v-text-field
+            prepend-icon="mdi-book-open-page-variant"
+            v-model="formData.title"
+            :disabled="disabled"
+            label="主题"
+            @change="updateData"
+          />
+        </v-col>
+      </v-row>
 
-    
-  </form>
+      <DatetimePicker
+        v-model="formData.datetime"
+        :disabled="disabled"
+        @change="updateData"
+      />
+
+      <v-row no-gutters>
+        <v-col>
+          <v-text-field
+            prepend-icon="mdi-map-marker"
+            v-model="formData.location"
+            :disabled="disabled"
+            label="地点"
+            @change="updateData"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col>
+          <v-switch
+            prepend-icon="mdi-checkbox-marked-circle-outline"
+            v-model="formData.check_in_open"
+            :disabled="disabled"
+            label="开放二维码签到"
+            @change="updateData"
+          />
+        </v-col>
+      </v-row>
+    </form>
+  </v-container>
 </template>
 
 <script>
+import {toISOStringWithTZ} from "@/utils/moment";
+import DatetimePicker from "@/components/ui/base/datetime-picker";
+
 export default {
+  components: {DatetimePicker},
   props: {
     activity: {
-      type: Object,
+      // type: Object, 刚进入时可能还没加载 activity 因此不做检查
       required: true
     },
     disabled: {
@@ -25,39 +65,44 @@ export default {
 
   data() {
     return {
-      title: '',
-      datetime: '',
-      location: '',
-      check_in_open: false,
+      formData: {
+        title: '',
+        datetime: moment().format(),
+        location: '',
+        check_in_open: false,
+      }
     }
   },
 
   methods: {
-    updateData() {   // 根据 activity 更新 data
-      this.title = this.activity.title;
-      this.datetime = this.activity.datetime;
-      this.location = this.activity.location;
-      this.check_in_open = this.activity.check_in_open;
+    fetchData() {   // 根据 activity 更新 data
+      if (!this.activity)
+        return;
+
+      for (let attr in this.formData) {
+        this.formData[attr] = this.activity[attr];
+      }
     },
 
-    updateActivity() {   // 根据 data 更新 activity
+    updateData() {   // 根据 data 更新 activity
+      console.log(`updateData, datetime is ${this.formData.datetime}`);
       let new_activity = {...this.activity};
-      new_activity.title = this.title;
-      new_activity.datetime = this.datetime;
-      new_activity.location = this.location;
-      new_activity.check_in_open = this.check_in_open;
+      for (let attr in this.formData) {
+        new_activity[attr] = this.formData[attr];
+      }
       this.$emit('update', new_activity);
     }
   },
 
   watch: {
     activity() {
-      this.updateData();
-    }
+      this.fetchData();
+    },
   },
 
   created() {
-    this.updateData();
+    this.fetchData();
+    window.info = this;
   },
 };
 </script>
