@@ -24,11 +24,11 @@
           </v-btn>
         </v-card-actions>
       </v-card-title>
+
       <v-container>
         <v-row class="justify-center">
           <v-col>
             <v-form
-              @submit.prevent="submitPassword"
               ref="form"
               v-model="formValid"
               key="1"

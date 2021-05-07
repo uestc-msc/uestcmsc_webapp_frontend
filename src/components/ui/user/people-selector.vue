@@ -5,9 +5,9 @@
     chips
     multiple
     :label="label"
+    :prepend-icon="prependIcon"
     :loading="loading || search_loading"
     :disabled="disabled"
-    color="blue-grey lighten-2"
 
     v-model="selected"
     :rules="rules"
@@ -88,6 +88,10 @@ export default {
     rules: {
       type: Array,
       default: () => []
+    },
+    prependIcon: {
+      type: String,
+      default: ''
     }
   },
 
@@ -152,7 +156,6 @@ export default {
   },
 
   created() {
-    window.uploader = this;
     this.fetchData();
     this.debouncedFetchData = debounce(this.fetchData, debounceTime);
     this.updateData();

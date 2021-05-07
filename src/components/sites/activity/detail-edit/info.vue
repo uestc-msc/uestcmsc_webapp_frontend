@@ -8,7 +8,7 @@
             v-model="formData.title"
             :rules="titleRules"
             :disabled="disabled"
-            label="主题"
+            label="主题 *"
             @change="updateData"
           />
         </v-col>
@@ -27,7 +27,7 @@
             v-model="formData.location"
             :rules="locationRules"
             :disabled="disabled"
-            label="地点"
+            label="地点 *"
             @change="updateData"
           />
         </v-col>
@@ -108,7 +108,6 @@ export default {
 
   created() {
     this.fetchData();
-    window.info = this;
   },
 };
 </script>

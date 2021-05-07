@@ -39,7 +39,6 @@ export default {
   methods: {
     uploadNewPhoto(files) {
       let that = this;
-      window.that = this;
       const formattedFiles = formatFileUploaderInput(files);
 
       Promise.all(formattedFiles.map(async (file) => {

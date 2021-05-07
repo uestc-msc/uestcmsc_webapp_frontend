@@ -195,7 +195,7 @@ import {formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import {generateQRCode} from "@/utils/qrcode";
-import {iconPath} from "@/utils";
+import {DEBUG, iconPath} from "@/utils";
 import {getTimeIcon} from '@/utils/datetime';
 
 export default {
@@ -248,12 +248,14 @@ export default {
   },
 
   activated() {
-    window.activity = this;
+    if (DEBUG)
+      window.activity = this;
+    let that = this;
     this.activity = this.$route.params.activity;
     if (!this.activity) {
       this.$store.commit('setAppbarLoading', true);
       this.activityId = this.$route.params.activityId;
-      let that = this;
+
       getActivityDetail(this.activityId)
         .then(response => {
           that.activity = response.data;
@@ -265,6 +267,8 @@ export default {
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)
         })
+    } else {
+      generateTopPhoto(that.activity);
     }
   }
 };

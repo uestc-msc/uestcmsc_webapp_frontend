@@ -8,7 +8,6 @@ export default new Vuex.Store({
   strict: DEBUG,
   state: {
     // 当前登录用户信息
-    // TODO: pathify
     profile: {
       id: -1,
       username: "",

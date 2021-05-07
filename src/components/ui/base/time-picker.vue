@@ -14,7 +14,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
         v-model="time"
-        label="时间"
+        label="时间 *"
         :prepend-icon="clockIcon"
         readonly
         :disabled="disabled"

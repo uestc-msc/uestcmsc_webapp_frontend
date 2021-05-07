@@ -24,6 +24,7 @@
     <BottomLine v-else/>
 
     <FloatingActionButton
+      v-if="$store.getters.isAuthenticated"
       icon="mdi-plus"
       color="primary"
       tooltip="创建沙龙"

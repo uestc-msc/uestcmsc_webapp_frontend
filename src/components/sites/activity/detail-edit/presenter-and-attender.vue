@@ -38,7 +38,7 @@
 import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {DEBUG, totalRetryTimes} from "@/utils";
-import {updateDataAttender} from "@/api/activity";
+import {updateActivityAttender} from "@/api/activity";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {inputRules} from "@/utils/validators";
 
@@ -103,10 +103,10 @@ export default {
       let res;
       for (let i = 1; i <= totalRetryTimes; i++) {
         try {
-          res = await updateDataAttender(this.activity.id, {add, remove});
+          res = await updateActivityAttender(this.activity.id, {add, remove});
           this.attenderUpdatingCount--;
           if (this.attenderUpdatingCount === 0)   // 如果没有别的更新请求，就用服务器给的名单覆盖
-            this.attenderArray = res.data.attender.map(u => u.id);
+            this.attenderArray = res.data.attender;
           break;
         }
         catch (err) {

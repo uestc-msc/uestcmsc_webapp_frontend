@@ -1,50 +1,65 @@
 <template>
   <div>
   <SimpleCard>
-    <v-form ref="form">
-      <v-row no-gutters>
-        <v-col>
-          <v-text-field
-            prepend-icon="mdi-book-open-page-variant"
-            v-model="formData.title"
-            :rules="titleRules"
-            :disabled="status === Status.submitting"
-            label="主题"
-            @change="updateData"
-          />
-        </v-col>
-      </v-row>
+    <v-form
+      ref="form"
+      v-model="formValid"
+    >
+      <v-container>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              prepend-icon="mdi-book-open-page-variant"
+              v-model="formData.title"
+              :rules="titleRules"
+              :disabled="status === Status.submitting"
+              label="主题 *"
+            />
+          </v-col>
+        </v-row>
 
-      <DatetimePicker
-        v-model="formData.datetime"
-        :disabled="disabled"
-        @change="updateData"
-      />
+        <DatetimePicker
+          no-gutters
+          v-model="formData.datetime"
+          :disabled="status === Status.submitting"
+        />
 
-      <v-row no-gutters>
-        <v-col>
-          <v-text-field
-            prepend-icon="mdi-map-marker"
-            v-model="formData.location"
-            :rules="locationRules"
-            :disabled="disabled"
-            label="地点"
-            @change="updateData"
-          />
-        </v-col>
-      </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field
+              prepend-icon="mdi-map-marker"
+              v-model="formData.location"
+              :rules="locationRules"
+              :disabled="status === Status.submitting"
+              label="地点 *"
+            />
+          </v-col>
+        </v-row>
 
+        <v-row no-gutters>
+          <v-col>
+            <PeopleSelector
+              v-model="formData.presenter"
+              :rules="presenterRules"
+              label="选择主讲人 *"
+              prepend-icon="mdi-account"
+              :disabled="status === Status.submitting"
+            />
+          </v-col>
+        </v-row>
 
-
-    <ErrorAlertRow
-      :msg="error"
-    />
+        <ErrorAlertRow
+          v-if="errorMsg"
+          :msg="errorMsg"
+        />
+      </v-container>
     </v-form>
   </SimpleCard>
 
   <FloatingActionButton
     :icon="StatusIcon[status]"
     :color="StatusColor[status]"
+    :disabled="!formValid"
     :loading="status === Status.submitting"
     tooltip="保存"
     @click="updateData"
@@ -55,36 +70,41 @@
 <script>
 import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
-import FileUploader from "@/components/ui/file/file-uploader";
-import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
+import {DEBUG, displayErrorTime, sleep} from "@/utils";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
-import {createActivity, updateActivityDetail} from "@/api/activity";
+import {createActivity} from "@/api/activity";
 import DatetimePicker from "@/components/ui/base/datetime-picker";
 import {inputRules} from "@/utils/validators";
+import FloatingActionButton from "@/components/ui/base/floating-action-button";
 
 export default {
-  components: {DatetimePicker, ErrorAlertRow, PeopleSelector, SimpleCard},
+  components: {FloatingActionButton, DatetimePicker, ErrorAlertRow, PeopleSelector, SimpleCard},
 
   data() {
-    let that = this;
+    let presenter = [];
+    if (this.$store.getters.isAuthenticated) {
+      presenter.push(this.$store.profile.id);   // 默认自己为主讲人
+    }
     return {
+      Status,
+      StatusColor,
+      StatusIcon,
+
       formData: {
         title: '',
-        datetime: '',
+        datetime: moment().format('YYYY-MM-DD') + 'T16:00+08:00',
         location: '',
-        presenter: [that.$store.state.profile.id],
+        presenter,
       },
 
       titleRules: inputRules.activity.titleRules,
       locationRules: inputRules.activity.locationRules,
       presenterRules: inputRules.activity.presenterRules,
 
-      error,
-      status,
-      Status,
-      StatusColor,
-      StatusIcon,
+      formValid: false,
+      errorMsg: "",
+      status: Status.editing,
     }
   },
 
@@ -93,6 +113,11 @@ export default {
       if (this.status !== Status.editing)
         return;
 
+      this.formValid = this.$refs.form.validate();
+      if (!this.formValid)
+        return;
+
+      this.errorMsg = '';
       this.status = Status.submitting;
       createActivity(this.formData)
         .then(async res => {
@@ -108,8 +133,8 @@ export default {
           });
         })
         .catch(async res => {
+          this.errorMsg = res.data;
           this.status = Status.error;
-          this.$store.commit('setMsg', res.data);
           await sleep(displayErrorTime);
           this.status = Status.editing;
         })

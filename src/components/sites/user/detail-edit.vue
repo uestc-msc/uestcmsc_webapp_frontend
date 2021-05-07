@@ -5,7 +5,6 @@
     <v-container>
       <!--    个人信息修改部分    -->
       <v-form
-        @submit.prevent="submit"
         ref="form"
         v-model="formValid"
       >

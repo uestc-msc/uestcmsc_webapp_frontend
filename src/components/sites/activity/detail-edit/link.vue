@@ -142,7 +142,7 @@
 <script>
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {displayErrorTime, displaySuccessTime, sleep} from "@/utils";
-import {addActivityLink, deleteActivityLink, updateDataLink} from "@/api/activity";
+import {addActivityLink, deleteActivityLink, updateActivityLink} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
 import {Status, StatusColor} from "@/utils/status";
 import {formatUrl} from "@/utils/file";
@@ -257,7 +257,7 @@ export default {
       }
 
       link.status = Status.submitting;
-      updateDataLink(link.info.id, {url: link.value})
+      updateActivityLink(link.info.id, {url: link.value})
         .then(async res => {
           link.status = Status.success;
           link.msg = '更新成功';

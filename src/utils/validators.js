@@ -27,7 +27,7 @@ export const inputRules = Object.freeze({
       v => v.length <= 50 || '地点应不多于 50 字'
     ],
     presenterRules: [
-      v => v.length !== 0 || '演讲者不能为空',
+      v => v.length !== 0 || '主讲人名单不能为空',
     ],
   }
 });

@@ -157,7 +157,6 @@ export default {
         return;
 
       let that = this;
-      window.ddd = this;
       // 检查每个 tab 下的 form 是否正确，不正确就跳到这个 tab
       // 注意尚未加载的 tab 是没有 refs 的
       for (let child in this.childRefs) {

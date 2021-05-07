@@ -12,7 +12,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
         v-model="date"
-        label="日期"
+        label="日期 *"
         prepend-icon="mdi-calendar"
         readonly
         :disabled="disabled"
