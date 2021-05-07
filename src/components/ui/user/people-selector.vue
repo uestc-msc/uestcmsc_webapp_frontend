@@ -10,6 +10,7 @@
     color="blue-grey lighten-2"
 
     v-model="selected"
+    :rules="rules"
     @input="add"
     :items="candidates"
     item-value="id"
@@ -84,6 +85,10 @@ export default {
       type: Boolean,
       default: false
     },
+    rules: {
+      type: Array,
+      default: () => []
+    }
   },
 
   data () {

@@ -22,6 +22,7 @@
       <v-tabs-items v-model="currentTab">
         <v-tab-item>
           <ActivityInfo
+            ref="info"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
@@ -30,6 +31,7 @@
 
         <v-tab-item>
           <ActivityPresenterAndAttender
+            ref="presenterAndAttender"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
@@ -38,11 +40,13 @@
 
         <v-tab-item>
           <ActivityFile
+            ref="file"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
           <v-divider/>
           <ActivityLink
+            ref="link"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
@@ -50,7 +54,8 @@
         </v-tab-item>
 
         <v-tab-item>
-          <Gallery
+          <ActivityPhoto
+            ref="photo"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
             :toggle-upload-photo="toggleUploadPhoto"
@@ -88,7 +93,7 @@ import ActivityPresenterAndAttender from "@/components/sites/activity/detail-edi
 import {getActivityDetail, updateActivityDetail} from "@/api/activity";
 import ActivityFile from "@/components/sites/activity/detail-edit/file";
 import ActivityLink from "@/components/sites/activity/detail-edit/link";
-import Gallery from "@/components/sites/activity/detail-edit/photos";
+import ActivityPhoto from "@/components/sites/activity/detail-edit/photos";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
@@ -100,28 +105,35 @@ export default {
     ErrorAlertComponent,
     ErrorAlertRow,
     FloatingActionButton,
-    Gallery, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
+    ActivityPhoto, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
   },
   data() {
     return {
       tabNames: ['沙龙信息', '主讲人和参与人', '文件和链接', '相册'],
+      childRefs: {
+        info: 0,
+        presenterAndAttender: 1,
+        file: 2,
+        link: 2,
+        photo: 3
+      },
       bottomTips: [
         '修改完成后请记得保存哦~',
         '参与人名单会即时提交，修改主讲人后请记得保存哦~',
         '文件和链接会即时上传，不用担心数据丢失~',
         '图片会即时上传，不用担心图片丢失~'
       ],
-      currentTab: null,
+      currentTab: 0,
       activity: null,
       error: null,
       status: Status.editing,
       Status,
       StatusColor,
       StatusIcon,
-
       toggleUploadPhoto: false
     };
-  },
+  }
+  ,
 
   methods: {
     fetchData() {
@@ -143,6 +155,19 @@ export default {
     updateData() {
       if (this.status !== Status.editing)
         return;
+
+      let that = this;
+      window.ddd = this;
+      // 检查每个 tab 下的 form 是否正确，不正确就跳到这个 tab
+      // 注意尚未加载的 tab 是没有 refs 的
+      for (let child in this.childRefs) {
+        if (this.$refs[child] && this.$refs[child].$refs.form.validate() === false) {
+          this.currentTab = this.childRefs[child];
+          this.status = Status.error;
+          sleep(displayErrorTime).then(() => that.status = Status.editing)
+          return;
+        }
+      }
 
       this.status = Status.submitting;
       updateActivityDetail(this.activityId, this.activity)

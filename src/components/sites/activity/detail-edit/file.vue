@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <form>
+    <v-form ref="form">
       <!--  已经上传/正在上传的文件  -->
       <v-slide-y-transition group>
         <v-row
@@ -92,7 +92,7 @@
           />
         </v-col>
       </v-row>
-    </form>
+    </v-form>
   </v-container>
 </template>
 
@@ -227,7 +227,7 @@ export default {
     updateData() {   // 根据 status 更新 activity
       let new_activity = {...this.activity};
       new_activity.file = this.fileStatusArray.map(fileStatus => fileStatus.info)
-      this.$emit('update', new_activity)
+      this.$emit('update:activity', new_activity)
     }
   },
 

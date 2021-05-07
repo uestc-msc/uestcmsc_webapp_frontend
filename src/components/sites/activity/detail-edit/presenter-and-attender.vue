@@ -1,10 +1,11 @@
 <template>
   <v-container>
-    <v-form>
+    <v-form ref="form">
       <v-row no-gutters>
         <v-col>
           <PeopleSelector
             v-model="presenterArray"
+            :rules="presenterRules"
             label="选择主讲人 *"
             prepend-icon="mdi-account"
             :disabled="disabled"
@@ -39,6 +40,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import {DEBUG, totalRetryTimes} from "@/utils";
 import {updateDataAttender} from "@/api/activity";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
+import {inputRules} from "@/utils/validators";
 
 export default {
   props: {
@@ -59,6 +61,7 @@ export default {
       // 更新前的名单。以此作为基准进行增量更新
       lastAttenderArray: [],
 
+      presenterRules: inputRules.activity.presenterRules,
       attenderUpdatingCount: 0,
       attenderUpdateError: false,
     }
@@ -131,7 +134,7 @@ export default {
       // attenderArray 的数据不能交给 activity，因为 updateAttenderArray 的逻辑是
       // 比对 val 和 attenderArray 计算出差值然后增量更新，如果更新 attenderArray 可能导致增量出现误差
       // new_activity.attender = this.attenderArray.map(id => ({id: id}));
-      this.$emit('update', new_activity);
+      this.$emit('update:activity', new_activity);
     }
   },
 

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <form>
+    <v-form ref="form">
       <!--  已经存在的链接  -->
       <v-slide-y-transition group>
         <v-row
@@ -135,7 +135,7 @@
           </v-col>
         </v-row>
       </v-slide-y-transition>
-    </form>
+    </v-form>
   </v-container>
 </template>
 
@@ -308,7 +308,7 @@ export default {
     updateData() {   // 根据 linkArray 更新 activity
       let new_activity = {...this.activity};
       new_activity.link = this.linkArray.map(status => status.info);
-      this.$emit('update', new_activity);
+      this.$emit('update:activity', new_activity);
     }
   },
 

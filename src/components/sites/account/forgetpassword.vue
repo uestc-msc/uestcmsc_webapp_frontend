@@ -2,7 +2,7 @@
   <SimpleCard>
     <v-form
       @submit.prevent="submit"
-      ref="forgetPasswordForm"
+      ref="form"
       v-model="formValid"
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
@@ -66,7 +66,7 @@ export default {
 
   methods: {
     submit() {
-      this.formValid = this.$refs.forgetPasswordForm.validate();
+      this.formValid = this.$refs.form.validate();
       if (!this.formValid)
         return;
 

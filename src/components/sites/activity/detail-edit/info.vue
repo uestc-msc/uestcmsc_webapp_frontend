@@ -1,11 +1,12 @@
 <template>
   <v-container>
-    <form>
+    <v-form ref="form">
       <v-row no-gutters>
         <v-col>
           <v-text-field
             prepend-icon="mdi-book-open-page-variant"
             v-model="formData.title"
+            :rules="titleRules"
             :disabled="disabled"
             label="主题"
             @change="updateData"
@@ -24,6 +25,7 @@
           <v-text-field
             prepend-icon="mdi-map-marker"
             v-model="formData.location"
+            :rules="locationRules"
             :disabled="disabled"
             label="地点"
             @change="updateData"
@@ -42,13 +44,14 @@
           />
         </v-col>
       </v-row>
-    </form>
+    </v-form>
   </v-container>
 </template>
 
 <script>
 import {toISOStringWithTZ} from "@/utils/moment";
 import DatetimePicker from "@/components/ui/base/datetime-picker";
+import {inputRules} from "@/utils/validators";
 
 export default {
   components: {DatetimePicker},
@@ -70,7 +73,10 @@ export default {
         datetime: moment().format(),
         location: '',
         check_in_open: false,
-      }
+      },
+
+      titleRules: inputRules.activity.titleRules,
+      locationRules: inputRules.activity.locationRules
     }
   },
 
@@ -90,7 +96,7 @@ export default {
       for (let attr in this.formData) {
         new_activity[attr] = this.formData[attr];
       }
-      this.$emit('update', new_activity);
+      this.$emit('update:activity', new_activity);
     }
   },
 

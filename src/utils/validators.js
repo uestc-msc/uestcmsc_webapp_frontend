@@ -3,7 +3,7 @@ export function isEmail(str) {
   return /[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$/.test(str);
 }
 
-export const inputRules = {
+export const inputRules = Object.freeze({
   user: {
     firstNameRules: [v => !!v || '姓名不能为空'],
     usernameRules: [v => isEmail(v) || '邮箱不合法'],
@@ -20,11 +20,14 @@ export const inputRules = {
   activity: {
     titleRules: [
       v => !!v || '标题不能为空',
-      v => v.length <= 150 || '学号应不多于 150 字'
+      v => v.length <= 150 || '标题应不多于 150 字'
     ],
     locationRules: [
       v => !!v || '地点不能为空',
       v => v.length <= 50 || '地点应不多于 50 字'
     ],
+    presenterRules: [
+      v => v.length !== 0 || '演讲者不能为空',
+    ],
   }
-}
+});

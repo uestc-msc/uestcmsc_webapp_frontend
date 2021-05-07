@@ -2,7 +2,7 @@
   <SimpleCard>
     <v-form
       @submit.prevent="login"
-      ref="loginForm"
+      ref="form"
       v-model="valid"
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
@@ -108,7 +108,7 @@ export default Vue.extend({
 
   methods: {
     login() {
-      this.valid = this.$refs.loginForm.validate();
+      this.valid = this.$refs.form.validate();
       if (!this.valid)
         return;
 
