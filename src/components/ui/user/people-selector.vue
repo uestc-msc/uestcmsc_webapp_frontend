@@ -31,7 +31,7 @@
         <v-avatar left>
           <v-img
             :src="data.item.avatar_url"
-            :lazy-src="avatarDefault"
+            :lazy-src="lazyAvatar"
           />
         </v-avatar>
         {{ data.item.first_name }}
@@ -49,7 +49,7 @@
         <v-list-item-avatar>
           <v-img
             :src="data.item.avatar_url"
-            :lazy-src="avatarDefault"
+            :lazy-src="lazyAvatar"
           />
         </v-list-item-avatar>
         <v-list-item-content>
@@ -95,7 +95,7 @@ export default {
       keyword: '',
       search_loading: false,
       debouncedFetchData: null,
-      avatarDefault: lazyAvatar
+      lazyAvatar
     }
   },
 

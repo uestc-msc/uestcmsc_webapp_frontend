@@ -60,6 +60,17 @@
 
         <v-divider inset></v-divider>
 
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon color="primary">mdi-qrcode</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <div
+              id="qrcode"
+            />
+          </v-list-item-content>
+        </v-list-item>
+
         <template v-if="activity.file.length">
           <v-list-item
             v-for="(file, index) in activity.file"
@@ -169,6 +180,8 @@
   </div>
 </template>
 
+<script type="text/javascript" src="http://static.runoob.com/assets/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
 
 <script>
 import '@/assets/common/common.css';
@@ -181,9 +194,12 @@ import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
-import {downloadFile, formatBytes, formatUrl} from "@/utils/file";
+import {formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
+import {generateQRCode} from "@/utils/qrcode";
+import {iconPath} from "@/utils";
+// import QRCode from '@/components/sites/activity/qrcode.js'
 
 export default {
   components: {
@@ -242,20 +258,22 @@ export default {
   activated() {
     window.activity = this;
     this.activity = this.$route.params.activity;
-    this.$store.commit('setAppbarLoading', true);
-    this.activityId = this.$route.params.activityId;
-    let that = this;
-    getActivityDetail(this.activityId)
-      .then(response => {
-        that.activity = response.data;
-        generateTopPhoto(this.activity);
-      })
-      .catch(response => {
-        that.error = response.data;
-      })
-      .finally(() => {
-        that.$store.commit('setAppbarLoading', false)
-      })
+    if (!this.activity) {
+      this.$store.commit('setAppbarLoading', true);
+      this.activityId = this.$route.params.activityId;
+      let that = this;
+      getActivityDetail(this.activityId)
+        .then(response => {
+          that.activity = response.data;
+          generateTopPhoto(that.activity);
+        })
+        .catch(response => {
+          that.error = response.data;
+        })
+        .finally(() => {
+          that.$store.commit('setAppbarLoading', false)
+        })
+    }
   }
 };
 </script>

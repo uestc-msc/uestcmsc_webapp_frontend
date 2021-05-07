@@ -151,9 +151,12 @@ export default {
     activity: {
       type: Object,
       required: true
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
-
   components: {ConfirmDialog, ErrorAlertRow},
 
   data() {

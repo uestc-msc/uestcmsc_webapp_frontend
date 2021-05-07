@@ -5,6 +5,7 @@
         v-model="presenterArray"
         label="选择主讲人 *"
         prepend-icon="mdi-account"
+        :disabled="disabled"
         @input="updateActivity"
       />
     </v-col>
@@ -13,6 +14,7 @@
         v-model="attenderArray"
         label="选择参与人 *"
         prepend-icon="mdi-account-multiple"
+        :disabled="disabled"
         :loading="!!attenderUpdatingCount"
         @input="updateAttenderArray"
       />
@@ -36,7 +38,11 @@ export default {
     activity: {
       type: Object,
       required: true
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
   components: {ErrorAlertRow, SimpleCard, PeopleSelector},
   data() {

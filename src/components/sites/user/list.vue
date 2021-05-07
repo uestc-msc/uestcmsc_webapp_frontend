@@ -28,7 +28,7 @@
           <v-avatar>
             <v-img
               :src="user.avatar_url"
-              :lazy-src="avatarDefault"
+              :lazy-src="lazyAvatar"
             >
               <template v-slot:placeholder>
                   <PicturePlaceholder size="48"/>
@@ -74,7 +74,7 @@ export default {
     pageSize: 12,
     count: 0,
     error: false,
-    avatarDefault: lazyAvatar,
+    lazyAvatar,
   }),
 
   computed: {

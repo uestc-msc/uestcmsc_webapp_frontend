@@ -4,6 +4,17 @@
 
 <script>
 export default {
+  props: {
+    activity: {
+      type: Object,
+      required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+  },
+
   methods: {
     updateData() {   // 根据 activity 更新 linkArray
       this.linkArray = this.activity.link.map(info => new Link(info));

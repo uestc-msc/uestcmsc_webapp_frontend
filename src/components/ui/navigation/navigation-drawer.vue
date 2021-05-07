@@ -8,7 +8,7 @@
   >
     <v-list-item class="px-2">
       <v-list-item-avatar>
-        <v-img src="/static/icons/favicon-96x96.png"/>
+        <v-img :src="iconPath"/>
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title style="font-size:15px">
@@ -78,13 +78,14 @@
 
 <script>
 import Vue from 'vue'
-import {appName, appVersion, baseUrl} from '@/utils'
+import {appName, appVersion, baseUrl, iconPath} from '@/utils'
 import {mapGetters} from 'vuex'
 
 export default Vue.extend({
   props: ['toggleEvent'],
   data() {
     return {
+      iconPath,
       appName,
       appVersion,
       show: null,   //在移动设备上关闭，在桌面环境下打开

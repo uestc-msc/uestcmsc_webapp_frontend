@@ -21,24 +21,39 @@
 
       <v-tabs-items v-model="currentTab">
         <v-tab-item>
-          <ActivityInfo :activity.sync="activity"/>
+          <ActivityInfo
+            :disabled="disabled"
+            :activity.sync="activity"
+          />
           <div class="bottom-tips">{{bottomTips[0]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <ActivityPresenterAndAttender :activity.sync="activity"/>
+          <ActivityPresenterAndAttender
+            :disabled="disabled"
+            :activity.sync="activity"
+          />
           <div class="bottom-tips">{{bottomTips[1]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <ActivityFile :activity.sync="activity"/>
+          <ActivityFile
+            :disabled="disabled"
+            :activity.sync="activity"
+          />
           <v-divider/>
-          <ActivityLink :activity.sync="activity"/>
+          <ActivityLink
+            :disabled="disabled"
+            :activity.sync="activity"
+          />
           <div class="bottom-tips">{{bottomTips[2]}}</div>
         </v-tab-item>
 
         <v-tab-item>
-          <Gallery :activity.sync="activity"/>
+          <Gallery
+            :disabled="disabled"
+            :activity.sync="activity"
+          />
           <div class="bottom-tips">{{bottomTips[3]}}</div>
         </v-tab-item>
 
@@ -85,6 +100,7 @@ export default {
       ],
       currentTab: null,
       activity: null,
+      disabled: false,
       error: null
     };
   },
@@ -94,22 +110,23 @@ export default {
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.activity = this.$route.params.activity;
     this.activityId = this.$route.params.activityId;
-    if (this.activity && this.activity.title)
+    if (this.activity)
       this.$store.commit('setTitle', this.activity.title);
-
-    this.$store.commit('setAppbarLoading', true);
-    let that = this;
-    getActivityDetail(this.activityId)
-      .then(response => {
-        that.activity = response.data;
-        this.$store.commit('setTitle', that.activity.title);
-      })
-      .catch(response => {
-        that.error = response.data;
-      })
-      .finally(() => {
-        that.$store.commit('setAppbarLoading', false);
-      });
+    else {
+      this.$store.commit('setAppbarLoading', true);
+      let that = this;
+      getActivityDetail(this.activityId)
+        .then(response => {
+          that.activity = response.data;
+          this.$store.commit('setTitle', that.activity.title);
+        })
+        .catch(response => {
+          that.error = response.data;
+        })
+        .finally(() => {
+          that.$store.commit('setAppbarLoading', false);
+        });
+    }
   },
 
   deactivated() {

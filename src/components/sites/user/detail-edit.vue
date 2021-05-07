@@ -12,25 +12,25 @@
         <v-row>
           <v-col cols="4" >
             <v-row justify="center">
-            <v-card width="200px">
-              <!--  这种大头像还是别开 lazy-src=默认头像了，不然差别太大  -->
-              <!--  用滚圈圈作为占位符还是挺不错  -->
-              <v-img
-                :src="userProfile.avatar_url"
-                width="200px"
-              >
-                <template v-slot:placeholder>
-                    <PicturePlaceholder size="64"/>
-                </template>
-              </v-img>
-            </v-card>
+              <v-card>
+                <v-responsive aspect-ratio="1" width="200px">
+                  <v-img
+                    :src="userProfile.avatar_url"
+                    aspect-ratio="1"
+                  >
+                    <template v-slot:placeholder>
+                      <PicturePlaceholderAlt/>
+                    </template>
+                  </v-img>
+                </v-responsive>
+              </v-card>
             </v-row>
             <v-row>
-              <span>
+              <div class="my-2">
             我们使用了 Gravatar API。Gravatar 是一项用于提供在全球范围内使用的头像服务。
             您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/" target="_blank">教程</a>，在 Gravatar
             服务器上上传自己的头像，此处的头像就会更新。
-                </span>
+                </div>
             </v-row>
           </v-col>
 
@@ -88,14 +88,24 @@
         </v-row>
 
         <v-row align="center">
-          <v-col cols="4">
+          <v-col
+            v-if="canChangePassword"
+            cols="4"
+          >
             <v-row justify="center">
-                <v-btn
-                  color="warning"
-                  @click="showChangePasswordForm=!showChangePasswordForm"
-                >
-                  {{ showChangePasswordForm ? '不想改了' : '修改密码' }}
-                </v-btn>
+              <PasswordEditDialog
+                :user="userProfile"
+              >
+                <template v-slot:activator="{on, attrs}">
+                  <v-btn
+                    color="warning"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    修改密码
+                  </v-btn>
+                </template>
+              </PasswordEditDialog>
             </v-row>
           </v-col>
 
@@ -130,101 +140,13 @@
             </v-row>
           </v-col>
         </v-row>
+
         <ErrorAlertRow
           v-if="error"
           :msg="error"
         />
       </v-form>
-
-      <!--   下面是密码修改部分     -->
-      <template
-        v-if="showChangePasswordForm"
-      >
-        <v-scroll-y-reverse-transition>
-          <v-form
-            @submit.prevent="submitPassword"
-            ref="passwordForm"
-            v-model="passwordFormValid"
-            key="1"
-          >
-
-            <v-row no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="oldPassword"
-                  :rules="passwordRules"
-                  :disabled="passwordSubmitting"
-                  :type="showOldPassword ? 'text' : 'password'"
-                  :append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="showOldPassword = !showOldPassword"
-                  counter
-                  :label="isSelf ? '旧密码 *' : '您的密码 *'"
-                  prepend-icon="mdi-form-textbox-password"
-                  required/>
-              </v-col>
-            </v-row>
-
-            <v-row no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="password"
-                  :rules="passwordRules"
-                  :disabled="passwordSubmitting"
-                  :type="showNewPassword ? 'text' : 'password'"
-                  :append-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="showNewPassword = !showNewPassword"
-                  @input="$refs.passwordConfirm.validate(true)"
-                  counter
-                  :label="isSelf ? '新密码 *' : '该用户的新密码 *'"
-                  prepend-icon="mdi-lock"
-                  required/>
-                <!-- @input="$refs.passwordConfirm.validate(true)"  可以在输入密码时比对密码确认框  -->
-              </v-col>
-            </v-row>
-
-            <v-row no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="passwordConfirm"
-                  :rules="passwordConfirmRules"
-                  :disabled="passwordSubmitting"
-                  :type="showPasswordConfirm ? 'text' : 'password'"
-                  :append-icon="showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="showPasswordConfirm = !showPasswordConfirm"
-                  counter
-                  label="重复新密码 *"
-                  prepend-icon="mdi-lock-check"
-                  ref="passwordConfirm"
-                  required/>
-              </v-col>
-            </v-row>
-
-            <v-row no-gutters>
-              <v-col>
-                <v-btn
-                  v-if="!passwordSuccess"
-                  :disabled="!passwordFormValid"
-                  :loading="passwordSubmitting"
-                  :color="passwordError ? 'error' : 'primary'"
-                  block
-                  @click="submitPassword"
-                >
-                  修改密码
-                </v-btn>
-                <v-btn v-else color="success" block>
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <ErrorAlertRow
-              v-if="passwordError"
-              :msg="passwordError"
-            />
-          </v-form>
-        </v-scroll-y-reverse-transition>
-      </template>
     </v-container>
-
   </SimpleCard>
 </template>
 
@@ -236,13 +158,16 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
-import {changePassword, getUserDetail, updateUserDetail} from "@/api/user";
-import md5 from "md5";
-import {displaySuccessTime, lazyAvatar} from "@/utils";
+import {getUserDetail, updateUserDetail} from "@/api/user";
+import {DEBUG, displaySuccessTime, lazyAvatar} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import PasswordEditDialog from "@/components/sites/user/password-edit-dialog";
+import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 
 export default {
   components: {
+    PicturePlaceholderAlt,
+    PasswordEditDialog,
     PicturePlaceholder,
     ErrorAlertRow,
     AdminIcon,
@@ -259,32 +184,16 @@ export default {
         student_id: '',
         about: ''
       },
+      lazyAvatar,
 
-      showChangePasswordForm: false,
       formValid: false,
       submitting: false,
       success: false,
       error: false,
 
-      oldPassword: '',
-      showOldPassword: false,
-      password: '',
-      showNewPassword: false,
-      passwordConfirm: '',
-      showPasswordConfirm: false,
-
-      // 用 Status 重构 User 和 Account 部分的所有提交
-      passwordFormValid: true,
-      passwordSubmitting: false,
-      passwordError: null,
-      passwordSuccess: false,
-
       firstNameRules: inputRules.user.firstNameRules,
       studentIdRules: inputRules.user.studentIdRules,
       aboutRules: inputRules.user.aboutRules,
-      passwordRules: inputRules.user.passwordRules,
-      passwordConfirmRules: inputRules.user.passwordConfirmRules(that),
-      avatarDefault: lazyAvatar,
     }
   },
 
@@ -301,7 +210,8 @@ export default {
   },
 
   activated() {
-    window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
+    if (!DEBUG)
+      window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
     this.userId = Number(this.$route.params.userId);
     this.userProfile = this.$route.params.userProfile;
@@ -320,10 +230,7 @@ export default {
     this.submitting = false;
     this.success = false;
     this.error = false;
-    this.showChangePasswordForm = false;
-    this.passwordSubmitting = false;
-    this.passwordSuccess = false;
-    this.passwordError = false;
+    this.showChangePasswordDialog = false;
   },
 
   deactivated() {
@@ -361,43 +268,6 @@ export default {
           that.submitting = false;
         });
     },
-    submitPassword() {
-      this.passwordFormValid = this.$refs.form.validate();
-      if (!this.passwordFormValid)
-        return;
-
-      this.passwordSubmitting = true;
-      this.passwordSuccess = false;
-      this.passwordError = null;
-
-      let data = {
-        old_password: md5(this.oldPassword),
-        new_password: md5(this.password),
-      };
-      let that = this;
-      changePassword(this.userProfile.id, data)
-        .then(async () => {
-          if (that.isSelf) {
-            that.$store.commit('setMsg', '修改成功！请重新登录~');
-            that.$store.commit('clearProfile');
-            that.$router.push('/login/');
-          } else {
-            that.$store.commit('setMsg', '修改成功！');
-            that.passwordSuccess = true;
-            await sleep(displaySuccessTime);
-            that.passwordSuccess = false;
-          }
-        })
-        .catch(response => {
-          that.passwordError = response.data;
-          if (response.status === 403)
-            that.passwordError = "旧密码错误。";
-        })
-        .finally(() => {
-          that.passwordSubmitting = false;
-        });
-    },
   },
-
 };
 </script>

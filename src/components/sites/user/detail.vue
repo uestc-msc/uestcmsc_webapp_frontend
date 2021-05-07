@@ -14,15 +14,17 @@
         <v-row align="end">
           <v-col cols="4">
             <v-row justify="start">
-            <v-card width="200px">
+            <v-card>
+              <v-responsive aspect-ratio="1" width="200px">
               <v-img
                 :src="userProfile.avatar_url"
-                width="200px"
+                aspect-ratio="1"
               >
                 <template v-slot:placeholder>
                   <PicturePlaceholderAlt/>
                 </template>
               </v-img>
+              </v-responsive>
             </v-card>
             </v-row>
           </v-col>
@@ -144,7 +146,7 @@ export default {
     return {
       userProfile: null,
       error: false,
-      avatarDefault: lazyAvatar,
+      lazyAvatar,
     }
   },
 
