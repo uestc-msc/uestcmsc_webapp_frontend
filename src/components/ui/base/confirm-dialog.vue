@@ -12,6 +12,8 @@
             dark
             v-bind="slotProps.attr"
             v-on="slotProps.on"
+            @keydown.enter="confirm"
+            @keydown.esc="cancel"
           >
             {{ operation }}
           </v-btn>
@@ -27,23 +29,31 @@
           <v-btn
             text
             color="primary"
-            @click="$emit('confirm'); dialog=false"
+            @click="confirm"
           >
-            确定
+            确定<span class="key-prompt">(Enter)</span>
           </v-btn>
 
           <v-btn
             text
             color="primary"
-            @click="dialog = false"
+            @click="cancel"
           >
-            取消
+            取消<span class="key-prompt">(Esc)</span>
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
 </template>
+
+<style scoped>
+/*todo 还能更小吗*/
+.key-prompt {
+  font-size: 12px !important;
+  height: 6px;
+}
+</style>
 
 <script>
 export default {
@@ -62,6 +72,16 @@ export default {
     return {
       dialog: false
     };
+  },
+
+  methods: {
+    confirm() {
+      this.$emit('confirm');
+      this.dialog = false;
+    },
+    cancel() {
+      this.dialog = false;
+    },
   }
 }
 </script>
