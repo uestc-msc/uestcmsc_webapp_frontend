@@ -41,8 +41,8 @@ export default {
       type: [String, Number],
       required: true
     },
-    uploadQueue: {
-      type: Array,
+    fileInputValue: {
+      type: [Array, File],
       default: () => []
     },
     photosPerRow: {
@@ -131,20 +131,19 @@ export default {
             fileStatus.status = Status.error;
             await sleep(displayErrorTime);
             let index = that.fileStatusArray.indexOf(fileStatus);
-            if (index !== -1)
-              that.fileStatusArray.splice(index, 1);
+            console.assert(index >= 0);
+            that.fileStatusArray.splice(index, 1);
           });
       }));
-      that.fileInputValue = [];
     },
   },
 
   watch: {
     // 本地请求上传新的照片
-    value() {
-      if (this.uploadQueue.length) {
-        this.uploadFile(this.uploadQueue);
-        this.$emit('update:uploadQueue', []);
+    fileInputValue() {
+      if (this.fileInputValue) {
+        this.uploadFile(this.fileInputValue);
+        this.$emit('update:fileInputValue', []);
       }
     }
   },

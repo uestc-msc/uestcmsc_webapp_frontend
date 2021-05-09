@@ -20,20 +20,21 @@
 
       <v-card>
         <v-card-title>
-          {{ real_tips }}
+          {{ tips }}
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             text
-            color="error"
+            color="primary"
             @click="$emit('confirm'); dialog=false"
           >
-            {{ operation }}
+            确定
           </v-btn>
 
           <v-btn
             text
+            color="primary"
             @click="dialog = false"
           >
             取消
@@ -49,17 +50,11 @@ export default {
   props: {
     operation: {
       type: String,
-      default: '删除',
+      default: '确定',
     },
     tips: {
       type: String,
-      default: null
-    }
-  },
-
-  computed: {
-    real_tips() {
-      return this.tips || `您真的要${this.operation}吗？这是不可逆的喔！`;
+      default: '您真的要删除吗？这是不可逆的喔！'
     }
   },
 

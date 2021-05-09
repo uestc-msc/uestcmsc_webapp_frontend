@@ -41,7 +41,7 @@
           <v-col>
             <v-btn
               :loading="submitting"
-              :color="this.error ? 'error' : 'primary'"
+              :color="this.errorMsg ? 'error' : 'primary'"
               block
               type="submit"
             >
@@ -52,7 +52,8 @@
 
         <ErrorAlert
           as-row
-          :msg="2333"
+          v-if="errorMsg"
+          :msg="errorMsg"
         />
 
         <v-row no-gutters>
@@ -97,7 +98,7 @@ export default Vue.extend({
   data: () => ({
     valid: true,
     submitting: false,
-    error: null,
+    errorMsg: null,
     username: "",
     usernameRules: inputRules.user.usernameRules,
     password: "",
@@ -113,7 +114,7 @@ export default Vue.extend({
         return;
 
       this.submitting = true;
-      this.error = null;
+      this.errorMsg = null;
       let that = this;
       let data = {
         username: this.username,

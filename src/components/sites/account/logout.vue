@@ -3,7 +3,6 @@
 <script>
 import Vue from 'vue'
 
-import axios from '@/utils/axios';
 import {goBack, goHome} from '@/utils/router';
 import {logout} from "@/api/account";
 

@@ -139,7 +139,8 @@ export default {
     },
     remove(user) {
       const index = this.selected.indexOf(user.id);
-      if (index >= 0) this.selected.splice(index, 1);
+      console.assert(index >= 0);
+      this.selected.splice(index, 1);
       // 删除元素显然不会破坏有序性
       this.$emit('input', this.selected);
     },

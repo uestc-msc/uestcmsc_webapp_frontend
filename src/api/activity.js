@@ -1,5 +1,6 @@
 import axios from '@/utils/axios';
 import {OnedriveXHRTimeout} from "@/utils";
+import {deleteData} from "@/api/index";
 
 export function getActivityList(keyword, page, pageSize) {
   if (!keyword) keyword = '';
@@ -19,7 +20,7 @@ export function updateActivityDetail(activityId, data) {
 }
 
 export function deleteActivity(activityId) {
-  return axios.delete(`/activities/${activityId}/`);
+  return deleteData(() => axios.delete(`/activities/${activityId}/`), true);
 }
 
 export function getActivityAdminDetail(activityId) {
@@ -49,7 +50,7 @@ export function updateActivityLink(linkId, data) {
 }
 
 export function deleteActivityLink(linkId) {
-  return axios.delete(`/activities/link/${linkId}/`);
+  return deleteData(() => axios.delete(`/activities/link/${linkId}/`), true);
 }
 
 //////////////////////////////  沙龙文件部分  //////////////////////////////
@@ -60,7 +61,7 @@ export function addActivityFile(data) {
 }
 
 export function deleteActivityFile(fileId) {
-  return axios.delete(`/activities/file/${fileId}/`);
+  return deleteData(() => axios.delete(`/activities/file/${fileId}/`), true);
 }
 
 //////////////////////////////  沙龙图片部分  //////////////////////////////
@@ -74,5 +75,5 @@ export function addActivityPhoto(data) {
 }
 
 export function deleteActivityPhoto(photoId) {
-  return axios.delete(`/activities/photo/${photoId}/`);
+  return deleteData(() => axios.delete(`/activities/photo/${photoId}/`), true);
 }

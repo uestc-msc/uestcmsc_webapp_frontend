@@ -65,7 +65,7 @@
       <ErrorAlert
         as-row
         v-if="status === Status.error"
-        :msg="errorMsg"
+        :msg="errorMsg || '信息有误，请检查后提交'"
       />
 
     </SimpleCard>
@@ -156,7 +156,6 @@ export default {
     updateData() {
       if (this.status !== Status.editing)
         return;
-
       let that = this;
       // 检查每个 tab 下的 form 是否正确，不正确就跳到这个 tab
       // 注意尚未加载的 tab 是没有 refs 的
@@ -168,10 +167,10 @@ export default {
           return;
         }
       }
-
       this.status = Status.submitting;
       updateActivityDetail(this.activityId, this.activity)
         .then(async res => {
+          this.$store.commit('setTitle', this.activity.title);
           this.activity = res.data;
           this.status = Status.success;
           await sleep(displaySuccessTime);
