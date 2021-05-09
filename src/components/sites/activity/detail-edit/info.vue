@@ -101,7 +101,7 @@ export default {
   },
 
   watch: {
-    activity() {
+    'activity.id'() {
       this.fetchData();
     },
   },

@@ -142,7 +142,7 @@ import ConfirmDialog from "@/components/ui/base/confirm-dialog";
 import {Status, StatusColor} from "@/utils/status";
 import {formatUrl} from "@/utils/file";
 
-class Link {
+class LinkStatus {
   constructor(info = null, value = '') {
     this.info = info ? info : {url: value};
     this.value = value ? value : info.url;  // info 和 value 二者有其一就可以互补
@@ -208,7 +208,7 @@ export default {
       let url = this.inputValue;
       this.inputValue = '';
       // 将链接状态存到 link 里并丢进 linkArray
-      let link = new Link(null, url);
+      let link = new LinkStatus(null, url);
       this.linkArray.push(link);
 
       link.status = Status.submitting;
@@ -248,6 +248,7 @@ export default {
         await sleep(displayErrorTime);
         link.errorMsg = '';
         return;
+        // todo 还没写
       }
 
       link.status = Status.submitting;
@@ -297,7 +298,7 @@ export default {
     },
 
     fetchData() {   // 根据 activity 更新 linkArray
-      this.linkArray = this.activity.link.map(info => new Link(info));
+      this.linkArray = this.activity.link.map(info => new LinkStatus(info));
     },
 
     updateData() {   // 根据 linkArray 更新 activity
@@ -308,7 +309,8 @@ export default {
   },
 
   watch: {
-    activity() {
+    // 只在 activity.id 变化时从 activity 更新本部件的数据
+    'activity.id'() {
       this.fetchData();
     }
   },
