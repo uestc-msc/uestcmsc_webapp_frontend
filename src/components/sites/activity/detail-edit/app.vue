@@ -1,10 +1,6 @@
 <template>
   <div>
-    <ErrorAlertComponent v-if="error">
-      {{ error }}
-    </ErrorAlertComponent>
     <SimpleCard
-      v-else
       md="10">
       <v-tabs
         v-model="currentTab"
@@ -65,6 +61,13 @@
 
       </v-tabs-items>
 
+
+      <ErrorAlert
+        as-row
+        v-if="status === Status.error"
+        :msg="errorMsg"
+      />
+
     </SimpleCard>
 
     <FloatingActionButton
@@ -96,14 +99,12 @@ import ActivityLink from "@/components/sites/activity/detail-edit/link";
 import ActivityPhoto from "@/components/sites/activity/detail-edit/photos";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
-import ErrorAlertComponent from "@/components/ui/base/error-alert-component";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
   components: {
-    ErrorAlertComponent,
-    ErrorAlertRow,
+    ErrorAlert,
     FloatingActionButton,
     ActivityPhoto, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
   },
@@ -114,8 +115,7 @@ export default {
         info: 0,
         presenterAndAttender: 1,
         file: 2,
-        link: 2,
-        photo: 3
+        link: 2
       },
       bottomTips: [
         '修改完成后请记得保存哦~',
@@ -125,7 +125,7 @@ export default {
       ],
       currentTab: 0,
       activity: null,
-      error: null,
+      errorMsg: null,
       status: Status.editing,
       Status,
       StatusColor,
@@ -145,7 +145,8 @@ export default {
           this.$store.commit('setTitle', that.activity.title);
         })
         .catch(response => {
-          that.error = response.data;
+          that.errorMsg = response.data;
+          that.status = Status.error;
         })
         .finally(() => {
           that.$store.commit('setAppbarLoading', false);
@@ -178,7 +179,8 @@ export default {
         })
         .catch(async res => {
           this.status = Status.error;
-          this.$store.commit('setMsg', res.data);
+          console.log(res.data)
+          this.errorMsg = res.data;
           await sleep(displayErrorTime);
           this.status = Status.editing;
         })

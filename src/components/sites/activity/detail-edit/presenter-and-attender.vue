@@ -27,9 +27,11 @@
         </v-col>
       </v-row>
 
-      <ErrorAlertRow
+      <ErrorAlert
+        as-row
         v-if="attenderUpdateError"
-        msg="更新参与人名单失败，请点击右下角保存按钮、保存其他数据后刷新重试"/>
+        msg="更新参与人名单失败，请点击右下角保存按钮、保存其他数据后刷新重试"
+      />
     </v-form>
   </v-container>
 </template>
@@ -39,8 +41,8 @@ import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {DEBUG, totalRetryTimes} from "@/utils";
 import {updateActivityAttender} from "@/api/activity";
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {inputRules} from "@/utils/validators";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
   props: {
@@ -53,7 +55,7 @@ export default {
       default: false
     },
   },
-  components: {ErrorAlertRow, SimpleCard, PeopleSelector},
+  components: {ErrorAlert, SimpleCard, PeopleSelector},
   data() {
     return {
       presenterArray: [],

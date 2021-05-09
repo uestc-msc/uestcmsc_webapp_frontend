@@ -48,7 +48,8 @@
           </v-col>
         </v-row>
 
-        <ErrorAlertRow
+        <ErrorAlert
+          as-row
           v-if="errorMsg"
           :msg="errorMsg"
         />
@@ -71,20 +72,20 @@
 import PeopleSelector from "@/components/ui/user/people-selector";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {DEBUG, displayErrorTime, sleep} from "@/utils";
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import {createActivity} from "@/api/activity";
 import DatetimePicker from "@/components/ui/base/datetime-picker";
 import {inputRules} from "@/utils/validators";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {FloatingActionButton, DatetimePicker, ErrorAlertRow, PeopleSelector, SimpleCard},
+  components: {ErrorAlert, FloatingActionButton, DatetimePicker, PeopleSelector, SimpleCard},
 
   data() {
     let presenter = [];
     if (this.$store.getters.isAuthenticated) {
-      presenter.push(this.$store.profile.id);   // 默认自己为主讲人
+      presenter.push(this.$store.state.profile.id);   // 默认自己为主讲人
     }
     return {
       Status,

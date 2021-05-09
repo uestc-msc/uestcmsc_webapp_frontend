@@ -84,7 +84,7 @@
         <v-col>
           <v-file-input
             multiple
-            @change="uploadNewFile"
+            @change="uploadFile"
             :value="fileInputValue"
             :disabled="disabled"
             prepend-icon="mdi-upload"
@@ -97,8 +97,7 @@
 </template>
 
 <script>
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
-import {FileStatus, formatBytes, formatFileUploaderInput, uploadFile} from "@/utils/file";
+import {FileStatus, formatBytes, formatFileUploaderInput, uploadFileToOnedrive} from "@/utils/file";
 import {displayErrorTime, displaySuccessTime, sleep, totalRetryTimes} from "@/utils";
 import {addActivityFile, deleteActivityFile} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
@@ -116,7 +115,7 @@ export default {
     },
   },
 
-  components: {ConfirmDialog, ErrorAlertRow},
+  components: {ConfirmDialog},
 
   data() {
     return {
@@ -137,7 +136,7 @@ export default {
       return `${filename} (${sizeStr})`;
     },
 
-    uploadNewFile(files) {
+    uploadFile(files) {
       let that = this;
       const formattedFiles = formatFileUploaderInput(files);
 
@@ -146,12 +145,8 @@ export default {
         let fileStatus = new FileStatus(file, null);
         that.fileStatusArray.push(fileStatus);
 
-        const setProgress = (p) => fileStatus.progress = p;
-        const setIndeterminate = (s) => fileStatus.status = s;
-        const setMsg = (m) => fileStatus.msg = m;
-
         fileStatus.status = Status.uploading;
-        uploadFile(file, setProgress, setIndeterminate, setMsg)
+        uploadFileToOnedrive(fileStatus)
           .then(async (res) => {
             fileStatus.status = Status.submitting;
             fileStatus.msg = '写入数据库';

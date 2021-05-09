@@ -68,8 +68,11 @@
             <div
               id="qrcode"
             />
+            <v-list-item-subtitle>签到二维码（签到已开放2333）</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+
+        <v-divider inset></v-divider>
 
         <template v-if="activity.file.length">
           <v-list-item
@@ -141,29 +144,7 @@
             <v-icon color="primary">mdi-image</v-icon>
           </v-list-item-icon>
 
-          <v-container>
-            <!-- 三行三列  -->
-            <v-row
-              v-for="r in [0, 3, 6]"
-              :key="r"
-            >
-              <v-col
-                v-for="n in [r, r+1, r+2]"
-                :key="n"
-                cols="4"
-              >
-                <v-img
-                  src="http://localhost:8000/api/cloud/file/01XX4NZVLBTHGF3O7PGBBKCHW6MK6LOUW6/download/"
-                  aspect-ratio="1"
-                  class="grey lighten-2"
-                >
-                  <template v-slot:placeholder>
-                    <PicturePlaceholderAlt aspect-ratio="1"/>
-                  </template>
-                </v-img>
-              </v-col>
-            </v-row>
-          </v-container>
+          <ActivityGallery :activity-id="activityId" />
 
         </v-list-item>
 
@@ -185,7 +166,7 @@ import '@/assets/common/common.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlertPage from "@/components/ui/base/error-alert-component";
+import ErrorAlertPage from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
@@ -197,9 +178,11 @@ import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt"
 import {generateQRCode} from "@/utils/qrcode";
 import {DEBUG, iconPath} from "@/utils";
 import {getTimeIcon} from '@/utils/datetime';
+import ActivityGallery from "@/components/ui/photo/activity-gallery";
 
 export default {
   components: {
+    ActivityGallery,
     PicturePlaceholderAlt,
     PicturePlaceholder,
     PeopleChipGroup,
@@ -223,7 +206,6 @@ export default {
     ...mapGetters(['isAdmin']),
     isPresenterOrAdmin() {
       let that = this;
-      // TODO: 测试正确性
       return this.isAdmin ||
         this.activity && this.activity.presenter.includes(that.$store.state.profile.id);
     },

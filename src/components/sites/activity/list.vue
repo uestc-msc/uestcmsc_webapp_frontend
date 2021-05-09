@@ -39,7 +39,7 @@ import ActivityCard from '@/components/ui/activity/activity-card';
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import ErrorAlertPage from "@/components/ui/base/error-alert-component";
+import ErrorAlertPage from "@/components/ui/base/error-alert";
 import BottomLine from "@/components/ui/base/bottom-line";
 import {getActivityList} from "@/api/activity";
 

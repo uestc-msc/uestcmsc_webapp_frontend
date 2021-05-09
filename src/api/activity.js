@@ -1,5 +1,5 @@
 import axios from '@/utils/axios';
-import {xhrTimeout} from "@/utils";
+import {OnedriveXHRTimeout} from "@/utils";
 
 export function getActivityList(keyword, page, pageSize) {
   if (!keyword) keyword = '';
@@ -55,8 +55,8 @@ export function deleteActivityLink(linkId) {
 //////////////////////////////  沙龙文件部分  //////////////////////////////
 
 export function addActivityFile(data) {
-  // 服务器端要多次访问 Onedrive API
-  return axios.post('/activities/file/', data, {timeout: 2 * xhrTimeout});
+  // 服务器端要多次访问 Onedrive API，所以给够 timeout
+  return axios.post('/activities/file/', data, {timeout: OnedriveXHRTimeout});
 }
 
 export function deleteActivityFile(fileId) {
@@ -65,8 +65,12 @@ export function deleteActivityFile(fileId) {
 
 //////////////////////////////  沙龙图片部分  //////////////////////////////
 
+export function getActivityPhotoList(activityId, page, pageSize) {
+  return axios.get(`/activities/photo/?activity=${activityId}&page=${page}&page_size=${pageSize}`);
+}
+
 export function addActivityPhoto(data) {
-  return axios.post('/activities/photo/', data);
+  return axios.post('/activities/photo/', data, {timeout: OnedriveXHRTimeout});
 }
 
 export function deleteActivityPhoto(photoId) {

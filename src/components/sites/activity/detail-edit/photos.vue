@@ -1,26 +1,29 @@
 <template>
-<v-form ref="form">
-
-<!--  隐藏了的文件上传栏，靠 toggleUploadPhoto 触发  -->
-<v-file-input
-  multiple
-  accept="image/*"
-  @change="uploadNewPhoto"
-
-  id="photoInput"
-  style="display: none"
-/>
-
-  </v-form>
+  <div>
+    <ActivityGallery
+      :activity-id="activity.id"
+      v-model="photoStatusArray"
+    />
+    <!--  隐藏了的文件上传栏，靠 toggleUploadPhoto 触发  -->
+    <v-file-input
+      multiple
+      accept="image/*"
+      @change="uploadNewPhoto"
+      id="photoInput"
+      style="display: none"
+    />
+  </div>
 </template>
 
 <script>
-import {FileStatus, formatFileUploaderInput, uploadFile} from "@/utils/file";
-import {Status} from "@/utils/status";
+import {FileStatus, formatFileUploaderInput, uploadFileToOnedrive} from "@/utils/file";
+import {Status, StatusColor} from "@/utils/status";
 import {displayErrorTime, displaySuccessTime, sleep, totalRetryTimes} from "@/utils";
-import {addActivityFile} from "@/api/activity";
+import {addActivityFile, addActivityPhoto} from "@/api/activity";
+import ActivityGallery from "@/components/ui/photo/activity-gallery";
 
 export default {
+  components: {ActivityGallery},
   props: {
     activity: {
       type: Object,
@@ -36,25 +39,35 @@ export default {
     }
   },
 
+  data() {
+    return {
+      photoStatusArray: [],
+      fileInputValue: [],
+
+      Status,
+      StatusColor,
+    }
+  },
+
   methods: {
     uploadNewPhoto(files) {
       let that = this;
       const formattedFiles = formatFileUploaderInput(files);
 
       Promise.all(formattedFiles.map(async (file) => {
-        // 将文件状态存到 fileStatus 里并丢进 fileStatusArray
-        let fileStatus = new FileStatus(file, null);
-        that.fileStatusArray.push(fileStatus);
+        // 将文件状态存到 photoStatus 里并丢进 photoStatusArray
+        let photoStatus = new FileStatus(file, null);
+        that.photoStatusArray.push(photoStatus);
 
-        const setProgress = (p) => fileStatus.progress = p;
-        const setIndeterminate = (s) => fileStatus.status = s;
-        const setMsg = (m) => fileStatus.msg = m;
+        const setProgress = (p) => photoStatus.progress = p;
+        const setIndeterminate = (s) => photoStatus.status = s;
+        const setMsg = (m) => photoStatus.msg = m;
 
-        fileStatus.status = Status.uploading;
-        uploadFile(file, setProgress, setIndeterminate, setMsg)
+        photoStatus.status = Status.uploading;
+        uploadFileToOnedrive(file, setProgress, setIndeterminate, setMsg)
           .then(async (res) => {
-            fileStatus.status = Status.submitting;
-            fileStatus.msg = '写入数据库';
+            photoStatus.status = Status.submitting;
+            photoStatus.msg = '写入数据库';
             const file_id = res.data.id;
             const data = {
               file_id,
@@ -64,28 +77,28 @@ export default {
             let res2;
             for (let i = 1; i <= totalRetryTimes; i++) {
               try {
-                res2 = await addActivityFile(data);
+                res2 = await addActivityPhoto(data);
                 break;
               } catch (res2) {
                 if (i === totalRetryTimes)
                   throw res2;
               }
             }
-            fileStatus.msg = '上传成功';
-            fileStatus.status = Status.success;
-            fileStatus.info = res2.data;
+            photoStatus.msg = '上传成功';
+            photoStatus.status = Status.success;
+            photoStatus.info = res2.data;
             await sleep(displaySuccessTime);
-            fileStatus.msg = '';
-            fileStatus.status = Status.default;
+            photoStatus.msg = '';
+            photoStatus.status = Status.default;
             this.updateData();
           })
           .catch(async res => {
-            fileStatus.msg = res.data;
-            fileStatus.status = Status.error;
+            photoStatus.msg = res.data;
+            photoStatus.status = Status.error;
             await sleep(displayErrorTime);
-            let index = that.fileStatusArray.indexOf(fileStatus);
+            let index = that.photoStatusArray.indexOf(photoStatus);
             if (index !== -1)
-              that.fileStatusArray.splice(index, 1);
+              that.photoStatusArray.splice(index, 1);
           });
       }));
       that.fileInputValue = [];

@@ -101,7 +101,8 @@
                   </v-btn>
                 </v-col>
               </v-row>
-              <ErrorAlertRow
+              <ErrorAlert
+                as-row
                 v-if="error"
                 :msg="error"
               />
@@ -120,9 +121,10 @@ import md5 from "md5";
 import {changePassword} from "@/api/user";
 import {displaySuccessTime} from "@/utils";
 import SimpleCard from "@/components/ui/base/simple-card";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   props: {
     user: {
       type: Object,

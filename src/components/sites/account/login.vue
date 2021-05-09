@@ -50,9 +50,9 @@
           </v-col>
         </v-row>
 
-        <ErrorAlertRow
-          v-if="error"
-          :msg="error"
+        <ErrorAlert
+          as-row
+          :msg="2333"
         />
 
         <v-row no-gutters>
@@ -88,12 +88,12 @@ import router from "@/router/index";
 import md5 from "md5";
 import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import Cookies from 'js-cookie';
 import {login} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default Vue.extend({
-  components: {ErrorAlertRow, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data: () => ({
     valid: true,
     submitting: false,

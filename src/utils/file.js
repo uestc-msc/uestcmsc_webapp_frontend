@@ -1,5 +1,5 @@
 import {createUploadSession} from "@/api/cloud";
-import axios from "@/utils/axios";
+import axios from 'axios';
 import {firstDelay, sleep, totalRetryTimes} from "@/utils/index";
 import {humanReadableFileSize} from "vuetify/lib/util/helpers";
 import moment from "@/utils/moment";
@@ -17,10 +17,12 @@ export class FileStatus {
     this.file = file ? file : new File([], info.filename);
     this.info = info ? info : {filename: file.name, size: file.size};
 
-    this.status = Status.default; // 文件状态
+    this.status = Status.default;   // 文件状态
     this.progress = 100;            // 上传进度的百分比（100 为完成）
-    this.msg = '';                // 成功/错误信息
-    this.key = Math.random()      // 随机生成的 id
+    this.msg = '';                  // 成功/错误信息
+    this.key = Math.random()        // 随机生成的 id
+    if (file)                       // 上传文件的 CancelToken
+      this.axiosSource = axios.CancelToken.source();
   }
 
   get showProgressLine() {
@@ -55,23 +57,9 @@ export function formatUrl(url) {
 /**
  * 调用后端接口，将文件上传至 onedrive。
  * 参考文档：https://docs.microsoft.com/zh-cn/graph/api/driveitem-createuploadsession
- * @param file 要上传的文件（File 类）
- * @param setProgressFunction 设置上传进度的函数（该函数应接收参数 v，表示当前上传进度为 v%），为 null 表示不调用
- * @param setStatusFunction 设置上传进度未知的函数（该函数应接收参数 v，v=True 表示当前上传进度未知），为 null 表示不调用
- * @param setMsgFunction 设置上传进度提示语（该函数应接收参数 v），为 null 表示不调用
+ * @param fileStatus 见 FileStatus 类
  */
-export async function uploadFile(
-  file,
-  setProgressFunction = null,
-  setStatusFunction = null,
-  setMsgFunction = null
-) {
-  // TODO: 如何停止上传
-  // 非 null 时调用
-  let setStatus = (value) => setStatusFunction && setStatusFunction(value);
-  let setProgress = (value) => setProgressFunction && setProgressFunction(value);
-  let setMsg = (value) => setMsgFunction && setMsgFunction(value);
-
+export async function uploadFileToOnedrive(fileStatus) {
   // 创建上传会话
   setStatus(Status.submitting);
   setProgress(0);

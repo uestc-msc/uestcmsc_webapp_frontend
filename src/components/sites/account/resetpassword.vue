@@ -85,7 +85,8 @@
         </v-col>
         </v-row>
 
-        <ErrorAlertRow
+        <ErrorAlert
+          as-row
           v-if="error"
           :msg="error"
         />
@@ -99,11 +100,11 @@
 import md5 from "md5";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {resetPassword} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {ErrorAlertRow, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data() {
     let that = this;
     return {

@@ -140,7 +140,8 @@
           </v-col>
         </v-row>
 
-        <ErrorAlertRow
+        <ErrorAlert
+          as-row
           v-if="error"
           :msg="error"
         />
@@ -152,9 +153,7 @@
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlertPage from "@/components/ui/base/error-alert-component";
 import AdminIcon from "@/components/ui/user/admin-icon";
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {getUserDetail, updateUserDetail} from "@/api/user";
@@ -162,15 +161,15 @@ import {DEBUG, displaySuccessTime, lazyAvatar} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PasswordEditDialog from "@/components/sites/user/password-edit-dialog";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
   components: {
+    ErrorAlert,
     PicturePlaceholderAlt,
     PasswordEditDialog,
     PicturePlaceholder,
-    ErrorAlertRow,
     AdminIcon,
-    ErrorAlertPage,
     FloatingActionButton,
     SimpleCard
   },

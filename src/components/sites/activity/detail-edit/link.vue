@@ -140,7 +140,6 @@
 </template>
 
 <script>
-import ErrorAlertRow from "@/components/ui/base/error-alert-row";
 import {displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {addActivityLink, deleteActivityLink, updateActivityLink} from "@/api/activity";
 import ConfirmDialog from "@/components/ui/base/confirm-dialog";
@@ -177,7 +176,7 @@ export default {
       default: false
     },
   },
-  components: {ConfirmDialog, ErrorAlertRow},
+  components: {ConfirmDialog},
 
   data() {
     let that = this;

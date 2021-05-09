@@ -59,7 +59,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {lazyAvatar, debounceTime} from "@/utils";
-import ErrorAlertPage from "@/components/ui/base/error-alert-component";
+import ErrorAlertPage from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {getUserList} from "@/api/user";
 import BottomLine from "@/components/ui/base/bottom-line";
