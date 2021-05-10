@@ -1,8 +1,20 @@
 <!-- 可以单独作为一个 component 使用 -->
 <template>
-  <v-slide-y-transition>
-    <v-row v-if="asRow">
-      <v-col>
+  <v-row v-if="asRow">
+    <v-col>
+      <v-alert
+        elevation="4"
+        :type="type"
+        v-bind="$attrs"
+      >
+        {{ msg }}
+      </v-alert>
+    </v-col>
+  </v-row>
+
+  <v-container v-else fluid>
+    <v-row justify="center">
+      <v-col xs="12" md="8">
         <v-alert
           elevation="4"
           :type="type"
@@ -12,21 +24,7 @@
         </v-alert>
       </v-col>
     </v-row>
-
-    <v-container v-else fluid>
-      <v-row justify="center">
-        <v-col xs="12" md="8">
-          <v-alert
-            elevation="4"
-            :type="type"
-            v-bind="$attrs"
-          >
-            {{ msg }}
-          </v-alert>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-slide-y-transition>
+  </v-container>
 </template>
 
 <script>

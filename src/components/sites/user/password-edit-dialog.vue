@@ -2,7 +2,6 @@
 <template>
   <v-dialog
     v-model="dialog"
-    width=""
     transition="dialog-bottom-transition"
   >
     <template v-slot:activator="defaultProps">

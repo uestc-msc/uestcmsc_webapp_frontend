@@ -3,8 +3,8 @@
     <v-row>
       <!--  正在上传的图片  -->
       <v-col v-for="photo in localPhoto" :key="photo.key" :cols="cols">
-
           <v-img
+            v-ripple
             :src="photo.info.data"
             aspect-ratio="1"
             class="grey lighten-2"
@@ -28,8 +28,10 @@
       </v-col>
 
       <!--  已经在云端的图片  -->
-      <v-col v-for="photo in cloudPhoto" :key="photo.id" :cols="cols">
+      <v-col v-for="(photo, index) in cloudPhoto" :key="photo.id" :cols="cols">
         <v-img
+          v-ripple
+          @click.stop="carouselIndex = index; showCarousel = true"
           :src="getOnedriveFileUrl(photo.id)"
           aspect-ratio="1"
           class="grey lighten-2"
@@ -40,6 +42,13 @@
         </v-img>
       </v-col>
     </v-row>
+
+    <ActivityGalleryCarousel
+      v-model="showCarousel"
+      :photos.sync="cloudPhoto"
+      :index.sync="carouselIndex"
+      :activity.sync="activity"
+    />
 
     <ErrorAlert
       v-if="errorMsg"
@@ -74,22 +83,22 @@
 </template>
 
 <script>
-// todo 预览图
-// todo top photo
+// todo top photo 大头钉
 import {Status, StatusColor} from "@/utils/status";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import range from 'lodash/range'
 import {getOnedriveFileUrl} from "@/api/cloud";
 import {FileStatus, fileToBase64, uploadFileToOnedrive} from "@/utils/file";
-import {addActivityPhoto, getActivityPhotoList} from "@/api/activity";
+import {addActivityPhoto, getActivityDetail, getActivityPhotoList} from "@/api/activity";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import ActivityGalleryCarousel from "@/components/ui/photo/activity-gallery-carousel";
 
 // 一页的大小
 const pageSize = 9;
 
 export default {
-  components: {PicturePlaceholder, ErrorAlert, PicturePlaceholderAlt},
+  components: {ActivityGalleryCarousel, PicturePlaceholder, ErrorAlert, PicturePlaceholderAlt},
   props: {
     activityId: {
       required: true
@@ -112,22 +121,27 @@ export default {
 
   data() {
     return {
-      fileToBase64,
       // 本地正在上传的照片，元素为 fileStatus
       localPhoto: [],
       // 已经在云端的照片，元素为后端给的 ActivityPhoto 信息
       cloudPhoto: [],
       // 云端提供的总长度，本地上传/删除照片时记得修改
       cloudCount: 0,
+      // 活动信息
+      activity: null,
 
       fileInputValue: [],
       loading: false,
       errorMsg: '',
 
+      // 轮播图的 index
+      carouselIndex: 0,
+      showCarousel: false,
+
       Status,
       StatusColor,
       range,
-      getOnedriveFileUrl
+      getOnedriveFileUrl,
     }
   },
 
@@ -152,6 +166,8 @@ export default {
             that.localPhoto.splice(index, 1);
             that.cloudPhoto.unshift(res.data);
             that.cloudCount++;
+            if (that.carouselIndex >= 0)
+              that.carouselIndex++;
           })
           .catch(() => {});
       }
@@ -159,6 +175,9 @@ export default {
 
     // 从后端获取下一 page 的 data
     fetchData() {
+      // 如果已经加载完所有照片了，就不 fetch 了
+      if (this.cloudCount === this.cloudPhoto.length && this.cloudCount !== 0)
+        return;
       // 获取不超过 pageSize 数量的照片，使得 cloudPhoto 为 pageSize 的倍数
       const curPage = Math.floor(this.cloudPhoto.length / pageSize);
       let that = this;
@@ -166,8 +185,8 @@ export default {
       this.errorMsg = '';
       getActivityPhotoList(this.activityId, curPage + 1, pageSize)
         .then(res => {
-          that.count = res.data.count;
-          if (that.count === 0)
+          that.cloudCount = res.data.count;
+          if (that.cloudCount === 0)
             this.$emit('input', false);
           const result = res.data.results;
           that.cloudPhoto.splice(curPage * pageSize);
@@ -186,6 +205,10 @@ export default {
       if (this.activityId) {
         this.cloudPhoto = [];
         this.fetchData();
+        let that = this;
+        getActivityDetail(this.activityId)
+          .then(res => that.activity = res)
+          .catch(res => that.errorMsg = res.data);
       }
     },
 
@@ -194,6 +217,10 @@ export default {
       const photoInput = document.getElementById('photoInput');
       photoInput.click();
     },
+
+    carouselIndex() {
+      console.log('carouselIndex update to' + this.carouselIndex);
+    }
   },
   created() {
     window.gallery = this;

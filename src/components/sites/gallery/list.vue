@@ -6,15 +6,14 @@
 
     <template v-else-if="activityData.length">
       <v-container>
-        <template v-for="activity in activityData">
         <v-row
+          v-for="activity in activityData"
           :key="activity.id"
           class="justify-center"
         >
           <v-col xs="12" md="10">
             <v-card
               justify="center"
-              ripple
               @click="gotoActivityDetail(activity)"
             >
               <v-card-title>{{ activity.title }}</v-card-title>
@@ -30,7 +29,6 @@
             </v-card>
           </v-col>
         </v-row>
-        </template>
       </v-container>
 
       <v-pagination v-model="page" :length="length"/>
