@@ -14,6 +14,10 @@ export const firstDelay = 1000;           // 上传失败的第一次等待时�
 export const iconPath = "/static/icons/favicon-96x96.png";
 export const lazyAvatar = "/static/icons/favicon-32x32.png";
 
+/**
+ * @param ms {Number} 毫秒
+ * @return {Promise<>}
+ */
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }

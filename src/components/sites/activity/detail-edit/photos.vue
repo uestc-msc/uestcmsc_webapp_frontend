@@ -2,11 +2,11 @@
   <div>
     <ActivityGallery
       :activity-id="activity.id"
-      :uploadQueue="uploadQueue"
+      :file-input-value="fileInputValue"
     />
     <!--  隐藏了的文件上传栏，靠 toggleUploadPhoto 触发  -->
     <v-file-input
-      v-model="uploadQueue"
+      v-model="fileInputValue"
       multiple
       accept="image/*"
       id="photoInput"
@@ -41,32 +41,16 @@ export default {
 
   data() {
     return {
-      uploadQueue: [],
+      fileInputValue: [],
     }
   },
 
-  // methods: {
-  //   fetchData() {
-  //
-  //   },
-  //
-  //   updateData() {
-  //   }
-  // },
-
   watch: {
-    // activity() {
-    //   this.fetchData();
-    // },
-
     toggleUploadPhoto() {
       const photoInput = document.getElementById('photoInput');
       photoInput.click();
     }
   },
 
-  // created() {
-  //   this.fetchData();
-  // },
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <ErrorAlertPage v-if="error">
+    <ErrorAlert v-if="error">
       {{ error }}
-    </ErrorAlertPage>
+    </ErrorAlert>
     <SimpleCard
       v-else-if="activity"
       md="10"
@@ -12,7 +12,7 @@
         <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
         <v-img
           height="300"
-          :src="activity.topPhotoUrl"
+          :src="activity.bannerUrl"
         >
           <template v-slot:placeholder>
             <PicturePlaceholderAlt/>
@@ -166,7 +166,7 @@ import '@/assets/common/common.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlertPage from "@/components/ui/base/error-alert";
+import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
@@ -187,7 +187,7 @@ export default {
     PicturePlaceholder,
     PeopleChipGroup,
     AdminIcon,
-    ErrorAlertPage,
+    ErrorAlert,
     FloatingActionButton,
     SimpleCard
   },

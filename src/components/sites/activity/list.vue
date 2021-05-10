@@ -1,8 +1,8 @@
 <template>
   <div>
-    <ErrorAlertPage v-if="error">
+    <ErrorAlert v-if="error">
       {{ error }}
-    </ErrorAlertPage>
+    </ErrorAlert>
 
     <!--  用卡片的形式展示活动，需要考虑活动数为 0 的情况  -->
     <template v-else-if="activityData.length">
@@ -39,12 +39,12 @@ import ActivityCard from '@/components/ui/activity/activity-card';
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
-import ErrorAlertPage from "@/components/ui/base/error-alert";
+import ErrorAlert from "@/components/ui/base/error-alert";
 import BottomLine from "@/components/ui/base/bottom-line";
 import {getActivityList} from "@/api/activity";
 
 export default {
-  components: {BottomLine, ErrorAlertPage, FloatingActionButton, ActivityCard},
+  components: {BottomLine, ErrorAlert, FloatingActionButton, ActivityCard},
   data: () => ({
     activityData: [],
     page: 1,
@@ -64,7 +64,7 @@ export default {
       this.$store.commit('setAppbarLoading', true);
       let keyword = this.$store.state.searchKeyword;
       let that = this;
-      getActivityList(keyword, this.page, this.pageSize)
+      return getActivityList(keyword, this.page, this.pageSize)
         .then(response => {
           that.count = response.data.count;
           that.activityData = response.data.results;
@@ -86,13 +86,13 @@ export default {
 
   watch: {
     page() {
-      this.fetchData();
-      // 页数变化后滑动到顶端
-      window.scrollTo({
-        left: 0,
-        top: 0,
-        behavior: 'smooth'
-      });
+      this.fetchData().then(() =>
+        // 页数变化后滑动到顶端
+        window.scrollTo({
+          left: 0,
+          top: 0,
+          behavior: 'smooth'
+        }))
     }
   },
 

@@ -2,9 +2,9 @@
 推荐断网测试  -->
 <template>
   <div>
-    <ErrorAlertPage v-if="error">
+    <ErrorAlert v-if="error">
       {{ error }}
-    </ErrorAlertPage>
+    </ErrorAlert>
     <SimpleCard
       v-else-if="userProfile"
       md="6"
@@ -121,7 +121,7 @@
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import ErrorAlertPage from "@/components/ui/base/error-alert";
+import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
@@ -137,7 +137,7 @@ export default {
     PicturePlaceholder,
     PeopleChipGroup,
     AdminIcon,
-    ErrorAlertPage,
+    ErrorAlert,
     FloatingActionButton,
     SimpleCard
   },

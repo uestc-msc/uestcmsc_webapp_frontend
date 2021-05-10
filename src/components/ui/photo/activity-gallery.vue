@@ -1,8 +1,8 @@
 <template>
-    <v-container>
+    <v-container v-if="value">
       <!-- 三行 n 列  -->
       <v-row
-        v-for="r in range(0, photoStatus.length, photosPerRow)"
+        v-for="r in range(0, photo.length, photosPerRow)"
         :key="r"
       >
         <v-col
@@ -10,9 +10,19 @@
           :key="i"
           :cols="12 / photosPerRow"
         >
+          <!--  正在上传的图片  -->
           <v-img
-            v-if="i < photoStatus.length"
-            :src="url(photoStatus[i])"
+            v-if="i < localPhoto.length"
+            :src="photo[i].info.data"
+            aspect-ratio="1"
+            class="grey lighten-2"
+          >
+          </v-img>
+
+          <!--  已经在云端的图片  -->
+          <v-img
+            v-else-if="i < photo.length"
+            :src="getOnedriveFileUrl(photo[i].id)"
             aspect-ratio="1"
             class="grey lighten-2"
           >
@@ -22,6 +32,27 @@
           </v-img>
         </v-col>
       </v-row>
+
+      <ErrorAlert
+        v-if="errorMsg"
+        as-row
+        :msg="errorMsg"
+      />
+
+      <v-row>
+        <v-col>
+          <v-btn
+            v-if="count !== cloudPhoto.length"
+            :loading="loading"
+            :color="this.errorMsg ? 'error' : 'primary'"
+            block
+            @click="fetchData"
+          >
+            加载更多
+          </v-btn>
+        </v-col>
+      </v-row>
+
     </v-container>
 </template>
 
@@ -30,21 +61,31 @@ import {Status, StatusColor} from "@/utils/status";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import range from 'lodash/range'
 import {getOnedriveFileUrl} from "@/api/cloud";
-import {FileStatus, formatFileUploaderInput, uploadFileToOnedrive} from "@/utils/file";
-import {displayErrorTime, displaySuccessTime, sleep, totalRetryTimes} from "@/utils";
-import {addActivityFile} from "@/api/activity";
+import {FileStatus, fileToBase64, uploadFileToOnedrive} from "@/utils/file";
+import {addActivityPhoto, getActivityPhotoList} from "@/api/activity";
+import ErrorAlert from "@/components/ui/base/error-alert";
+
+// 一页的大小
+const pageSize = 9;
 
 export default {
-  components: {PicturePlaceholderAlt},
+  components: {ErrorAlert, PicturePlaceholderAlt},
   props: {
     activityId: {
       type: [String, Number],
       required: true
     },
+    // 如果不存在图片，将设置 value 为 false，父组件可以隐藏整个区域
+    value: {
+      type: Boolean,
+      default: true
+    },
+    // 如果需要上传图片，将从 v-file-input 中的数据装进该数组即可
     fileInputValue: {
       type: [Array, File],
       default: () => []
     },
+    // 每行的照片数
     photosPerRow: {
       type: [String, Number],
       default: 3
@@ -53,99 +94,96 @@ export default {
 
   data() {
     return {
-      localPhotoStatus: [],       // 本地正在上传的照片
-      cloudPhotoStatus: [],       // 已经在云端的照片
+      fileToBase64,
+      // 本地正在上传的照片，元素为 fileStatus
+      localPhoto: [],
+      // 已经在云端的照片，元素为后端给的 ActivityPhoto 信息
+      cloudPhoto: [],
+      // 云端提供的总长度，本地上传/删除照片时记得修改
+      count: 0,
 
-      page: 1,                    // 本地正在上传的照片
-      pageSize: 9,                // 一页的大小
-      count: 9,                   // 云端提供的总长度
+      loading: false,
+      errorMsg: '',
 
       Status,
       StatusColor,
       range,
+      getOnedriveFileUrl
     }
   },
 
   computed: {
-    photoStatus() {
-      return [...this.localPhotoStatus, ...this.cloudPhotoStatus]
-    },
-    url(fileStatus) {
-      if (fileStatus.info)
-        return getOnedriveFileUrl(fileStatus.info.id);
-      else
-        return fileStatus.file;
+    // 本地照片和云端照片的拼接数组，用于布局
+    photo() {
+      return [...this.localPhoto, ...this.cloudPhoto];
     },
   },
 
   methods: {
-    // 从后端获取当前 page 的 data
-    fetchData() {
-      this.page
-    },
-
     uploadFile(files) {
       let that = this;
-      const formattedFiles = formatFileUploaderInput(files);
-
-      Promise.all(formattedFiles.map(async (file) => {
+      let apiFunction = (response) => addActivityPhoto({
+        file_id: response.data.id,
+        activity_id: that.activityId
+      });
+      for (let file of files) {
         // 将文件状态存到 fileStatus 里并丢进 fileStatusArray
         let fileStatus = new FileStatus(file, null);
-        that.fileStatusArray.push(fileStatus);
-
-        const setProgress = (p) => fileStatus.progress = p;
-        const setIndeterminate = (s) => fileStatus.status = s;
-        const setMsg = (m) => fileStatus.msg = m;
-
-        fileStatus.status = Status.uploading;
-        uploadFileToOnedrive(file, setProgress, setIndeterminate, setMsg)
-          .then(async (res) => {
-            fileStatus.status = Status.submitting;
-            fileStatus.msg = '写入数据库';
-            const file_id = res.data.id;
-            const data = {
-              file_id,
-              activity_id: that.activity.id
-            };
-            // 如果上传成功但是写入数据库失败，还是做一下重试操作
-            let res2;
-            for (let i = 1; i <= totalRetryTimes; i++) {
-              try {
-                res2 = await addActivityFile(data);
-                break;
-              } catch (res2) {
-                if (i === totalRetryTimes)
-                  throw res2;
-              }
-            }
-            fileStatus.msg = '上传成功';
-            fileStatus.status = Status.success;
-            fileStatus.info = res2.data;
-            await sleep(displaySuccessTime);
-            fileStatus.msg = '';
-            fileStatus.status = Status.default;
-            this.updateData();
-          })
-          .catch(async res => {
-            fileStatus.msg = res.data;
-            fileStatus.status = Status.error;
-            await sleep(displayErrorTime);
-            let index = that.fileStatusArray.indexOf(fileStatus);
+        that.localPhoto.push(fileStatus);
+        // 将文件转为 base64 然后显示在屏幕上
+        fileToBase64(file).then(data => that.$set(fileStatus.info, 'data', data));
+        uploadFileToOnedrive(fileStatus, that.localPhoto, apiFunction)
+          .then(res => {
+            // 将已经上传完的从 localPhoto 移动到 cloudPhoto
+            const index = this.localPhoto.indexOf(fileStatus);
             console.assert(index >= 0);
-            that.fileStatusArray.splice(index, 1);
-          });
-      }));
+            that.localPhoto.splice(index, 1);
+            that.cloudPhoto.unshift(res.data);
+          })
+          .catch(() => {});
+      }
+    },
+
+    // 从后端获取下一 page 的 data
+    fetchData() {
+      // 获取不超过 pageSize 数量的照片，使得 cloudPhoto 为 pageSize 的倍数
+      const curPage = Math.floor(this.cloudPhoto.length / pageSize);
+      let that = this;
+      this.loading = true;
+      this.errorMsg = '';
+      getActivityPhotoList(this.activityId, curPage + 1, pageSize)
+        .then(res => {
+          that.count = res.data.count;
+          if (that.count === 0)
+            this.$emit('input', false);
+          const result = res.data.results;
+          that.cloudPhoto.splice(curPage * pageSize);
+          that.cloudPhoto.push(...result);
+          this.loading = false;
+        })
+        .catch(res => {
+          this.loading = false;
+          this.errorMsg = res.data;
+        })
     },
   },
 
   watch: {
+    // 'activity.id'() {
+    //   this.fetchData();
+    // },
+
     // 本地请求上传新的照片
     fileInputValue() {
       if (this.fileInputValue) {
         this.uploadFile(this.fileInputValue);
         this.$emit('update:fileInputValue', []);
       }
-    }
+    },
   },
+  created() {
+    window.gallery = this;
+    this.fetchData();
+  }
 }
 </script>

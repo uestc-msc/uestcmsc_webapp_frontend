@@ -1,10 +1,10 @@
-import notFound from '@/components/sites/404.vue'
+import GalleryList from '@/components/sites/gallery/list'
 
 const routeConfig = [
   {
     path: '/gallery',
     name: 'GalleryList',
-    component: notFound,
+    component: GalleryList,
   }
 ];
 

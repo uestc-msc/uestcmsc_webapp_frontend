@@ -5,11 +5,16 @@ import {humanReadableFileSize} from "vuetify/lib/util/helpers";
 import moment from "@/utils/moment";
 import {Status} from "@/utils/status";
 
-// 文件分块大小为 50 MiB
-// 参考文档：https://docs.microsoft.com/zh-cn/graph/api/driveitem-createuploadsession?view=graph-rest-1.0#best-practices
+/**
+ * 文件分块大小，50 MiB
+ * 参考文档：https://docs.microsoft.com/zh-cn/graph/api/driveitem-createuploadsession?view=graph-rest-1.0#best-practices
+ * @type {number}
+ */
 export const maxFileContentLength = 50 * (1 << 20);
 
-// 表示文件上传状态的类
+/**
+ * 表示文件上传状态的类
+ */
 export class FileStatus {
   constructor(file = null, info = null) {
     // info 和 file 二者有其一就可以互补
@@ -30,7 +35,26 @@ export class FileStatus {
 }
 
 
-// 将单位为字节的数字格式化为 x.xx MiB 格式的字符串
+/**
+ * 将文件转为 base64，可用于将图片文件显示在页面上
+ * @param file {File}
+ * @return {Promise<String>}
+ */
+export async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+
+/**
+ * 将单位为字节的数字格式化为 x.xx MiB 格式的字符串
+ * @param bytes {Number}
+ * @return {String}
+ */
 export function formatBytes(bytes) {
   return humanReadableFileSize(bytes, true);
 }
@@ -38,7 +62,8 @@ export function formatBytes(bytes) {
 
 /**
  * 将 v-file-uploader 的输入格式化为 Array
- * @param input v-file-uploader 的返回值，可能为 null, [], File, File[]
+ * @param input {null, File, File[]} v-file-uploader 的返回值
+ * @return {File[]}
  */
 export function formatFileUploaderInput(input) {
   if (input)                      // 如果 input 是 null
@@ -49,16 +74,22 @@ export function formatFileUploaderInput(input) {
 }
 
 
+/**
+ * 将链接改写为浏览器能够直接打开的链接（添加 https:// 前缀）
+ * @param url {string}
+ * @return {string}
+ */
 export function formatUrl(url) {
   return url.includes('://') ? url : 'https://' + url;
 }
 
+
 /**
  * 调用后端接口，将文件上传至 onedrive，并调用 API 上传到对应位置。
  * 参考文档：https://docs.microsoft.com/zh-cn/graph/api/driveitem-createuploadsession
- * @param fileStatus 包含文件内容、文件状态、文件信息，见 FileStatus 类
- * @param statusArray 当前页面的 fileStatus 类。上传错误后会从该数组删除 fileStatus
- * @param apiFunction 文件上传完成后调用 API 的函数。该函数接受一个参数即 onedrive 上传成功的响应；且应当返回上传成功的响应
+ * @param fileStatus {FileStatus}
+ * @param statusArray {FileStatus[]} 当前页面的 fileStatus 类。上传错误后会从该数组删除 fileStatus
+ * @param apiFunction {Function} 文件上传完成后调用 API 的函数。该函数接受一个参数即 onedrive 上传成功的响应；且应当返回上传成功的响应
  * @return response apiFunction 的响应报文
  */
 export async function uploadFileToOnedrive(fileStatus, statusArray, apiFunction) {
@@ -178,14 +209,14 @@ export async function uploadFileToOnedrive(fileStatus, statusArray, apiFunction)
     let index = statusArray.indexOf(fileStatus);
     console.assert(index >= 0);
     statusArray.splice(index, 1);
-    return res;
+    throw res;
   }
 }
 
 
 /**
  * 取消上传
- * @param fileStatus 包含文件内容、文件状态、文件信息，见 FileStatus 类
+ * @param fileStatus {FileStatus}
  */
 export function cancelUploadFileToOnedrive(fileStatus) {
   fileStatus.axiosSource.cancel('您取消了上传');
@@ -223,7 +254,10 @@ export async function deleteFileFromOnedrive(fileStatus, statusArray, apiFunctio
 }
 
 
-// 自动下载 url 对应的文件
+/**
+ * 自动下载 url 对应的文件
+ * @param url {String}
+ */
 export function downloadFile(url) {
   // 其实设定 <a :href="url" target="_blank"> 就可以了
   window.open(url);

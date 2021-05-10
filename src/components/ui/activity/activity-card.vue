@@ -5,7 +5,7 @@
   >
     <v-img
       height="250"
-      :src="activity.topPhotoUrl"
+      :src="activity.bannerUrl"
     >
       <template v-slot:placeholder>
         <PicturePlaceholderAlt/>

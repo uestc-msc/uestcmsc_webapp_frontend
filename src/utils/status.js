@@ -1,3 +1,6 @@
+/**
+ * 表单或文件的状态
+ */
 export const Status = Object.freeze({
   default: 0,
   editing: 1,
@@ -7,6 +10,9 @@ export const Status = Object.freeze({
   error: 5,
 })
 
+/**
+ * 状态对应的颜色
+ */
 export const StatusColor = Object.freeze({
   [Status.default]: 'primary',
   [Status.editing]: 'primary',
@@ -16,6 +22,9 @@ export const StatusColor = Object.freeze({
   [Status.error]: 'error',
 })
 
+/**
+ * 状态对应的图标
+ */
 export const StatusIcon = Object.freeze({
   [Status.default]: 'mdi-pencil',
   [Status.editing]: 'mdi-content-save',

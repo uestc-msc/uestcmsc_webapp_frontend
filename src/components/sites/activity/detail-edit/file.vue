@@ -23,6 +23,7 @@
                 icon
                 :disabled="disabled"
                 :href="fileStatus.info.download_link"
+                target="_blank"
               >
                 <v-icon color="grey">mdi-download</v-icon>
               </v-btn>
@@ -82,7 +83,7 @@
         <v-col>
           <v-file-input
             multiple
-            v-model="uploadQueue"
+            v-model="fileInputValue"
             :disabled="disabled"
             prepend-icon="mdi-upload"
             placeholder="选择文件上传..."
@@ -121,7 +122,7 @@ export default {
 
   data() {
     return {
-      uploadQueue: null,
+      fileInputValue: null,
       fileStatusArray: [],
 
       Status,
@@ -149,7 +150,7 @@ export default {
         let fileStatus = new FileStatus(file, null);
         that.fileStatusArray.push(fileStatus);
         uploadFileToOnedrive(fileStatus, this.fileStatusArray, apiFunction)
-          .then(that.updateData);
+          .then(that.updateData)
       }
     },
 
@@ -161,7 +162,7 @@ export default {
       let that = this;
       let apiFunction = () => deleteActivityFile(fileStatus.info.id);
       deleteFileFromOnedrive(fileStatus, this.fileStatusArray, apiFunction)
-        .then(that.updateData);
+        .then(that.updateData).catch(() => {});
     },
 
     fetchData() {   // 根据 activity 更新 fileStatus
@@ -180,16 +181,15 @@ export default {
       this.fetchData();
     },
 
-    uploadQueue() {
-      if (this.uploadQueue.length) {
-        this.uploadFile(this.uploadQueue);
-        this.uploadQueue = [];
+    fileInputValue() {
+      if (this.fileInputValue.length) {
+        this.uploadFile(this.fileInputValue);
+        this.fileInputValue = [];
       }
     }
   },
 
   created() {
-    window.file = this;
     this.fetchData();
   }
 };
