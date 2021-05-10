@@ -59,15 +59,14 @@ export default {
         this.$emit('update:index', val ? 0 : -1);
       }
     },
-
+    // 记住 show 的优先级大于 carouselIndex，就不会造成死循环
     carouselIndex: {
       get() {
         console.log('get carouselIndex: ' + this.index);
         return this.index;
       },
       set(val) {
-        console.log('set carouselIndex: ' + val);
-        this.$emit('update:index', val);
+        this.$emit('update:index', this.show ? val : -1);
       }
     }
   },
