@@ -31,10 +31,6 @@
 <script>
 export default {
   props: {
-    value: {
-      type: Boolean,
-      required: true,
-    },
     photos: {
       type: Array,
       required: true
@@ -55,18 +51,22 @@ export default {
 
     show: {
       get() {
-        return this.value;
+        console.log('get show: ' + (this.index >= 0));
+        return this.index >= 0;
       },
       set(val) {
-        this.$emit('input', val);
+        console.log('set show to ' + val);
+        this.$emit('update:index', val ? 0 : -1);
       }
     },
 
     carouselIndex: {
       get() {
+        console.log('get carouselIndex: ' + this.index);
         return this.index;
       },
       set(val) {
+        console.log('set carouselIndex: ' + val);
         this.$emit('update:index', val);
       }
     }

@@ -31,7 +31,7 @@
       <v-col v-for="(photo, index) in cloudPhoto" :key="photo.id" :cols="cols">
         <v-img
           v-ripple
-          @click.stop="carouselIndex = index; showCarousel = true"
+          @click.stop="carouselIndex = index"
           :src="getOnedriveFileUrl(photo.id)"
           aspect-ratio="1"
           class="grey lighten-2"
@@ -44,7 +44,6 @@
     </v-row>
 
     <ActivityGalleryCarousel
-      v-model="showCarousel"
       :photos.sync="cloudPhoto"
       :index.sync="carouselIndex"
       :activity.sync="activity"
@@ -135,8 +134,7 @@ export default {
       errorMsg: '',
 
       // 轮播图的 index
-      carouselIndex: 0,
-      showCarousel: false,
+      carouselIndex: -1,
 
       Status,
       StatusColor,
@@ -217,10 +215,6 @@ export default {
       const photoInput = document.getElementById('photoInput');
       photoInput.click();
     },
-
-    carouselIndex() {
-      console.log('carouselIndex update to' + this.carouselIndex);
-    }
   },
   created() {
     window.gallery = this;
