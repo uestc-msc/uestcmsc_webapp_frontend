@@ -9,7 +9,6 @@
       v-else-if="userProfile"
       md="6"
     >
-
       <v-container>
         <v-row align="end">
           <v-col cols="4">
@@ -120,7 +119,7 @@
 <script>
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";

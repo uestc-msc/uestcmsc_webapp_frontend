@@ -152,7 +152,7 @@
 
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
@@ -177,7 +177,6 @@ export default {
   data() {
     let that = this;
     return {
-      userId: 0,
       userProfile: {
         student_id: '',
         about: ''
@@ -196,6 +195,9 @@ export default {
   },
 
   computed: {
+    userId() {
+      return this.$route.params.userId;
+    },
     hasGreaterPermissions() {
       return hasGreaterPermissions(this.$store.state.profile, this.userProfile);
     },
@@ -211,7 +213,6 @@ export default {
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
-    this.userId = Number(this.$route.params.userId);
     this.userProfile = this.$route.params.userProfile;
     this.$store.commit('setAppbarLoading', true);
     let that = this;

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import DatePicker from "@/components/ui/base/date-picker";
-import TimePicker from "@/components/ui/base/time-picker";
+import DatePicker from "@/components/ui/base/input/date-picker";
+import TimePicker from "@/components/ui/base/input/time-picker";
 
 export default {
   props: {

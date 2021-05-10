@@ -15,7 +15,7 @@
 import Vue from 'vue'
 import AppBar from './appbar.vue';
 import NavigationDrawer from './navigation-drawer.vue';
-import SettingsDrawer from './settings-drawer/app.vue';
+import SettingsDrawer from './settings-drawer/settings-drawer.vue';
 
 export default Vue.extend({
   components: {

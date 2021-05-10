@@ -97,7 +97,7 @@ import {getActivityDetail, updateActivityDetail} from "@/api/activity";
 import ActivityFile from "@/components/sites/activity/detail-edit/file";
 import ActivityLink from "@/components/sites/activity/detail-edit/link";
 import ActivityPhoto from "@/components/sites/activity/detail-edit/photos";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import ErrorAlert from "@/components/ui/base/error-alert";
@@ -132,8 +132,13 @@ export default {
       StatusIcon,
       toggleUploadPhoto: false
     };
-  }
-  ,
+  },
+
+  computed: {
+    activityId() {
+      return this.$route.params.activityId;
+    },
+  },
 
   methods: {
     fetchData() {
@@ -190,7 +195,6 @@ export default {
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.activity = this.$route.params.activity;
-    this.activityId = this.$route.params.activityId;
     // 如果有 activity 就直接用，没有就赶紧 fetch
     if (this.activity)
       this.$store.commit('setTitle', this.activity.title);

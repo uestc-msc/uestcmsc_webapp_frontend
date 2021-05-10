@@ -18,7 +18,7 @@
 <script>
 import Vue from 'vue';
 import Footer from '@/components/ui/footer/app.vue';
-import AppNavigationBar from '@/components/ui/navigation/app.vue';
+import AppNavigationBar from '@/components/ui/navigation/navigation.vue';
 import Snackbar from '@/components/ui/snackbar/app.vue';
 import {getMyProfile} from "@/api/user";
 

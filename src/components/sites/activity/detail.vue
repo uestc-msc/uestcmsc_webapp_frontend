@@ -129,9 +129,11 @@
           <v-list-item-content>
             <v-list-item-title>
               <PeopleChipGroup
+                v-if="activity.attender && activity.attender.length"
                 listitem
                 :userId="activity.attender"
               />
+              <span v-else>暂无</span>
             </v-list-item-title>
             <v-list-item-subtitle>参与者（共 {{activity.attender.length}} 人）</v-list-item-subtitle>
           </v-list-item-content>
@@ -143,13 +145,26 @@
           <v-list-item-icon>
             <v-icon color="primary">mdi-image</v-icon>
           </v-list-item-icon>
-
-          <ActivityGallery :activity-id="activityId" />
-
+          <v-list-item-content>
+            <ActivityGallery
+              v-if="hasPhoto"
+              v-model="hasPhoto"
+              :activity-id="activityId"
+            />
+            <template v-else>
+              <v-list-item-title>暂无</v-list-item-title>
+              <v-list-item-subtitle>沙龙图片</v-list-item-subtitle>
+            </template>
+          </v-list-item-content>
         </v-list-item>
 
       </v-list>
+
     </SimpleCard>
+
+    <!-- todo 图片上传、活动签到、活动删除
+    用一个 https://vuetifyjs.com/zh-Hans/api/v-speed-dial/ ？
+    -->
 
     <FloatingActionButton
       v-if="isPresenterOrAdmin"
@@ -165,7 +180,7 @@
 import '@/assets/common/common.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {mapGetters} from 'vuex'
@@ -175,13 +190,14 @@ import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import {formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
-import {generateQRCode} from "@/utils/qrcode";
-import {DEBUG, iconPath} from "@/utils";
+import {DEBUG} from "@/utils";
 import {getTimeIcon} from '@/utils/datetime';
 import ActivityGallery from "@/components/ui/photo/activity-gallery";
+import MultipleFloatingActionButton from "@/components/ui/base/button/multiple-floating-action-button";
 
 export default {
   components: {
+    MultipleFloatingActionButton,
     ActivityGallery,
     PicturePlaceholderAlt,
     PicturePlaceholder,
@@ -194,15 +210,19 @@ export default {
 
   data() {
     return {
-      activityId: 0,
       activity: null,
+      hasPhoto: true,
       error: false,
+
       formatBytes,
       formatUrl,
     }
   },
 
   computed: {
+    activityId() {
+      return this.$route.params.activityId;
+    },
     ...mapGetters(['isAdmin']),
     isPresenterOrAdmin() {
       let that = this;
@@ -233,10 +253,10 @@ export default {
     if (DEBUG)
       window.activity = this;
     let that = this;
+    this.hasPhoto = true;
     this.activity = this.$route.params.activity;
     if (!this.activity) {
       this.$store.commit('setAppbarLoading', true);
-      this.activityId = this.$route.params.activityId;
 
       getActivityDetail(this.activityId)
         .then(response => {

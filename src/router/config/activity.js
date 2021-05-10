@@ -2,7 +2,7 @@ import notFound from '@/components/sites/404.vue'
 import ActivityList from '@/components/sites/activity/list'
 import CreateActivity from '@/components/sites/activity/create'
 import ActivityDetail from '@/components/sites/activity/detail'
-import ActivityDetailEdit from '@/components/sites/activity/detail-edit/app'
+import ActivityDetailEdit from '@/components/sites/activity/detail-edit/detail-edit'
 import ActivityCheckIn from '@/components/sites/activity/check-in'
 
 const routeConfig = [

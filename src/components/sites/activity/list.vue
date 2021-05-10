@@ -36,7 +36,7 @@
 
 <script>
 import ActivityCard from '@/components/ui/activity/activity-card';
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import debounce from 'lodash/debounce';
 import {debounceTime} from "@/utils";
 import ErrorAlert from "@/components/ui/base/error-alert";

@@ -50,7 +50,7 @@
 
 <script>
 import {toISOStringWithTZ} from "@/utils/moment";
-import DatetimePicker from "@/components/ui/base/datetime-picker";
+import DatetimePicker from "@/components/ui/base/input/datetime-picker";
 import {inputRules} from "@/utils/validators";
 
 export default {

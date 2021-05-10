@@ -74,9 +74,9 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import {DEBUG, displayErrorTime, sleep} from "@/utils";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import {createActivity} from "@/api/activity";
-import DatetimePicker from "@/components/ui/base/datetime-picker";
+import DatetimePicker from "@/components/ui/base/input/datetime-picker";
 import {inputRules} from "@/utils/validators";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {

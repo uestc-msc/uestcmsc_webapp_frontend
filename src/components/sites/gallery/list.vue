@@ -6,8 +6,8 @@
 
     <template v-else-if="activityData.length">
       <v-container>
+        <template v-for="activity in activityData">
         <v-row
-          v-for="activity in activityData"
           :key="activity.id"
           class="justify-center"
         >
@@ -19,10 +19,18 @@
             >
               <v-card-title>{{ activity.title }}</v-card-title>
               <v-card-subtitle>{{ formattedTime(activity) }}</v-card-subtitle>
-              <ActivityGallery :activity-id="activity.id"/>
+              <ActivityGallery
+                v-if="activity.hasPhoto"
+                v-model="activity.hasPhoto"
+                :activity-id="activity.id"
+              />
+              <v-card-text v-else>
+                暂无图片
+              </v-card-text>
             </v-card>
           </v-col>
         </v-row>
+        </template>
       </v-container>
 
       <v-pagination v-model="page" :length="length"/>
@@ -70,6 +78,8 @@ export default {
         .then(response => {
           that.count = response.data.count;
           that.activityData = response.data.results;
+          for (let activity of that.activityData)
+            this.$set(activity, 'hasPhoto', true);
         })
         .catch(response => {
           that.error = response.data;
