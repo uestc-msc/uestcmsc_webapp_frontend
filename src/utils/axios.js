@@ -1,11 +1,11 @@
 import axios from "axios";
 
-import { baseUrl, DEBUG } from "@/utils";
+import {baseUrl, DEBUG, XHRTimeout} from "@/utils";
 
 // 创建axios实例
 const service = axios.create({
   baseURL: baseUrl,
-  timeout: 5000,                // 请求的超时时间
+  timeout: XHRTimeout,
   withCredentials: true,
   xsrfCookieName: 'csrftoken',  // 添加 CSRF token
   xsrfHeaderName: 'X-CSRFToken',
@@ -48,13 +48,21 @@ service.interceptors.response.use(
     if (error.response.status === 500)
       return Promise.reject({
         status: 500,
-        data: "服务器端错误"
+        data: "服务器端错误，请联系管理员"
       });
     if (error.response.status === 401)
       return Promise.reject({
         status: 401,
         data: "账户或密码错误"
       });
+    // 一些错误信息在 response.data 里，一些在 response.data.detail
+    // 这里统一放在 response.data 里
+    if (error.response.data && error.response.data.detail) {
+      return Promise.reject({
+        status: error.response.status,
+        data: error.response.data.detail
+      });
+    }
     return Promise.reject(error.response)
   }
 );

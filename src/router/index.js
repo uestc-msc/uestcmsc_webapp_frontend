@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import userRouteConfig from "./user/router";
-import accountRouteConfig from "./account/router";
-import activityRouteConfig from "./activity/router";
-import galleryRouteConfig from "./gallery/router";
-import notFound from '@/components/sites/404.vue'
-import { goBack } from '@/utils/router';
+import userRouteConfig from "./config/user";
+import accountRouteConfig from "./config/account";
+import activityRouteConfig from "./config/activity";
+import galleryRouteConfig from "./config/gallery";
+import cloudRouteConfig from "./config/cloud";
+import notFound from '@/components/sites/404.vue';
+import {goHome} from '@/utils/router';
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,7 @@ const routes = [
   ...accountRouteConfig,
   ...activityRouteConfig,
   ...galleryRouteConfig,
+  ...cloudRouteConfig,
   {
     path: '*',
     name: '404',
@@ -34,6 +36,7 @@ const router = new VueRouter({
 })
 
 // 检查是否满足路由条件
+// todo 路由加载前后搞进度条，检查用户权限
 router.beforeEach((to, from, next) => {
   for (let i = 0; i < to.matched.length; i++)
   {
@@ -42,7 +45,7 @@ router.beforeEach((to, from, next) => {
       for (let j = 0; j < routeRecord.meta.need.length; j++) {
         let permissionFunction = routeRecord.meta.need[j];      
         if (!permissionFunction()) {
-          goBack();
+          goHome();
           return;
         }
       }

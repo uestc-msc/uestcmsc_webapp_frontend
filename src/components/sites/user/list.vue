@@ -2,6 +2,8 @@
   <ErrorAlert v-if="error">
     {{ error }}
   </ErrorAlert>
+
+  <!--  用表格的形式展示用户，不用考虑用户数为 0 的情况  -->
   <SimpleCard v-else>
     <v-simple-table>
       <thead>
@@ -24,10 +26,20 @@
       >
         <td>
           <v-avatar>
-            <v-img :src="user.avatar_url"/>
+            <v-img
+              :src="user.avatar_url"
+              :lazy-src="lazyAvatar"
+            >
+              <template v-slot:placeholder>
+                  <PicturePlaceholder size="48"/>
+              </template>
+            </v-img>
           </v-avatar>
         </td>
-        <td>{{ user.first_name }}
+        <td>
+          <span>
+            {{ user.first_name }}
+          </span>
           <AdminIcon
             :user="user"
             size="14px"
@@ -44,21 +56,25 @@
 
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import debounce from 'lodash/debounce';
-import {debounceTime} from "@/utils";
-import axios from "@/utils/axios";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
+import {lazyAvatar, debounceTime} from "@/utils";
+import ErrorAlert from "@/components/ui/base/error-alert";
+import AdminIcon from "@/components/ui/user/admin-icon";
+import {getUserList} from "@/api/user";
+import BottomLine from "@/components/ui/base/bottom-line";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 
 export default {
-  components: {AdminIcon, ErrorAlert, SimpleCard},
+  components: {PicturePlaceholder, BottomLine, AdminIcon, ErrorAlert, SimpleCard, FloatingActionButton},
   data: () => ({
     headers: ['用户', '姓名', '经验'],
-    userData: null,
+    userData: [],
     page: 1,
     pageSize: 12,
-    count: null,
-    error: false
+    count: 0,
+    error: false,
+    lazyAvatar,
   }),
 
   computed: {
@@ -72,7 +88,7 @@ export default {
       this.$store.commit('setAppbarLoading', true);
       let keyword = this.$store.state.searchKeyword;
       let that = this;
-      axios.get(`/users/?search=${keyword}&page=${this.page}&page_size=${this.pageSize}`)
+      getUserList(keyword, this.page, this.pageSize)
         .then(response => {
           that.count = response.data.count;
           that.userData = response.data.results;

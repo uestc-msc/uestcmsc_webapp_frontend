@@ -1,12 +1,15 @@
 <template>
-  <error-alert>404 Not Found</error-alert>
+  <ErrorAlert
+    msg="404 Not Found"
+  />
 </template>
 
 <script>
-import errorAlert from '../ui/base/component-error-alert.vue'
+import ErrorAlert from "@/components/ui/base/error-alert";
+
 export default {
   components: {
-    errorAlert
+    ErrorAlert
   }
 };
 </script>

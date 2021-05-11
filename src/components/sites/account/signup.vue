@@ -1,4 +1,5 @@
 <template>
+  <!-- todo 初始化时学号为空 按钮为蓝色 但不可提交-->
   <SimpleCard>
     <v-form
       @submit.prevent="signup"
@@ -46,6 +47,7 @@
               prepend-icon="mdi-lock"
               @input="$refs.passwordConfirm.validate(true)"
               required/>
+              <!-- @input="$refs.passwordConfirm.validate(true)"  可以在输入密码时比对密码确认框  -->
           </v-col>
         </v-row>
 
@@ -102,7 +104,8 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlert
+          as-row
           v-if="error"
           :msg="error"
         />
@@ -114,14 +117,14 @@
 
 <script>
 import md5 from "md5";
-import axios from "@/utils/axios";
 import {goBack} from "@/utils/router";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import {signup} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data() {
     let that = this;
     return {
@@ -131,7 +134,7 @@ export default {
       show_password: false,
       password_confirm: '',
       show_password_confirm: false,
-      student_id: null,
+      student_id: '',
 
       firstNameRules: inputRules.user.firstNameRules,
       usernameRules: inputRules.user.usernameRules,
@@ -161,7 +164,7 @@ export default {
         student_id: this.student_id
       }
       let that = this;
-      axios.post('/accounts/signup/', data)
+      signup(data)
         .then((response) => {
           if (response.status === 200) // 是微信小程序的用户
             that.$store.commit('setMsg', `欢迎回来，${response.data.first_name}~`)

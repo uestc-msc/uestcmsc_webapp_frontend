@@ -45,10 +45,12 @@
             :type="show_password ? 'text' : 'password'"
             :append-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="show_password = !show_password"
+            @input="$refs.passwordConfirm.validate(true)"
             counter
             label="新密码 *"
             prepend-icon="mdi-lock"
             required/>
+          <!-- @input="$refs.passwordConfirm.validate(true)"  可以在输入密码时比对密码确认框  -->
         </v-col>
         </v-row>
 
@@ -64,6 +66,7 @@
             counter
             label="重复密码 *"
             prepend-icon="mdi-lock-check"
+            ref="passwordConfirm"
             required/>
         </v-col>
         </v-row>
@@ -82,7 +85,8 @@
         </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlert
+          as-row
           v-if="error"
           :msg="error"
         />
@@ -94,13 +98,13 @@
 
 <script>
 import md5 from "md5";
-import axios from "@/utils/axios";
 import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import {resetPassword} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data() {
     let that = this;
     return {
@@ -126,7 +130,7 @@ export default {
     let that = this;
     // 进入页面，填入 token 并验证有效性
     this.token = this.$route.query.token;
-    axios.post('/accounts/resetpassword/', {token: that.token})
+    resetPassword({token: that.token})
       .then(() => {
         that.tokenValid = true;
       })
@@ -152,7 +156,7 @@ export default {
         new_password: md5(this.password),
       }
       let that = this;
-      axios.post('/accounts/resetpassword/', data)
+      resetPassword(data)
         .then(() => {
           this.$store.commit('setMsg', '重置成功！请重新登录~');
           this.$store.commit('clearProfile');

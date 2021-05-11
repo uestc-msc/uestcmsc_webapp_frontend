@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <app-navigation-bar/>   <!-- 整合侧边栏的抽屉 Navigation Drawer 和顶栏 App Bar-->
+      <AppNavigationBar/>   <!-- 整合侧边栏的抽屉 Navigation Drawer 和顶栏 App Bar-->
       <div class="maincontent">
         <v-fade-transition :duration="100"  mode="out-in">
           <keep-alive>
@@ -16,11 +16,13 @@
 </template>
 
 <script>
+import '@/assets/common/common.css';
 import Vue from 'vue';
 import Footer from '@/components/ui/footer/app.vue';
-import AppNavigationBar from '@/components/ui/navigation/app.vue';
-import Snackbar from '@/components/ui/snackbar/app.vue';
-import axios from "@/utils/axios";
+import AppNavigationBar from '@/components/ui/navigation/navigation.vue';
+import Snackbar from '@/components/ui/snackbar/snackbar.vue';
+import {DEBUG} from "@/utils";
+
 
 export default Vue.extend({
   name: 'App',
@@ -32,18 +34,8 @@ export default Vue.extend({
   },
 
   created() {
-    let that = this;
-    // 配置黑暗模式
-    if (window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      this.$vuetify.theme.dark = true;
-    }
-    // 尝试使用上次的 sessionid 自动登录
-    axios.get('/users/whoami/')
-      .then((response) => {
-        that.$store.commit('setProfile', response.data)
-      })
-      .catch(() => {})
+    if (DEBUG)
+      window.vuetify = this.$vuetify;
   }
 });
 </script>

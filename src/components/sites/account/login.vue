@@ -2,7 +2,7 @@
   <SimpleCard>
     <v-form
       @submit.prevent="login"
-      ref="loginForm"
+      ref="form"
       v-model="valid"
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
@@ -41,7 +41,7 @@
           <v-col>
             <v-btn
               :loading="submitting"
-              :color="this.error ? 'error' : 'primary'"
+              :color="this.errorMsg ? 'error' : 'primary'"
               block
               type="submit"
             >
@@ -50,9 +50,10 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
-          v-if="error"
-          :msg="error"
+        <ErrorAlert
+          as-row
+          v-if="errorMsg"
+          :msg="errorMsg"
         />
 
         <v-row no-gutters>
@@ -67,7 +68,7 @@
             <v-btn
               plain
               color="primary"
-              @click="router.push({ name: 'SignUp' })"
+              @click="router.push({ name: 'Signup' })"
             >
               注册
             </v-btn>
@@ -85,20 +86,19 @@ import Vue from 'vue'
 
 import {goBack} from '@/utils/router';
 import router from "@/router/index";
-import axios from '@/utils/axios';
 import md5 from "md5";
-import {inputRules, isEmail} from "@/utils/validators";
+import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
 import Cookies from 'js-cookie';
-import {serverDomain} from "@/utils";
+import {login} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default Vue.extend({
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data: () => ({
     valid: true,
     submitting: false,
-    error: null,
+    errorMsg: null,
     username: "",
     usernameRules: inputRules.user.usernameRules,
     password: "",
@@ -109,18 +109,18 @@ export default Vue.extend({
 
   methods: {
     login() {
-      this.valid = this.$refs.loginForm.validate();
+      this.valid = this.$refs.form.validate();
       if (!this.valid)
         return;
 
       this.submitting = true;
-      this.error = null;
+      this.errorMsg = null;
       let that = this;
       let data = {
         username: this.username,
         password: md5(this.password)
       };
-      axios.post('/accounts/login/', data)
+      login(data)
         .then((response) => {
           that.$store.commit('setProfile', response.data);
           Cookies.set('csrftoken', response.data.csrftoken);

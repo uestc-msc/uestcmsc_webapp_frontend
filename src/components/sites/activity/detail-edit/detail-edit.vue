@@ -1,0 +1,209 @@
+<template>
+  <div>
+    <SimpleCard
+      md="10">
+      <v-tabs
+        v-model="currentTab"
+        fixed-tabs
+      >
+        <v-tabs-slider></v-tabs-slider>
+        <v-tab
+          v-for="item in tabNames"
+          :key="item"
+        >
+          {{ item }}
+      </v-tab>
+    </v-tabs>
+
+      <v-tabs-items v-model="currentTab">
+        <v-tab-item>
+          <ActivityInfo
+            ref="info"
+            :disabled="status === Status.submitting"
+            :activity.sync="activity"
+          />
+          <div class="bottom-tips">{{bottomTips[0]}}</div>
+        </v-tab-item>
+
+        <v-tab-item>
+          <ActivityPresenterAndAttender
+            ref="presenterAndAttender"
+            :disabled="status === Status.submitting"
+            :activity.sync="activity"
+          />
+          <div class="bottom-tips">{{bottomTips[1]}}</div>
+        </v-tab-item>
+
+        <v-tab-item>
+          <ActivityFile
+            ref="file"
+            :disabled="status === Status.submitting"
+            :activity.sync="activity"
+          />
+          <v-divider/>
+          <ActivityLink
+            ref="link"
+            :disabled="status === Status.submitting"
+            :activity.sync="activity"
+          />
+          <div class="bottom-tips">{{bottomTips[2]}}</div>
+        </v-tab-item>
+
+        <v-tab-item>
+          <ActivityPhoto
+            ref="photo"
+            :disabled="status === Status.submitting"
+            :activity.sync="activity"
+            :toggle-upload-photo="toggleUploadPhoto"
+          />
+          <div class="bottom-tips">{{ bottomTips[3] }}</div>
+        </v-tab-item>
+
+      </v-tabs-items>
+
+
+      <ErrorAlert
+        as-row
+        v-if="status === Status.error"
+        :msg="errorMsg || '信息有误，请检查后提交'"
+      />
+
+    </SimpleCard>
+
+    <FloatingActionButton
+      v-if="currentTab === 3"
+      icon="mdi-upload"
+      color="primary"
+      tooltip="上传图片"
+      @click="toggleUploadPhoto=!toggleUploadPhoto"
+    />
+    <FloatingActionButton
+      v-else
+      :icon="StatusIcon[status]"
+      :color="StatusColor[status]"
+      :loading="status === Status.submitting"
+      tooltip="保存"
+      @click="updateData"
+    />
+  </div>
+</template>
+
+<script>
+import SimpleCard from "@/components/ui/base/simple-card";
+import ActivityInfo from "@/components/sites/activity/detail-edit/info";
+import ActivityPresenterAndAttender from "@/components/sites/activity/detail-edit/presenter-and-attender";
+import {getActivityDetail, updateActivityDetail} from "@/api/activity";
+import ActivityFile from "@/components/sites/activity/detail-edit/file";
+import ActivityLink from "@/components/sites/activity/detail-edit/link";
+import ActivityPhoto from "@/components/sites/activity/detail-edit/photos";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
+import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
+import {Status, StatusColor, StatusIcon} from "@/utils/status";
+import ErrorAlert from "@/components/ui/base/error-alert";
+
+export default {
+  components: {
+    ErrorAlert,
+    FloatingActionButton,
+    ActivityPhoto, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
+  },
+  data() {
+    return {
+      tabNames: ['沙龙信息', '主讲人和参与人', '文件和链接', '相册'],
+      childRefs: {
+        info: 0,
+        presenterAndAttender: 1,
+        file: 2,
+        link: 2
+      },
+      bottomTips: [
+        '修改完成后请记得保存哦~',
+        '参与人名单会即时提交，修改主讲人后请记得保存哦~',
+        '文件和链接会即时上传，不用担心数据丢失~',
+        '图片会即时上传，不用担心图片丢失~'
+      ],
+      currentTab: 0,
+      activity: null,
+      errorMsg: null,
+      status: Status.editing,
+      Status,
+      StatusColor,
+      StatusIcon,
+      toggleUploadPhoto: false
+    };
+  },
+
+  computed: {
+    activityId() {
+      return this.$route.params.activityId;
+    },
+  },
+
+  methods: {
+    fetchData() {
+      this.$store.commit('setAppbarLoading', true);
+      let that = this;
+      getActivityDetail(this.activityId)
+        .then(response => {
+          that.activity = response.data;
+          this.$store.commit('setTitle', that.activity.title);
+        })
+        .catch(response => {
+          that.errorMsg = response.data;
+          that.status = Status.error;
+        })
+        .finally(() => {
+          that.$store.commit('setAppbarLoading', false);
+        });
+    },
+
+    updateData() {
+      if (this.status !== Status.editing)
+        return;
+      let that = this;
+      // 检查每个 tab 下的 form 是否正确，不正确就跳到这个 tab
+      // 注意尚未加载的 tab 是没有 refs 的
+      for (let child in this.childRefs) {
+        if (this.$refs[child] && this.$refs[child].$refs.form.validate() === false) {
+          this.currentTab = this.childRefs[child];
+          this.status = Status.error;
+          sleep(displayErrorTime).then(() => that.status = Status.editing)
+          return;
+        }
+      }
+      this.status = Status.submitting;
+      updateActivityDetail(this.activityId, this.activity)
+        .then(async res => {
+          this.$store.commit('setTitle', this.activity.title);
+          this.activity = res.data;
+          this.status = Status.success;
+          await sleep(displaySuccessTime);
+          this.status = Status.editing;
+        })
+        .catch(async res => {
+          this.status = Status.error;
+          console.log(res.data)
+          this.errorMsg = res.data;
+          await sleep(displayErrorTime);
+          this.status = Status.editing;
+        })
+    }
+  },
+
+  activated() {
+    if (!DEBUG)
+      window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
+    this.activity = this.$route.params.activity;
+    // 如果有 activity 就直接用，没有就赶紧 fetch
+    if (this.activity)
+      this.$store.commit('setTitle', this.activity.title);
+    else
+      this.fetchData();
+  },
+
+  deactivated() {
+    window.onbeforeunload = null;
+    this.$store.commit('clearTitle');
+  }
+}
+</script>

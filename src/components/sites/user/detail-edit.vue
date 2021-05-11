@@ -1,22 +1,36 @@
 <template>
   <SimpleCard
-    md="6"
     v-if="userProfile"
   >
-    <v-form
-      @submit.prevent="submit"
-      ref="form"
-      v-model="valid"
-    >
-      <v-container>
+    <v-container>
+      <!--    个人信息修改部分    -->
+      <v-form
+        ref="form"
+        v-model="formValid"
+      >
         <v-row>
-          <v-col cols="4">
-            <v-card>
-              <v-img :src="userProfile.avatar_url"/>
-            </v-card>
+          <v-col cols="4" >
+            <v-row justify="center">
+              <v-card>
+                <v-responsive aspect-ratio="1" width="200px">
+                  <v-img
+                    :src="userProfile.avatar_url"
+                    aspect-ratio="1"
+                  >
+                    <template v-slot:placeholder>
+                      <PicturePlaceholderAlt/>
+                    </template>
+                  </v-img>
+                </v-responsive>
+              </v-card>
+            </v-row>
+            <v-row>
+              <div class="my-2">
             我们使用了 Gravatar API。Gravatar 是一项用于提供在全球范围内使用的头像服务。
-            您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/">教程</a>，在 Gravatar
+            您只需按照<a href="https://cn.gravatar.com/support/activating-your-account/" target="_blank">教程</a>，在 Gravatar
             服务器上上传自己的头像，此处的头像就会更新。
+                </div>
+            </v-row>
           </v-col>
 
           <v-col>
@@ -72,114 +86,137 @@
           </v-col>
         </v-row>
 
-        <v-row
-          no-gutters
-          align="center"
-        >
+        <v-row align="center">
+          <v-col
+            v-if="canChangePassword"
+            cols="4"
+          >
+            <v-row justify="center">
+              <PasswordEditDialog
+                :user="userProfile"
+              >
+                <template v-slot:activator="{on, attrs}">
+                  <v-btn
+                    color="warning"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    修改密码
+                  </v-btn>
+                </template>
+              </PasswordEditDialog>
+            </v-row>
+          </v-col>
+
           <v-col cols="4">
-            <v-btn
-              v-if="canChangePassword"
-              color="warning"
-              @click="gotoChangePassword"
-            >
-              修改密码
-            </v-btn>
+            <v-row justify="center">
+              <v-switch
+                label="订阅邮件推送"
+                v-model="userProfile.subscribe_email"
+                :disabled="submitting"
+              />
+            </v-row>
           </v-col>
 
-          <v-col>
-            <v-switch
-              label="订阅邮件推送"
-              v-model="userProfile.subscribe_email"
-            />
-          </v-col>
-
-          <v-spacer/>
-
-          <v-col>
-            <v-btn
-              :disabled="!valid"
-              :loading="submitting"
-              :color="submitColor"
-              width="100px"
-              @click="submit"
-            >
-              <v-icon v-if="success">
-                mdi-check
-              </v-icon>
-              <template v-else>
-                更新信息
-              </template>
-            </v-btn>
+          <v-col cols="4">
+            <v-row justify="center">
+              <v-fade-transition hide-on-leave>
+                <v-btn
+                  v-if="!success"
+                  :disabled="!formValid"
+                  :loading="submitting"
+                  :color="error ? 'error' : 'primary'"
+                  @click="submit"
+                >
+                  更新信息
+                </v-btn>
+                <v-btn v-else color="success">
+                  <v-icon v-if="success">
+                    mdi-check
+                  </v-icon>
+                </v-btn>
+              </v-fade-transition>
+            </v-row>
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlert
+          as-row
           v-if="error"
           :msg="error"
         />
-      </v-container>
-    </v-form>
-
+      </v-form>
+    </v-container>
   </SimpleCard>
 </template>
 
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
-import FloatingActionButton from "@/components/ui/base/floating-action-button";
-import axios from "@/utils/axios";
-import ErrorAlert from "@/components/ui/base/component-error-alert";
-import AdminIcon from "@/components/ui/base/admin-icon";
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
+import AdminIcon from "@/components/ui/user/admin-icon";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
+import {getUserDetail, updateUserDetail} from "@/api/user";
+import {DEBUG, displaySuccessTime, lazyAvatar} from "@/utils";
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import PasswordEditDialog from "@/components/sites/user/password-edit-dialog";
+import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
   components: {
-    FormErrorAlert,
-    AdminIcon,
     ErrorAlert,
+    PicturePlaceholderAlt,
+    PasswordEditDialog,
+    PicturePlaceholder,
+    AdminIcon,
     FloatingActionButton,
     SimpleCard
   },
 
   data() {
+    let that = this;
     return {
-      userId: 0,
-      userProfile: null,
-      valid: false,
+      userProfile: {
+        student_id: '',
+        about: ''
+      },
+      lazyAvatar,
+
+      formValid: false,
       submitting: false,
       success: false,
       error: false,
 
       firstNameRules: inputRules.user.firstNameRules,
       studentIdRules: inputRules.user.studentIdRules,
-      aboutRules: inputRules.user.aboutRules
+      aboutRules: inputRules.user.aboutRules,
     }
   },
 
   computed: {
-    submitColor() {
-      if (this.error)
-        return 'error';
-      else if (this.success)
-        return 'success';
-      else
-        return 'primary';
+    userId() {
+      return this.$route.params.userId;
+    },
+    hasGreaterPermissions() {
+      return hasGreaterPermissions(this.$store.state.profile, this.userProfile);
+    },
+    isSelf() {
+      return this.$store.getters.isSelf(this.userId);
     },
     canChangePassword() {
-      return (this.$store.state.profile.id === this.userId) ||
-        hasGreaterPermissions(this.$store.state.profile, this.userProfile);
-    }
+      return this.hasGreaterPermissions || this.isSelf;
+    },
   },
 
   activated() {
-    window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
+    if (!DEBUG)
+      window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 
     this.userProfile = this.$route.params.userProfile;
     this.$store.commit('setAppbarLoading', true);
-    this.userId = this.$route.params.userId;
     let that = this;
-    axios.get(`/users/${this.userId}/`)
+    getUserDetail(this.userId)
       .then(response => {
         that.userProfile = response.data;
       })
@@ -189,6 +226,10 @@ export default {
       .finally(() => {
         that.$store.commit('setAppbarLoading', false)
       })
+    this.submitting = false;
+    this.success = false;
+    this.error = false;
+    this.showChangePasswordDialog = false;
   },
 
   deactivated() {
@@ -196,30 +237,24 @@ export default {
   },
 
   methods: {
-    gotoChangePassword() {
-      this.$router.push({
-        name: 'ChangePassword', params: {
-          userId: this.userId,
-        }
-      });
-    },
-
     submit() {
-      this.valid = this.$refs.form.validate();
-      if (!this.valid)
+      this.formValid = this.$refs.form.validate();
+      if (!this.formValid)
         return;
 
       this.submitting = true;
+      this.success = false;
       this.error = null;
+
       let {first_name, last_name, student_id, about, subscribe_email} = this.userProfile;
       let data = {first_name, last_name, student_id, about, subscribe_email};
       let that = this;
-      axios.patch(`/users/${that.userId}/`, data)
-        .then((response) => {
+      updateUserDetail(that.userId, data)
+        .then(async (response) => {
+          that.userProfile = response.data;
           that.success = true;
-          setTimeout(() => {
-            that.success = false;
-          }, 1500);
+          await sleep(displaySuccessTime);
+          that.success = false;
         })
         .catch(response => {
           let detail = response.data;
@@ -231,8 +266,7 @@ export default {
         .finally(() => {
           that.submitting = false;
         });
-    }
+    },
   },
-
 };
 </script>

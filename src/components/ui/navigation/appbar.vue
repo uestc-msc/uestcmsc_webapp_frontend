@@ -7,15 +7,20 @@
     short
     color="primary"
   >
+    <v-app-bar-nav-icon @click="$emit('toggleNavigation')"/>
 
     <template v-if="searchCallback && showSearchBar">
       <!--  如果搜索框可以使用，并且用户希望展示，就展示给用户  -->
+      <!--  TODO: 收起搜索框，过渡动画时标题会出现在偏左的位置，过渡结束后靠右    -->
+      <v-fade-transition hide-on-leave>
       <v-btn @click="showSearchBar=false" icon>
         <v-icon>
           mdi-arrow-left
         </v-icon>
       </v-btn>
+      </v-fade-transition>
 
+      <v-fade-transition hide-on-leave>
       <v-text-field
         hide-details
         prepend-icon="mdi-magnify"
@@ -23,31 +28,51 @@
         @input="searchCallback"
         v-model="keyword"
       />
+      </v-fade-transition>
     </template>
 
     <template v-else>
       <!--   否则把标题和搜索按钮展示给用户   -->
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-fade-transition hide-on-leave>
+      <v-app-bar-title>{{ title }}</v-app-bar-title>
+      </v-fade-transition>
 
+      <v-fade-transition hide-on-leave>
       <v-spacer/>
+      </v-fade-transition>
 
+      <v-fade-transition hide-on-leave>
       <v-btn v-if="searchCallback" @click="showSearchBar=true" icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
+      </v-fade-transition>
     </template>
 
-    <v-toolbar-items>
-      <v-btn v-if="!isAuthenticated" text @click="toLogin">
-        <v-icon class="mr-2">mdi-login</v-icon>
-        <span> 登录 </span>
-      </v-btn>
+    <template v-if="isAuthenticated">
+        <v-avatar size="36" contain>
+          <v-img :src="profile.avatar_url">
+            <template v-slot:placeholder>
+              <PicturePlaceholder size="36"/>
+            </template>
+          </v-img>
+        </v-avatar>
+        <span class = "ml-2">
+          {{ profile.first_name }}
+        </span>
+        <AdminIcon
+          class="mr-4"
+          :user="profile"
+          size="14px"
+        />
+    </template>
 
-      <user-menu v-else/>
-    </v-toolbar-items>
+    <v-btn icon @click="$emit('toggleSettings')">
+      <v-icon>mdi-cog-outline</v-icon>
+    </v-btn>
 
     <v-progress-linear
       :active="$store.state.appbarLoading"
-      :indeterminate="$store.state.appbarLoading"
+      indeterminate
       absolute
       bottom
       color="yellow accent-4"
@@ -60,22 +85,31 @@
 <script>
 import {appName} from '@/utils'
 import Router from '@/router';
-import userMenu from './user-menu.vue';
-import { mapGetters } from 'vuex'
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import AdminIcon from "@/components/ui/user/admin-icon";
+import {getMyProfile} from "@/api/user";
 
 export default {
   components: {
-    userMenu
+    AdminIcon,
+    PicturePlaceholder,
   },
 
   data() {
     return {
       showSearchBar: false,
-      appName
+      appName,
+
     }
   },
 
   computed: {
+    profile() {
+      return this.$store.state.profile
+    },
+    userId() {
+      return this.profile.id
+    },
     isAuthenticated() {
       return this.$store.getters.isAuthenticated
     },
@@ -102,5 +136,14 @@ export default {
       });
     },
   },
+
+  created() {
+    let that = this;
+    // 尝试使用上次的 sessionid 自动登录
+    getMyProfile().then((res) => {
+      that.$store.commit('setProfile', res.data);
+    }).catch((res) => {
+    });
+  }
 };
 </script>

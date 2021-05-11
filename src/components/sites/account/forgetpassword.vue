@@ -2,7 +2,7 @@
   <SimpleCard>
     <v-form
       @submit.prevent="submit"
-      ref="forgetPasswordForm"
+      ref="form"
       v-model="formValid"
     >
       <!-- 内层的 container、col 是为了限制 form 的布局 -->
@@ -35,7 +35,8 @@
           </v-col>
         </v-row>
 
-        <FormErrorAlert
+        <ErrorAlert
+          as-row
           v-if="status"
           :type="status"
           :msg="msg"
@@ -47,13 +48,13 @@
 
 <script>
 
-import axios from '@/utils/axios';
 import {inputRules, isEmail} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import FormErrorAlert from "@/components/ui/base/form-error-alert";
+import {forgetPassword} from "@/api/account";
+import ErrorAlert from "@/components/ui/base/error-alert";
 
 export default {
-  components: {FormErrorAlert, SimpleCard},
+  components: {ErrorAlert, SimpleCard},
   data: () => ({
     email: "",
     emailRules: inputRules.user.usernameRules,
@@ -66,7 +67,7 @@ export default {
 
   methods: {
     submit() {
-      this.formValid = this.$refs.forgetPasswordForm.validate();
+      this.formValid = this.$refs.form.validate();
       if (!this.formValid)
         return;
 
@@ -78,7 +79,7 @@ export default {
       let data = {
         email: this.email
       };
-      axios.post('/accounts/forgetpassword/', data)
+      forgetPassword(data)
         .then((response) => {
           that.msg = response.data;
           if (that.msg.detail) that.msg = that.msg.detail

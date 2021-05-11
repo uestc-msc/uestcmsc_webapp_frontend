@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {appName, DEBUG} from "@/utils";
+import {appName, DEBUG, sleep} from "@/utils";
 
 Vue.use(Vuex);
 
@@ -43,8 +43,10 @@ export default new Vuex.Store({
     isNotAuthenticated: (state, getters) => !getters.isAuthenticated,
     isAdmin: state => state.profile.is_staff || state.profile.is_superuser,
     isSuperuser: state => state.profile.is_superuser,
-    isOwner: state => (id) => state.profile.id === id,
-    isOwnerOrAdmin: (state,getters) => (id) => (getters.isAdmin || getters.isOwner(id)),
+    isSelf: state => (id) => id === state.profile.id,
+    isSelfOrAdmin: (state, getters) => (id) => (getters.isAdmin || getters.isSelf(id)),
+    whiteList: state => (list) => list.includes(state.profile.id),
+    whiteListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.inList(list)),
   },
 
   mutations: {
@@ -57,10 +59,21 @@ export default new Vuex.Store({
     },
 
     setMsg(state, msg) {
-      state.snackbar = {
-        msg,
-        visible: true
-      };
+      // 如果 state.snackbar.visible === true，直接修改 msg 不会触发 snackbar
+      // 在一个同步函数里改为 false 后改为 true 也不会触发
+      // 又不想把这一个 mutation 改为 action
+      // 就只能用这种奇淫技巧了
+      if (state.snackbar.visible) {
+        state.snackbar.visible = false;
+        sleep(10).then(() => {
+          this.commit('setMsg', msg);
+        })
+      } else {
+        state.snackbar = {
+          msg,
+          visible: true
+        };
+      }
     },
     clearMsg(state) {
       state.snackbar.visible = false;
