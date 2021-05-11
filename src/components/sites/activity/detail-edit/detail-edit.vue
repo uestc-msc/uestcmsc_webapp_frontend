@@ -89,7 +89,6 @@
 </template>
 
 <script>
-import '../../../../assets/common/common.css';
 import SimpleCard from "@/components/ui/base/simple-card";
 import ActivityInfo from "@/components/sites/activity/detail-edit/info";
 import ActivityPresenterAndAttender from "@/components/sites/activity/detail-edit/presenter-and-attender";

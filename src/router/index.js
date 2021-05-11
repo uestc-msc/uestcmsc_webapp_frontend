@@ -36,6 +36,7 @@ const router = new VueRouter({
 })
 
 // 检查是否满足路由条件
+// todo 路由加载前后搞进度条，检查用户权限
 router.beforeEach((to, from, next) => {
   for (let i = 0; i < to.matched.length; i++)
   {

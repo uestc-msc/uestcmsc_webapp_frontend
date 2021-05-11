@@ -8,10 +8,6 @@ import {getOnedriveFileUrl} from "@/api/cloud";
  * @return activity
  */
 export async function generateTopPhoto(activity) {
-  // 如果已经有了，就不重复写入了
-  if (activity.bannerUrl)
-    return activity;
-
   let url;
   if (activity.banner_id)
     url = getOnedriveFileUrl(activity.banner_id);

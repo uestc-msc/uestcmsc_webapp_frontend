@@ -1,4 +1,4 @@
-import {createUploadSession} from "@/api/cloud";
+import {createUploadSession, getOnedriveFileUrl} from "@/api/cloud";
 import axios from 'axios';
 import {displayErrorTime, displaySuccessTime, firstDelay, sleep, totalRetryTimes} from "@/utils/index";
 import {humanReadableFileSize} from "vuetify/lib/util/helpers";
@@ -27,6 +27,7 @@ export class FileStatus {
     this.key = Math.random()        // 随机生成的 id
     if (file)                       // 上传文件的 CancelToken
       this.axiosSource = axios.CancelToken.source();
+    // 其实 axiosSource.token 也可以作为 id 但是懒得改了
   }
 
   get showProgressLine() {
@@ -267,4 +268,12 @@ export function downloadFile(url) {
   // document.body.appendChild(a);
   // a.click();
   // document.body.removeChild(a);
+}
+
+/**
+ * 自动下载 Onedrive 中 id 对应的文件
+ * @param id {String}
+ */
+export function downloadOnedriveFile(id) {
+  window.open(getOnedriveFileUrl(id));
 }

@@ -43,8 +43,10 @@ export default new Vuex.Store({
     isNotAuthenticated: (state, getters) => !getters.isAuthenticated,
     isAdmin: state => state.profile.is_staff || state.profile.is_superuser,
     isSuperuser: state => state.profile.is_superuser,
-    isSelf: state => (id) => state.profile.id === id,
+    isSelf: state => (id) => id === state.profile.id,
     isSelfOrAdmin: (state, getters) => (id) => (getters.isAdmin || getters.isSelf(id)),
+    whiteList: state => (list) => list.includes(state.profile.id),
+    whiteListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.inList(list)),
   },
 
   mutations: {
@@ -64,7 +66,7 @@ export default new Vuex.Store({
       if (state.snackbar.visible) {
         state.snackbar.visible = false;
         sleep(10).then(() => {
-          this.commit('setMsg');
+          this.commit('setMsg', msg);
         })
       } else {
         state.snackbar = {

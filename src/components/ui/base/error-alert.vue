@@ -14,7 +14,7 @@
 
   <v-container v-else fluid>
     <v-row justify="center">
-      <v-col xs="12" md="8">
+      <v-col cols="12" md="8">
         <v-alert
           elevation="4"
           :type="type"

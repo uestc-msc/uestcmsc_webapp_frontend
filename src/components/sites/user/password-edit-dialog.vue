@@ -158,7 +158,7 @@ export default {
       return hasGreaterPermissions(this.$store.state.profile, this.user);
     },
     isSelf() {
-      return this.$store.state.profile.id === this.user.id;
+      return this.$store.getters.isSelf(this.user.id);
     },
     canChangePassword() {
       return this.hasGreaterPermissions || this.isSelf;

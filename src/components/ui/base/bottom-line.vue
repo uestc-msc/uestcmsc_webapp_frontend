@@ -8,12 +8,6 @@
   </div>
 </template>
 
-
-
 <script>
-import '../../../assets/common/common.css';
-
-export default {
-
-}
+export default {};
 </script>

@@ -4,7 +4,7 @@
     @click="gotoActivityDetail"
   >
     <v-img
-      height="250"
+      aspect-ratio="3"
       :src="activity.bannerUrl"
     >
       <template v-slot:placeholder>
@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import '../../../assets/common/common.css';
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import moment from "@/utils/moment";
 import {generateTopPhoto} from "@/utils/activity";

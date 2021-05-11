@@ -153,7 +153,6 @@ export default Vue.extend({
     ...mapGetters([
       'isAuthenticated',
       'isAdmin',
-      'isSelfOrAdmin',
       'isSuperuser'
     ]),
   },

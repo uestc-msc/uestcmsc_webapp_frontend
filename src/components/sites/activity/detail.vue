@@ -11,7 +11,7 @@
         <!-- 不使用 parallax 的原因，一是效果不明显，二是 parallax 不支持 placeholder -->
         <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
         <v-img
-          height="300"
+          aspect-ratio="2.5"
           :src="activity.bannerUrl"
         >
           <template v-slot:placeholder>
@@ -89,8 +89,7 @@
             <v-list-item-action>
               <v-btn
                 text
-                icon
-                :href="file.download_link"
+                @click="downloadFile(file.download_url)"
                 target="_blank"
               >
                 <v-icon color="primary">mdi-download</v-icon>
@@ -150,6 +149,7 @@
               v-if="hasPhoto"
               v-model="hasPhoto"
               :activity-id="activityId"
+              @update:banner-id="updateBannerId"
             />
             <template v-else>
               <v-list-item-title>暂无</v-list-item-title>
@@ -177,17 +177,15 @@
 </template>
 
 <script>
-import '@/assets/common/common.css';
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
-import {mapGetters} from 'vuex'
 import {getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
-import {formatBytes, formatUrl} from "@/utils/file";
+import {downloadFile, formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import {DEBUG} from "@/utils";
@@ -216,6 +214,7 @@ export default {
 
       formatBytes,
       formatUrl,
+      downloadFile,
     }
   },
 
@@ -223,11 +222,8 @@ export default {
     activityId() {
       return this.$route.params.activityId;
     },
-    ...mapGetters(['isAdmin']),
     isPresenterOrAdmin() {
-      let that = this;
-      return this.isAdmin ||
-        this.activity && this.activity.presenter.includes(that.$store.state.profile.id);
+      return this.activity && this.$store.getters.whiteListOrAdmin(this.activity.presenter)
     },
 
     clockIcon() {
@@ -246,6 +242,17 @@ export default {
           activity: this.activity
         }
       });
+    },
+    updateBannerId(val) {
+      this.activity.banner_id = val;
+      generateTopPhoto(this.activity);
+    }
+  },
+
+  watch: {
+    activity() {
+      if (this.activity)
+        generateTopPhoto(this.activity);
     }
   },
 
@@ -261,7 +268,6 @@ export default {
       getActivityDetail(this.activityId)
         .then(response => {
           that.activity = response.data;
-          generateTopPhoto(that.activity);
         })
         .catch(response => {
           that.error = response.data;
@@ -269,8 +275,6 @@ export default {
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)
         })
-    } else {
-      generateTopPhoto(that.activity);
     }
   }
 };

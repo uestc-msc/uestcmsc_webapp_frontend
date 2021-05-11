@@ -16,11 +16,13 @@
 </template>
 
 <script>
+import '@/assets/common/common.css';
 import Vue from 'vue';
 import Footer from '@/components/ui/footer/app.vue';
 import AppNavigationBar from '@/components/ui/navigation/navigation.vue';
-import Snackbar from '@/components/ui/snackbar/app.vue';
-import {getMyProfile} from "@/api/user";
+import Snackbar from '@/components/ui/snackbar/snackbar.vue';
+import {DEBUG} from "@/utils";
+
 
 export default Vue.extend({
   name: 'App',
@@ -30,5 +32,10 @@ export default Vue.extend({
     Footer,
     Snackbar,
   },
+
+  created() {
+    if (DEBUG)
+      window.vuetify = this.$vuetify;
+  }
 });
 </script>

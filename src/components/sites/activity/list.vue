@@ -12,7 +12,7 @@
           :key="activity.id"
           justify="center"
         >
-          <v-col xs="12" md="10">
+          <v-col cols="12" md="8">
             <ActivityCard :activity="activity"/>
           </v-col>
         </v-row>

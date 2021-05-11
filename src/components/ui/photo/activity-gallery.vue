@@ -28,14 +28,18 @@
       </v-col>
 
       <!--  已经在云端的图片  -->
-      <v-col v-for="(photo, index) in cloudPhoto" :key="photo.id" :cols="cols">
+      <v-col v-for="(photo, i) in cloudPhoto" :key="photo.id" :cols="cols">
         <v-img
           v-ripple
-          @click.stop="carouselIndex = index"
+          @click.stop="index=i"
           :src="getOnedriveFileUrl(photo.id)"
           aspect-ratio="1"
           class="grey lighten-2"
         >
+          <v-icon
+            v-if="activity && photo.id === activity.banner_id"
+            class="rotate45 icon-on-image"
+          >mdi-pin</v-icon>
           <template v-slot:placeholder>
             <PicturePlaceholderAlt aspect-ratio="1"/>
           </template>
@@ -45,8 +49,11 @@
 
     <ActivityGalleryCarousel
       :photos.sync="cloudPhoto"
-      :index.sync="carouselIndex"
+      :count="cloudCount"
+      :index.sync="index"
       :activity.sync="activity"
+      @update:activity="$emit('update:banner-id', activity.banner_id)"
+      @fetchNextPageData="fetchData"
     />
 
     <ErrorAlert
@@ -82,7 +89,6 @@
 </template>
 
 <script>
-// todo top photo 大头钉
 import {Status, StatusColor} from "@/utils/status";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import range from 'lodash/range'
@@ -112,6 +118,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    // 该值只用于触发父组件的 update:banner-id 事件
+    bannerId: {
+      default: null
+    },
     cols: {
       type: [String, Number],
       default: 4
@@ -133,8 +143,8 @@ export default {
       loading: false,
       errorMsg: '',
 
-      // 轮播图的 index
-      carouselIndex: -1,
+      // 轮播图的图片下标，-1 表示不显示轮播图
+      index: -1,
 
       Status,
       StatusColor,
@@ -164,13 +174,21 @@ export default {
             that.localPhoto.splice(index, 1);
             that.cloudPhoto.unshift(res.data);
             that.cloudCount++;
-            if (that.carouselIndex >= 0)
-              that.carouselIndex++;
           })
           .catch(() => {});
       }
     },
 
+    fetchActivity() {
+      if (this.activityId) {
+        this.cloudPhoto = [];
+        this.fetchData();
+        let that = this;
+        getActivityDetail(this.activityId)
+          .then(res => that.activity = res.data)
+          .catch(res => that.errorMsg = res.data);
+      }
+    },
     // 从后端获取下一 page 的 data
     fetchData() {
       // 如果已经加载完所有照片了，就不 fetch 了
@@ -200,14 +218,7 @@ export default {
 
   watch: {
     activityId() {
-      if (this.activityId) {
-        this.cloudPhoto = [];
-        this.fetchData();
-        let that = this;
-        getActivityDetail(this.activityId)
-          .then(res => that.activity = res)
-          .catch(res => that.errorMsg = res.data);
-      }
+      this.fetchActivity();
     },
 
     // 本地请求上传新的照片，弹出选择窗口
@@ -216,13 +227,10 @@ export default {
       photoInput.click();
     },
   },
-  created() {
-    window.gallery = this;
-    this.fetchData();
-  },
 
-  activated() {
-    console.log('activated', this.activityId);
-  }
+  created() {
+    this.fetchData();
+    this.fetchActivity();
+  },
 }
 </script>

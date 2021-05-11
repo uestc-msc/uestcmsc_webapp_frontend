@@ -3,7 +3,7 @@
   <!-- 外层的 container、row、col 是为了限制 card 的布局 -->
   <v-container>
     <v-row class="justify-center">
-      <v-col :xs="xs" :md="md">
+      <v-col :cols="cols" :md="md">
         <v-card v-bind="$attrs">  <!-- 将多余属性绑定到 v-card 上  -->
           <!--  这里会把调用 SimpleCard 处的 <template v-slot:progress> </template> 之间的代码插入  -->
           <template v-slot:progress>
@@ -30,10 +30,12 @@
 export default {
   inheritAttrs: false,
   props: {
-    xs: {
+    // 移动设备的列数
+    cols: {
       type: Number | String,
       default: 12
     },
+    // PC 上的列数
     md: {
       type: Number | String,
       default: 8

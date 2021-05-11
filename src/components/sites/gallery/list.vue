@@ -11,7 +11,7 @@
           :key="activity.id"
           class="justify-center"
         >
-          <v-col xs="12" md="10">
+          <v-col cols="12" md="10">
             <v-card
               justify="center"
               @click="gotoActivityDetail(activity)"

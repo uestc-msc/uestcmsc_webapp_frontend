@@ -8,7 +8,7 @@
         color="pink"
         text
         v-bind="attrs"
-        @click.native="$store.commit('clearMsg')">
+        @click.stop="$store.commit('clearMsg')">
         关闭
       </v-btn>
     </template>

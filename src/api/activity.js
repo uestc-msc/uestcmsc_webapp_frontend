@@ -1,6 +1,5 @@
 import axios from '@/utils/axios';
 import {OnedriveXHRTimeout} from "@/utils";
-import {deleteData} from "@/api/index";
 
 export function getActivityList(keyword, page, pageSize) {
   if (!keyword) keyword = '';
@@ -50,7 +49,7 @@ export function updateActivityLink(linkId, data) {
 }
 
 export function deleteActivityLink(linkId) {
-  return deleteData(() => axios.delete(`/activities/link/${linkId}/`), true);
+  return axios.delete(`/activities/link/${linkId}/`);
 }
 
 //////////////////////////////  沙龙文件部分  //////////////////////////////
@@ -61,7 +60,7 @@ export function addActivityFile(data) {
 }
 
 export function deleteActivityFile(fileId) {
-  return deleteData(() => axios.delete(`/activities/file/${fileId}/`), true);
+  return axios.delete(`/activities/file/${fileId}/`);
 }
 
 //////////////////////////////  沙龙图片部分  //////////////////////////////
@@ -75,5 +74,5 @@ export function addActivityPhoto(data) {
 }
 
 export function deleteActivityPhoto(photoId) {
-  return deleteData(() => axios.delete(`/activities/photo/${photoId}/`), true);
+  return axios.delete(`/activities/photo/${photoId}/`);
 }
