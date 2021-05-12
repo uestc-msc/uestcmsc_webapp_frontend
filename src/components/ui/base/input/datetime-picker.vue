@@ -20,6 +20,7 @@
 <script>
 import DatePicker from "@/components/ui/base/input/date-picker";
 import TimePicker from "@/components/ui/base/input/time-picker";
+import moment from '@/utils/moment';
 
 export default {
   props: {
