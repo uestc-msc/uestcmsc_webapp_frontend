@@ -78,6 +78,7 @@ import DatetimePicker from "@/components/ui/base/input/datetime-picker";
 import {inputRules} from "@/utils/validators";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import moment from "@/utils/moment";
 
 export default {
   components: {ErrorAlert, FloatingActionButton, DatetimePicker, PeopleSelector, SimpleCard},

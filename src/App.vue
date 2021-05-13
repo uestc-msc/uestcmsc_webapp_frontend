@@ -21,7 +21,6 @@ import Vue from 'vue';
 import Footer from '@/components/ui/footer/app.vue';
 import AppNavigationBar from '@/components/ui/navigation/navigation.vue';
 import Snackbar from '@/components/ui/snackbar/snackbar.vue';
-import {DEBUG} from "@/utils";
 
 
 export default Vue.extend({
@@ -34,8 +33,6 @@ export default Vue.extend({
   },
 
   created() {
-    if (DEBUG)
-      window.vuetify = this.$vuetify;
   }
 });
 </script>
