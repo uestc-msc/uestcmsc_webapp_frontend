@@ -11,7 +11,7 @@
         <!-- 不使用 parallax 的原因，一是效果不明显，二是 parallax 不支持 placeholder -->
         <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
         <v-img
-          aspect-ratio="2.5"
+          height="240"
           :src="activity.bannerUrl"
         >
           <template v-slot:placeholder>

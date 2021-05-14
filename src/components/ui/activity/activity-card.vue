@@ -4,7 +4,7 @@
     @click="gotoActivityDetail"
   >
     <v-img
-      height="250"
+      height="240"
       :src="activity.bannerUrl"
     >
       <template v-slot:placeholder>
