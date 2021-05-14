@@ -18,7 +18,7 @@
 <script>
 import '@/assets/common/common.css';
 import Vue from 'vue';
-import Footer from '@/components/ui/footer/app.vue';
+import Footer from '@/components/ui/footer/footer.vue';
 import AppNavigationBar from '@/components/ui/navigation/navigation.vue';
 import Snackbar from '@/components/ui/snackbar/snackbar.vue';
 

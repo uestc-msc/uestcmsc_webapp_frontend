@@ -1,6 +1,6 @@
 <template>
-  <ErrorAlert v-if="error">
-    {{ error }}
+  <ErrorAlert v-if="errorMsg">
+    {{ errorMsg }}
   </ErrorAlert>
 
   <!--  用表格的形式展示用户，不用考虑用户数为 0 的情况  -->
@@ -26,10 +26,7 @@
       >
         <td>
           <v-avatar>
-            <v-img
-              :src="user.avatar_url"
-              :lazy-src="lazyAvatar"
-            >
+            <v-img :src="user.avatar_url" :lazy-src="lazyAvatar">
               <template v-slot:placeholder>
                   <PicturePlaceholder size="48"/>
               </template>
@@ -37,13 +34,8 @@
           </v-avatar>
         </td>
         <td>
-          <span>
-            {{ user.first_name }}
-          </span>
-          <AdminIcon
-            :user="user"
-            size="14px"
-          />
+          <span> {{ user.first_name }} </span>
+          <AdminIcon :user="user" size="14px"/>
         </td>
         <td>{{ user.experience }}</td>
       </tr>
@@ -73,7 +65,7 @@ export default {
     page: 1,
     pageSize: 12,
     count: 0,
-    error: false,
+    errorMsg: false,
     lazyAvatar,
   }),
 
@@ -94,7 +86,7 @@ export default {
           that.userData = response.data.results;
         })
         .catch(response => {
-          that.error = response.data;
+          that.errorMsg = response.data;
         })
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)

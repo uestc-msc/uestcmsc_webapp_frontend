@@ -125,7 +125,7 @@
                   v-if="!success"
                   :disabled="!formValid"
                   :loading="submitting"
-                  :color="error ? 'error' : 'primary'"
+                  :color="errorMsg ? 'error' : 'primary'"
                   @click="submit"
                 >
                   更新信息
@@ -142,8 +142,8 @@
 
         <ErrorAlert
           as-row
-          v-if="error"
-          :msg="error"
+          v-if="errorMsg"
+          :msg="errorMsg"
         />
       </v-form>
     </v-container>
@@ -186,7 +186,7 @@ export default {
       formValid: false,
       submitting: false,
       success: false,
-      error: false,
+      errorMsg: false,
 
       firstNameRules: inputRules.user.firstNameRules,
       studentIdRules: inputRules.user.studentIdRules,
@@ -228,7 +228,7 @@ export default {
       })
     this.submitting = false;
     this.success = false;
-    this.error = false;
+    this.errorMsg = false;
     this.showChangePasswordDialog = false;
   },
 
@@ -244,7 +244,7 @@ export default {
 
       this.submitting = true;
       this.success = false;
-      this.error = null;
+      this.errorMsg = null;
 
       let {first_name, last_name, student_id, about, subscribe_email} = this.userProfile;
       let data = {first_name, last_name, student_id, about, subscribe_email};

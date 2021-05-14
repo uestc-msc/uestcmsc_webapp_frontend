@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ErrorAlert v-if="error">
-      {{ error }}
+    <ErrorAlert v-if="errorMsg">
+      {{ errorMsg }}
     </ErrorAlert>
 
     <template v-else-if="activityData.length">
@@ -55,7 +55,7 @@ export default {
     page: 1,
     pageSize: 5,
     count: 0,
-    error: false
+    errorMsg: false
   }),
 
   computed: {
@@ -80,7 +80,7 @@ export default {
             this.$set(activity, 'hasPhoto', true);
         })
         .catch(response => {
-          that.error = response.data;
+          that.errorMsg = response.data;
         })
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)

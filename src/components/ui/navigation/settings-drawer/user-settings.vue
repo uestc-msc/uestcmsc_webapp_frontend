@@ -13,25 +13,29 @@
         :key="item.text"
         cols="6"
       >
-            <v-card
-              class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
-              :color="item.active() ? 'primary' : `grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
-              ripple
-              rounded
-              flat
-              @click="item.callback"
-            >
-              {{ item.text }}
-              <v-icon v-text="item.icon"/>
-            </v-card>
+        <v-card
+          class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
+          :color="item.active() ? 'primary' : `grey ${$vuetify.theme.dark ? 'darken' : 'lighten'}-3`"
+          ripple
+          rounded
+          flat
+          @click="item.callback"
+        >
+          {{ item.text }}
+          <v-icon v-text="item.icon"/>
+        </v-card>
       </v-col>
     </v-item-group>
   </div>
 </template>
 
 <script>
-export default {
+import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
+import AdminIcon from "@/components/ui/user/admin-icon";
+import {mapGetters} from "vuex";
 
+export default {
+  components: {AdminIcon, PicturePlaceholder},
   data() {
     let that = this;
     return {
@@ -84,8 +88,12 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['isAuthenticated']),
+    profile() {
+      return this.$store.state.profile
+    },
     items() {
-      return this.$store.getters.isAuthenticated ? this.itemsForAuthenticated : this.itemsForNotAuthenticated;
+      return this.isAuthenticated ? this.itemsForAuthenticated : this.itemsForNotAuthenticated;
     },
   },
 }

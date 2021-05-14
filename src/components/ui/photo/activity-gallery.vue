@@ -10,11 +10,11 @@
             class="grey lighten-2"
           >
             <v-overlay absolute opacity="0.8">
-              <v-row justify="center">
+              <v-row align="center" justify="center">
               <v-progress-circular
                 absolute
-                size="64"
-                width="8"
+                :size="progressCircularSize"
+                :width="progressCircularSize / 8"
                 :value="photo.status === Status.uploading ? photo.progress : 100"
                 :indeterminate="photo.status === Status.submitting"
                 :color="StatusColor[photo.status]"
@@ -150,6 +150,12 @@ export default {
       StatusColor,
       range,
       getOnedriveFileUrl,
+    }
+  },
+
+  computed: {
+    progressCircularSize() {
+      return this.$vuetify.breakpoint.xs ? 32 : 64;
     }
   },
 
