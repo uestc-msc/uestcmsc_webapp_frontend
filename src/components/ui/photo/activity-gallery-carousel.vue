@@ -2,14 +2,14 @@
   <v-dialog
     v-model="show"
     :fullscreen="mobile"
-    :width="width"
+    :width="photoWidth"
     persistent
     no-click-animation
     @click:outside="show = mobile ? show : !show"
   >
     <!--  在移动端点击 snackbar 会触发 click:outside
           只能先用 prevent 禁止自带的，然后自己处理 click:outside  -->
-    <v-carousel :value="indexInternal" :height="height" hide-delimiters>
+    <v-carousel :value="indexInternal" :height="photoHeight" hide-delimiters>
       <template v-slot:prev="{on, attrs}">
         <v-btn absolute left icon v-on="on" v-bind="attrs" @click="prevPhoto">
           <v-icon>mdi-chevron-left</v-icon>
@@ -25,11 +25,11 @@
         v-for="(photo, i) in photos"
         :key="photo.id"
       >
-        <v-sheet>
+        <v-sheet dark>
           <v-img
             contain
-            :height="height"
-            :width="width"
+            :height="photoHeight"
+            :width="photoWidth"
             :src="getOnedriveFileUrl(photo.id)"
           >
             <template v-slot:placeholder>
@@ -167,11 +167,11 @@ export default {
     mobile() {
       return this.$vuetify.breakpoint.xs;
     },
-    width() {
+    photoWidth() {
       return this.mobile ? this.screenWidth : this.screenWidth * 2 / 3;
     },
-    height() {
-      return this.mobile ? this.screenHeight - this.photoInfoHeight : this.width * 9 / 16;
+    photoHeight() {
+      return this.mobile ? this.screenHeight - this.photoInfoHeight : this.photoWidth * 9 / 16;
     },
 
     isPresenterOrAdmin() {
