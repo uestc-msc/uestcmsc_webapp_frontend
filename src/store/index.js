@@ -46,7 +46,7 @@ export default new Vuex.Store({
     isSelf: state => (id) => id === state.profile.id,
     isSelfOrAdmin: (state, getters) => (id) => (getters.isAdmin || getters.isSelf(id)),
     whiteList: state => (list) => list.includes(state.profile.id),
-    whiteListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.inList(list)),
+    whiteListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.whiteList(list)),
   },
 
   mutations: {

@@ -129,7 +129,7 @@ export default Vue.extend({
           goBack();
         })
         .catch((response) => {
-          that.error = response.data;
+          that.errorMsg = response.data;
         })
         .finally(() => {
           that.submitting = false;

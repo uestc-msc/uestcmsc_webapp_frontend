@@ -89,7 +89,7 @@
                     v-if="!success"
                     :disabled="!formValid"
                     :loading="submitting"
-                    :color="error ? 'error' : 'primary'"
+                    :color="errorMsg ? 'error' : 'primary'"
                     block
                     @click="submitPassword"
                   >
@@ -102,8 +102,8 @@
               </v-row>
               <ErrorAlert
                 as-row
-                v-if="error"
-                :msg="error"
+                v-if="errorMsg"
+                :msg="errorMsg"
               />
             </v-form>
           </v-col>
@@ -145,7 +145,7 @@ export default {
       // 用 Status 重构 User 和 Account 部分的所有提交
       formValid: true,
       submitting: false,
-      error: null,
+      errorMsg: null,
       success: false,
 
       passwordRules: inputRules.user.passwordRules,
@@ -177,7 +177,7 @@ export default {
 
       this.submitting = true;
       this.success = false;
-      this.error = null;
+      this.errorMsg = null;
 
       let data = {
         old_password: md5(this.oldPassword),
@@ -211,7 +211,7 @@ export default {
   activated() {
     this.submitting = false;
     this.success = false;
-    this.error = false;
+    this.errorMsg = false;
   }
 }
 </script>

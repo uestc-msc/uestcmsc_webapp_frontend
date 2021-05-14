@@ -23,31 +23,40 @@
     </div>
 
     <v-container>
-      <UserSettings @hide="show=false"/>
 
+      <template v-if="isAuthenticated">
+        <UserInfo/>
+        <div class="mb-3 mt-4 mx-n3">
+          <v-divider/>
+        </div>
+      </template>
+
+      <UserSettings @hide="show=false"/>
       <div class="mb-3 mt-4 mx-n3">
         <v-divider/>
       </div>
 
       <ThemeSettings/>
-
       <div class="mb-3 mt-4 mx-n3">
         <v-divider/>
       </div>
+
     </v-container>
+
   </v-navigation-drawer>
 </template>
 
 <script>
-
+import {mapGetters} from "vuex";
 import ThemeSettings from './theme-settings'
 import UserSettings from "@/components/ui/navigation/settings-drawer/user-settings";
-
+import UserInfo from "@/components/ui/navigation/settings-drawer/user-info";
 
 export default {
   props: ['toggleEvent'],
 
   components: {
+    UserInfo,
     UserSettings,
     ThemeSettings,
   },
@@ -56,6 +65,10 @@ export default {
     return {
       show: false
     }
+  },
+
+  computed: {
+    ...mapGetters(['isAuthenticated'])
   },
 
   watch: {

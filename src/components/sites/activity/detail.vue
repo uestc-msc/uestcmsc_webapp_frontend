@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ErrorAlert v-if="error">
-      {{ error }}
+    <ErrorAlert v-if="errorMsg">
+      {{ errorMsg }}
     </ErrorAlert>
     <SimpleCard
       v-else-if="activity"
@@ -89,6 +89,7 @@
             <v-list-item-action>
               <v-btn
                 text
+                icon
                 @click="downloadFile(file.download_url)"
                 target="_blank"
               >
@@ -210,7 +211,7 @@ export default {
     return {
       activity: null,
       hasPhoto: true,
-      error: false,
+      errorMsg: false,
 
       formatBytes,
       formatUrl,
@@ -270,7 +271,7 @@ export default {
           that.activity = response.data;
         })
         .catch(response => {
-          that.error = response.data;
+          that.errorMsg = response.data;
         })
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)

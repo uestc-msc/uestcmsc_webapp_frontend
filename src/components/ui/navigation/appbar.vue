@@ -49,21 +49,21 @@
     </template>
 
     <template v-if="isAuthenticated">
-        <v-avatar size="36" contain>
-          <v-img :src="profile.avatar_url">
-            <template v-slot:placeholder>
-              <PicturePlaceholder size="36"/>
-            </template>
-          </v-img>
-        </v-avatar>
-        <span class = "ml-2">
+      <v-avatar size="36" contain>
+        <v-img :src="profile.avatar_url">
+          <template v-slot:placeholder>
+            <PicturePlaceholder size="36"/>
+          </template>
+        </v-img>
+      </v-avatar>
+
+      <!--  移动端太挤了放不下  -->
+      <template v-if="!mobile">
+        <span class="ml-2">
           {{ profile.first_name }}
         </span>
-        <AdminIcon
-          class="mr-4"
-          :user="profile"
-          size="14px"
-        />
+        <AdminIcon class="mr-4" :user="profile" size="14px"/>
+      </template>
     </template>
 
     <v-btn icon @click="$emit('toggleSettings')">
@@ -127,6 +127,9 @@ export default {
     searchCallback() {
       return this.$store.state.searchCallback;
     },
+    mobile() {
+      return this.$vuetify.breakpoint.xs;
+    }
   },
 
   methods: {

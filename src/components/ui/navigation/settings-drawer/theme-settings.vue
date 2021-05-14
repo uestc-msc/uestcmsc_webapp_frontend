@@ -1,6 +1,6 @@
 <script>
 // Extensions
-import SettingsGroup from './settings-template'
+import SettingsGroup from './template'
 
 export default {
   name: 'ThemeSettings',

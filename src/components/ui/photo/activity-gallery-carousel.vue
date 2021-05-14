@@ -60,10 +60,11 @@
       <v-card-actions>
         <PeopleChip :user-id="photos[indexInternal].uploader_id"/>
         <v-spacer/>
-        <!--  下载、置顶和删除按钮  -->
+        <!--  下载按钮  -->
         <v-btn icon @click="downloadOnedriveFile(photos[indexInternal].id)">
           <v-icon>mdi-download</v-icon>
         </v-btn>
+        <!--  取消置顶按钮  -->
         <template v-if="isPresenterOrAdmin">
           <v-btn icon
             v-if="isBanner"
@@ -73,6 +74,7 @@
           >
             <v-icon>mdi-pin-off</v-icon>
           </v-btn>
+          <!--  置顶按钮  -->
           <v-btn
             icon
             v-else
@@ -81,6 +83,7 @@
           >
             <v-icon>mdi-pin</v-icon>
           </v-btn>
+          <!--  删除按钮  -->
           <ConfirmDialog @confirm="deletePhoto(indexInternal)">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -162,7 +165,7 @@ export default {
       return this.$vuetify.breakpoint.height;
     },
     mobile() {
-      return this.screenHeight > this.screenWidth;
+      return this.$vuetify.breakpoint.xs;
     },
     width() {
       return this.mobile ? this.screenWidth : this.screenWidth * 2 / 3;
@@ -210,10 +213,16 @@ export default {
       let that = this;
       deleteActivityPhoto(this.photos[indexInternal].id)
         .then(res => {
+          that.$store.commit('setMsg', '删除成功~');
+          // 没别的图片了，需要关掉轮播图
+          if (that.photos.length === 1) {
+            that.show = false;
+            that.$emit('update:photos', []);
+            return;
+          }
           let new_photos = [...that.photos];
           new_photos.splice(indexInternal, 1);
           that.$emit('update:photos', new_photos);
-          that.$store.commit('setMsg', '删除成功~');
           // 如果正在浏览后面的照片，需要移动下标
           if (that.deletingIndex > that.indexInternal)
             that.indexInternal--;
@@ -233,6 +242,8 @@ export default {
       }
     },
     indexInternal() {
+      if (this.indexInternal >= this.photos.length - 2)
+        this.$emit('fetchNextPageData')
       if (this.indexInternal !== this.index) {
         this.$emit('update:index', this.indexInternal);
       }

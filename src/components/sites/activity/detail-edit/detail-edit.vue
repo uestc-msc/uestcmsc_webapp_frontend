@@ -4,16 +4,18 @@
       md="10">
       <v-tabs
         v-model="currentTab"
-        fixed-tabs
+        center-active
+        grow
+        icons-and-text
       >
-        <v-tabs-slider></v-tabs-slider>
         <v-tab
-          v-for="item in tabNames"
-          :key="item"
+          v-for="{name, icon} in tabsInfo"
+          :key="name"
         >
-          {{ item }}
-      </v-tab>
-    </v-tabs>
+          {{ name }}
+          <v-icon>{{icon}}</v-icon>
+        </v-tab>
+      </v-tabs>
 
       <v-tabs-items v-model="currentTab">
         <v-tab-item>
@@ -22,7 +24,7 @@
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
-          <div class="bottom-tips">{{bottomTips[0]}}</div>
+          <div class="bottom-tips">{{tabsInfo[0].tips}}</div>
         </v-tab-item>
 
         <v-tab-item>
@@ -31,7 +33,7 @@
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
-          <div class="bottom-tips">{{bottomTips[1]}}</div>
+          <div class="bottom-tips">{{tabsInfo[1].tips}}</div>
         </v-tab-item>
 
         <v-tab-item>
@@ -46,7 +48,7 @@
             :disabled="status === Status.submitting"
             :activity.sync="activity"
           />
-          <div class="bottom-tips">{{bottomTips[2]}}</div>
+          <div class="bottom-tips">{{tabsInfo[2].tips}}</div>
         </v-tab-item>
 
         <v-tab-item>
@@ -56,11 +58,9 @@
             :activity.sync="activity"
             :toggle-upload-photo="toggleUploadPhoto"
           />
-          <div class="bottom-tips">{{ bottomTips[3] }}</div>
+          <div class="bottom-tips">{{ tabsInfo[3].tips }}</div>
         </v-tab-item>
-
       </v-tabs-items>
-
 
       <ErrorAlert
         as-row
@@ -109,19 +109,32 @@ export default {
   },
   data() {
     return {
-      tabNames: ['沙龙信息', '主讲人和参与人', '文件和链接', '相册'],
+      tabsInfo: [{
+        name: '沙龙信息',
+        icon: 'mdi-clock',
+        tips: '修改完成后请记得保存哦~',
+      },
+      {
+        name: '主讲人和参与人',
+        icon: 'mdi-account',
+        tips: '参与人名单会即时提交，修改主讲人后请记得保存哦~',
+      },
+      {
+        name: '文件链接',
+        icon: 'mdi-file',
+        tips: '文件和链接会即时上传，不用担心数据丢失~',
+      },
+      {
+        name: '相册',
+        icon: 'mdi-image',
+        tips: '图片会即时上传，不用担心图片丢失~',
+      }],
       childRefs: {
         info: 0,
         presenterAndAttender: 1,
         file: 2,
         link: 2
       },
-      bottomTips: [
-        '修改完成后请记得保存哦~',
-        '参与人名单会即时提交，修改主讲人后请记得保存哦~',
-        '文件和链接会即时上传，不用担心数据丢失~',
-        '图片会即时上传，不用担心图片丢失~'
-      ],
       currentTab: 0,
       activity: null,
       errorMsg: null,

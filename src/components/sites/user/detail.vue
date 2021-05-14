@@ -2,8 +2,8 @@
 推荐断网测试  -->
 <template>
   <div>
-    <ErrorAlert v-if="error">
-      {{ error }}
+    <ErrorAlert v-if="errorMsg">
+      {{ errorMsg }}
     </ErrorAlert>
     <SimpleCard
       v-else-if="userProfile"
@@ -144,7 +144,7 @@ export default {
   data() {
     return {
       userProfile: null,
-      error: false,
+      errorMsg: false,
       lazyAvatar,
     }
   },
@@ -195,7 +195,7 @@ export default {
           that.userProfile = response.data;
         })
         .catch(response => {
-          that.error = response.data;
+          that.errorMsg = response.data;
         })
         .finally(() => {
           that.$store.commit('setAppbarLoading', false)

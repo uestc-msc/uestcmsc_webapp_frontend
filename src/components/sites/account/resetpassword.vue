@@ -76,7 +76,7 @@
           <v-btn
             :disabled="!formValid"
             :loading="submitting"
-            :color="this.error ? 'error' : 'primary'"
+            :color="this.errorMsg ? 'error' : 'primary'"
             block
             @click="resetPassword"
           >
@@ -87,8 +87,8 @@
 
         <ErrorAlert
           as-row
-          v-if="error"
-          :msg="error"
+          v-if="errorMsg"
+          :msg="errorMsg"
         />
 
       </v-container>
@@ -122,7 +122,7 @@ export default {
       tokenValid: true,
       formValid: true,
       submitting: false,
-      error: null,
+      errorMsg: null,
     };
   },
 
@@ -150,7 +150,7 @@ export default {
         return;
 
       this.submitting = true;
-      this.error = null;
+      this.errorMsg = null;
       let data = {
         token: this.token,
         new_password: md5(this.password),
@@ -164,7 +164,7 @@ export default {
         })
         .catch(response => {
           let detail = response.data;
-          this.error = Object.values(detail).join('；');
+          this.errorMsg = Object.values(detail).join('；');
         })
         .finally(() => {
           that.submitting = false;
