@@ -6,11 +6,11 @@ export function createUploadSession(data) {
 }
 
 export function redirectToLoginOnedrive() {
-  window.open(baseUrl + '/cloud/login/')
+  window.open(baseUrl + '/cloud/login/', {timeout: OnedriveXHRTimeout})
 }
 
 export function getOnedriveStatus() {
-  return axios.get('/cloud/status/');
+  return axios.get('/cloud/status/', {timeout: OnedriveXHRTimeout});
 }
 
 export function getOnedriveFileUrl(file_id) {

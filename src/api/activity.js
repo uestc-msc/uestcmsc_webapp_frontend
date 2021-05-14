@@ -60,7 +60,7 @@ export function addActivityFile(data) {
 }
 
 export function deleteActivityFile(fileId) {
-  return axios.delete(`/activities/file/${fileId}/`);
+  return axios.delete(`/activities/file/${fileId}/`, {timeout: OnedriveXHRTimeout});
 }
 
 //////////////////////////////  沙龙图片部分  //////////////////////////////
@@ -74,5 +74,5 @@ export function addActivityPhoto(data) {
 }
 
 export function deleteActivityPhoto(photoId) {
-  return axios.delete(`/activities/photo/${photoId}/`);
+  return axios.delete(`/activities/photo/${photoId}/`, {timeout: OnedriveXHRTimeout});
 }
