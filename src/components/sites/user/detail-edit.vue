@@ -51,7 +51,7 @@
                   <v-text-field
                     v-model="userProfile.last_name"
                     :disabled="submitting"
-                    label="称号"
+                    label="头衔"
                     prepend-icon="mdi-alpha-t-circle"
                   />
                 </v-col>
@@ -157,7 +157,7 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions} from "@/utils/permissions";
 import {getUserDetail, updateUserDetail} from "@/api/user";
-import {DEBUG, displaySuccessTime, lazyAvatar} from "@/utils";
+import {DEBUG, displaySuccessTime, lazyAvatarUrl} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PasswordEditDialog from "@/components/sites/user/password-edit-dialog";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
@@ -181,7 +181,7 @@ export default {
         student_id: '',
         about: ''
       },
-      lazyAvatar,
+      lazyAvatar: lazyAvatarUrl,
 
       formValid: false,
       submitting: false,

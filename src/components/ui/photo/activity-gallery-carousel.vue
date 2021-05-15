@@ -52,19 +52,21 @@
       class="mb-0"
       :height="photoInfoHeight"
     >
+      <!-- 标题和封面图标  -->
       <v-card-title>
         {{ photos[indexInternal].filename }}
         <v-icon class="rotate45" v-if="isBanner">mdi-pin</v-icon>
       </v-card-title>
 
       <v-card-actions>
+        <!--  上传者  -->
         <PeopleChip :user-id="photos[indexInternal].uploader_id"/>
         <v-spacer/>
         <!--  下载按钮  -->
         <v-btn icon @click="downloadOnedriveFile(photos[indexInternal].id)">
           <v-icon>mdi-download</v-icon>
         </v-btn>
-        <!--  取消置顶按钮  -->
+        <!--  取消封面按钮  -->
         <template v-if="isPresenterOrAdmin">
           <v-btn icon
             v-if="isBanner"
@@ -74,7 +76,7 @@
           >
             <v-icon>mdi-pin-off</v-icon>
           </v-btn>
-          <!--  置顶按钮  -->
+          <!--  设为封面按钮  -->
           <v-btn
             icon
             v-else
@@ -107,6 +109,7 @@
   position: absolute;
   bottom: 0;
   text-align: center;
+  text-shadow: rgb(68 68 68) 1px 1px 8px;
 }
 </style>
 
@@ -175,7 +178,7 @@ export default {
     },
 
     isPresenterOrAdmin() {
-      return this.activity && this.$store.getters.whiteListOrAdmin(this.activity.presenter)
+      return this.activity && this.$store.getters.isInListOrAdmin(this.activity.presenter)
     },
     isBanner() {
       return this.activity.banner_id === this.photos[this.indexInternal].id;

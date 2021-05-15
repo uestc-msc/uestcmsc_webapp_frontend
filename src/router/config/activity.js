@@ -29,7 +29,7 @@ const routeConfig = [
     props: true,  // props 表示 activityId 参数可以传到组件
   },
   {
-    path: '/activity/checkin',
+    path: '/activity/:activityId/checkin/:checkInCode',
     name: 'ActivityCheckIn',
     component: ActivityCheckIn
   }

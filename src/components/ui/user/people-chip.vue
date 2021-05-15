@@ -28,7 +28,7 @@
 
 <script>
 import AdminIcon from "@/components/ui/user/admin-icon";
-import {lazyAvatar} from "@/utils";
+import {lazyAvatarUrl} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import {getUserDetail} from "@/api/user";
 export default {
@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       user: {},
-      lazyAvatar
+      lazyAvatar: lazyAvatarUrl
     };
   },
 

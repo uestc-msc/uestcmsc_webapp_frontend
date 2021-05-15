@@ -1,4 +1,4 @@
-import {iconPath} from "@/utils/index";
+import {logoUrl} from "@/utils/index";
 
 // todo 二维码怎么搞啊
 
@@ -9,6 +9,6 @@ import {iconPath} from "@/utils/index";
  * @param url
  * @param img
  */
-export function generateQRCode(targetElement, url, img=iconPath) {
+export function generateQRCode(targetElement, url, img=logoUrl) {
   new QRCode(document.getElementById("checkin-qrcode"), "http://jindo.dev.naver.com/collie");
 }

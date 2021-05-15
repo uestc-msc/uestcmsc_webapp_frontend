@@ -50,7 +50,7 @@
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import debounce from 'lodash/debounce';
-import {lazyAvatar, debounceTime} from "@/utils";
+import {lazyAvatarUrl, debounceTime} from "@/utils";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {getUserList} from "@/api/user";
@@ -66,7 +66,7 @@ export default {
     pageSize: 12,
     count: 0,
     errorMsg: false,
-    lazyAvatar,
+    lazyAvatar: lazyAvatarUrl,
   }),
 
   computed: {
