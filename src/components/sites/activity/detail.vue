@@ -297,7 +297,7 @@ export default {
       .then(response => {
         const checkInCode = response.data.check_in_code;
         const checkInUrl = `${window.location.origin}/activity/${that.activityId}/checkin/${checkInCode}`;
-        that.QRCanvasOption = Object.assign({}, this.QRCanvasOption, {
+        that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
           data: checkInUrl,
         });
       })
@@ -308,7 +308,9 @@ export default {
     const image = new Image();
     image.src = logoUrl;
     image.onload = function () {
-      that.$set(that.QRCanvasOption, 'logo', image);
+      that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
+        logo: image,
+      });
     }
   },
   deactivated() {

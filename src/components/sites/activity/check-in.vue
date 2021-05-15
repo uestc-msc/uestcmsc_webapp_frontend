@@ -51,15 +51,15 @@ export default {
     checkInActivity(activityId, {check_in_code})
       .then(res => {
         that.$store.commit('setMsg', res.data.detail);
+      })
+      .catch(err => {
+        that.$store.commit('setMsg', err.data);
+      })
+      .finally(() => {
         that.$router.push({
           name: 'ActivityDetail',
           params: {activityId}
         });
-      })
-      .catch(res => {
-        that.$store.commit('setMsg', res.data);
-      })
-      .finally(() => {
         that.showDialog = false;
       })
   }
