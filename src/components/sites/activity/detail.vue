@@ -290,7 +290,7 @@ export default {
       }
       that.$store.commit('setAppbarLoading', false);
     }
-
+    // 设置 Appbar Title
     this.$store.commit('setTitle', this.activity.title);
     // 异步加载签到码 然后生成二维码
     getActivityAdminDetail(this.activityId)
@@ -310,6 +310,9 @@ export default {
     image.onload = function () {
       that.$set(that.QRCanvasOption, 'logo', image);
     }
+  },
+  deactivated() {
+    this.$store.commit('clearTitle');
   }
 };
 </script>
