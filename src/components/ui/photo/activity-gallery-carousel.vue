@@ -8,19 +8,12 @@
     @click:outside="show = mobile ? show : !show"
   >
     <!--  在移动端点击 snackbar 会触发 click:outside
-          只能先用 prevent 禁止自带的，然后自己处理 click:outside  -->
-    <v-carousel :value="indexInternal" :height="photoHeight" hide-delimiters>
-      <template v-slot:prev="{on, attrs}">
-        <v-btn absolute left icon v-on="on" v-bind="attrs" @click="prevPhoto">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-      </template>
-      <template v-slot:next="{on, attrs}">
-        <v-btn absolute right icon v-on="on" v-bind="attrs" @click="nextPhoto">
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-      </template>
-
+          只能先用 prevent 禁用默认 click:outside，然后自己处理 click:outside  -->
+    <v-carousel
+      v-model="indexInternal"
+      :height="photoHeight"
+      hide-delimiters
+    >
       <v-carousel-item
         v-for="(photo, i) in photos"
         :key="photo.id"
@@ -147,8 +140,8 @@ export default {
     return {
       // 是否显示轮播图
       show: false,
-      // 图片下标，设置为 -1 表示不显示
-      indexInternal: -1,
+      // 图片下标
+      indexInternal: 0,
       settingBannerIndex: -1,
       deletingIndex: -1,
 
@@ -239,12 +232,20 @@ export default {
   },
   watch: {
     index() {
-      if (this.indexInternal !== this.index) {
+      if (this.index >= 0) {
         this.indexInternal = this.index;
-        this.show = this.indexInternal >= 0;
+        this.show = true;
+      } else {
+        this.show = false;
       }
     },
     indexInternal() {
+      // carousel 会在退出的时候乱改 indexInternal
+      // 如果 show 为 false，不仅不让他改，还把他改回去
+      if (this.show === false) {
+        if (this.indexInternal !== -1) this.indexInternal = -1;
+        return;
+      }
       if (this.indexInternal >= this.photos.length - 2)
         this.$emit('fetchNextPageData')
       if (this.indexInternal !== this.index) {
@@ -253,7 +254,7 @@ export default {
     },
     show() {
       if (this.show !== (this.index >= 0)) {
-        this.$emit('update:index', this.show ? this.index : -1);
+        this.$emit('update:index', this.show ? this.indexInternal : -1);
       }
     }
   }
