@@ -162,10 +162,6 @@
       </v-list>
     </SimpleCard>
 
-    <!-- todo 图片上传、活动签到、活动删除
-    用一个 https://vuetifyjs.com/zh-Hans/api/v-speed-dial/ ？
-    -->
-
     <FloatingActionButton
       v-if="isPresenterOrAdmin"
       icon="mdi-pencil"

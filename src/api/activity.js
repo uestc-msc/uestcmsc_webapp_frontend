@@ -19,7 +19,7 @@ export function updateActivityDetail(activityId, data) {
 }
 
 export function deleteActivity(activityId) {
-  return deleteData(() => axios.delete(`/activities/${activityId}/`), true);
+  return axios.delete(`/activities/${activityId}/`);
 }
 
 export function getActivityAdminDetail(activityId) {

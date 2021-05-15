@@ -160,7 +160,7 @@ export default {
         .then(() => {
           this.$store.commit('setMsg', '重置成功！请重新登录~');
           this.$store.commit('clearProfile');
-          this.$router.push('/login/');
+          this.$router.push({name: 'Login'});
         })
         .catch(response => {
           let detail = response.data;

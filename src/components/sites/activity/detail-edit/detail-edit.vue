@@ -40,6 +40,7 @@
           <ActivityFile
             ref="file"
             :disabled="status === Status.submitting"
+            @update:disabled="(val) => status = val ? Status.submitting : Status.editing"
             :activity.sync="activity"
           />
           <v-divider/>
