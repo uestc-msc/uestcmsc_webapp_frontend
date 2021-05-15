@@ -56,7 +56,6 @@
             ref="photo"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
-            :toggle-upload-photo="toggleUploadPhoto"
           />
           <div class="bottom-tips">{{ tabsInfo[3].tips }}</div>
         </v-tab-item>
@@ -71,14 +70,6 @@
     </SimpleCard>
 
     <FloatingActionButton
-      v-if="currentTab === 3"
-      icon="mdi-upload"
-      color="primary"
-      tooltip="上传图片"
-      @click="toggleUploadPhoto=!toggleUploadPhoto"
-    />
-    <FloatingActionButton
-      v-else
       :icon="StatusIcon[status]"
       :color="StatusColor[status]"
       :loading="status === Status.submitting"
@@ -100,9 +91,11 @@ import FloatingActionButton from "@/components/ui/base/button/floating-action-bu
 import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import BottomLine from "@/components/ui/base/bottom-line";
 
 export default {
   components: {
+    BottomLine,
     ErrorAlert,
     FloatingActionButton,
     ActivityPhoto, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
@@ -142,7 +135,6 @@ export default {
       Status,
       StatusColor,
       StatusIcon,
-      toggleUploadPhoto: false
     };
   },
 

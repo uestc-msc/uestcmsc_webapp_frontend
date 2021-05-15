@@ -220,8 +220,14 @@ export default {
           new_photos.splice(indexInternal, 1);
           that.$emit('update:photos', new_photos);
           // 如果正在浏览后面的照片，需要移动下标
-          if (that.deletingIndex > that.indexInternal)
+          if (that.deletingIndex < that.indexInternal)
             that.indexInternal--;
+          // 删除操作时，carousel 会出现乱动的情况（会修改 indexInternal 为 length-1）
+          // 所以利用 nextTick 在下一时刻改回去
+          let new_indexInternal = that.indexInternal;
+          this.$nextTick().then(() => {
+            that.indexInternal = new_indexInternal;
+          })
           that.deletingIndex = -1;
         })
         .catch(res => {

@@ -2,7 +2,6 @@
   <ActivityGallery
     v-if="activity"
     :activity-id="activity.id"
-    :toggle-upload-photo="toggleUploadPhoto"
   />
 </template>
 
@@ -19,10 +18,6 @@ export default {
       type: Boolean,
       default: false
     },
-    toggleUploadPhoto: {
-      type: Boolean,
-      required: true
-    }
   },
 }
 </script>

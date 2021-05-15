@@ -1,8 +1,24 @@
 <template>
-  <v-container v-if="value">
-    <v-row>
-      <!--  正在上传的图片  -->
-      <v-col v-for="photo in localPhoto" :key="photo.key" :cols="cols">
+  <div>
+    <v-container v-if="value">
+      <v-row>
+        <!--  上传按钮  -->
+        <v-col :cols="cols" v-if="!readOnly">
+          <!--  需要一个 img 框住 icon 的 ripple  -->
+          <v-img v-ripple>
+            <v-icon
+              x-large
+              class="grey lighten-2"
+              style="width: 100%; aspect-ratio: 1"
+              @click.stop="popupFileMenu"
+            >
+              mdi-image-plus
+            </v-icon>
+          </v-img>
+        </v-col>
+
+        <!--  正在上传的图片  -->
+        <v-col v-for="photo in localPhoto" :key="photo.key" :cols="cols">
           <v-img
             v-ripple
             :src="photo.info.data"
@@ -11,81 +27,89 @@
           >
             <v-overlay absolute opacity="0.8">
               <v-row align="center" justify="center">
-              <v-progress-circular
-                absolute
-                :size="progressCircularSize"
-                :width="progressCircularSize / 8"
-                :value="photo.status === Status.uploading ? photo.progress : 100"
-                :indeterminate="photo.status === Status.submitting"
-                :color="StatusColor[photo.status]"
-              />
+                <v-progress-circular
+                  absolute
+                  :size="progressCircularSize"
+                  :width="progressCircularSize / 8"
+                  :value="photo.status === Status.uploading ? photo.progress : 100"
+                  :indeterminate="photo.status === Status.submitting"
+                  :color="StatusColor[photo.status]"
+                />
               </v-row>
               <v-row>
-                {{photo.msg}}
+                {{ photo.msg }}
               </v-row>
             </v-overlay>
           </v-img>
-      </v-col>
+        </v-col>
 
-      <!--  已经在云端的图片  -->
-      <v-col v-for="(photo, i) in cloudPhoto" :key="photo.id" :cols="cols">
-        <v-img
-          v-ripple
-          @click.stop="index=i"
-          :src="getOnedriveFileUrl(photo.id)"
-          aspect-ratio="1"
-          class="grey lighten-2"
-        >
-          <v-icon
-            v-if="activity && photo.id === activity.banner_id"
-            class="rotate45 icon-on-image"
-          >mdi-pin</v-icon>
-          <template v-slot:placeholder>
-            <PicturePlaceholderAlt aspect-ratio="1"/>
-          </template>
-        </v-img>
-      </v-col>
-    </v-row>
+        <!--  已经在云端的图片  -->
+        <template v-for="(photo, i) in cloudPhoto">
+          <!--  当可以上传时，开头会多一个上传图片  -->
+          <v-col
+            v-if="readOnly || cloudPhoto.length === cloudCount || i !== cloudPhoto.length-1"
+            :key="photo.id"
+            :cols="cols">
+            <v-img
+              v-ripple
+              @click.stop="index=i"
+              :src="getOnedriveFileUrl(photo.id)"
+              aspect-ratio="1"
+              class="grey lighten-2"
+            >
+              <v-icon
+                v-if="activity && photo.id === activity.banner_id"
+                class="rotate45 icon-on-image"
+              >mdi-pin
+              </v-icon>
+              <template v-slot:placeholder>
+                <PicturePlaceholderAlt aspect-ratio="1"/>
+              </template>
+            </v-img>
+          </v-col>
+        </template>
+      </v-row>
 
-    <ActivityGalleryCarousel
-      :photos.sync="cloudPhoto"
-      :count="cloudCount"
-      :index.sync="index"
-      :activity.sync="activity"
-      @update:activity="$emit('update:banner-id', activity.banner_id)"
-      @fetchNextPageData="fetchData"
-    />
+      <ActivityGalleryCarousel
+        :photos.sync="cloudPhoto"
+        :count="cloudCount"
+        :index.sync="index"
+        :activity.sync="activity"
+        @update:activity="$emit('update:banner-id', activity.banner_id)"
+        @fetchNextPageData="fetchData"
+      />
 
-    <ErrorAlert
-      v-if="errorMsg"
-      as-row
-      :msg="errorMsg"
-    />
+      <ErrorAlert
+        v-if="errorMsg"
+        as-row
+        :msg="errorMsg"
+      />
 
-    <v-row>
-      <v-col>
-        <v-btn
-          v-if="cloudCount !== cloudPhoto.length"
-          :loading="loading"
-          :color="this.errorMsg ? 'error' : 'primary'"
-          block
-          @click="fetchData"
-        >
-          加载更多
-        </v-btn>
-      </v-col>
-    </v-row>
-
+      <v-row>
+        <v-col>
+          <v-btn
+            v-if="cloudCount !== cloudPhoto.length"
+            :loading="loading"
+            :color="this.errorMsg ? 'error' : 'primary'"
+            block
+            @click.stop="fetchData"
+          >
+            加载更多
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
     <!--  隐藏的文件上传栏，靠 toggleUploadPhoto 触发  -->
     <v-file-input
       v-model="fileInputValue"
+      @click.stop
       @change="uploadFile"
       multiple
       accept="image/*"
       id="photoInput"
       style="display: none"
     />
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -108,7 +132,7 @@ export default {
     activityId: {
       required: true
     },
-    // 如果不存在图片，将设置 value 为 false，父组件可以隐藏整个区域
+    // 如果不存在图片，将设置 value 为 false，父组件可以通过监听 value 隐藏整个区域
     value: {
       type: Boolean,
       default: true
@@ -125,6 +149,10 @@ export default {
     cols: {
       type: [String, Number],
       default: 4
+    },
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -160,6 +188,9 @@ export default {
   },
 
   methods: {
+    popupFileMenu() {
+      document.getElementById('photoInput').click();
+    },
     uploadFile(files) {
       let that = this;
       let apiFunction = (response) => addActivityPhoto({
@@ -183,6 +214,7 @@ export default {
           })
           .catch(() => {});
       }
+      this.fileInputValue = [];
     },
 
     fetchActivity() {
@@ -208,7 +240,7 @@ export default {
       getActivityPhotoList(this.activityId, curPage + 1, pageSize)
         .then(res => {
           that.cloudCount = res.data.count;
-          if (that.cloudCount === 0)
+          if (that.cloudCount === 0 && that.readOnly)
             this.$emit('input', false);
           const result = res.data.results;
           that.cloudPhoto.splice(curPage * pageSize);
@@ -229,8 +261,7 @@ export default {
 
     // 本地请求上传新的照片，弹出选择窗口
     toggleUploadPhoto() {
-      const photoInput = document.getElementById('photoInput');
-      photoInput.click();
+      this.popupFileMenu();
     },
   },
 

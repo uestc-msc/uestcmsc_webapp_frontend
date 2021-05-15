@@ -49,6 +49,7 @@ import moment from "@/utils/moment";
 import ActivityGallery from "@/components/ui/photo/activity-gallery";
 
 export default {
+  name: 'GalleryList',
   components: {ActivityGallery, SimpleCard, BottomLine, ErrorAlert},
   data: () => ({
     activityData: [],
