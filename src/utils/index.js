@@ -4,7 +4,7 @@ export const DEBUG = process.env.NODE_ENV === 'development';
 
 export const baseUrl = DEBUG ? `http://${window.location.hostname}:8000/api` : 'https://api.uestc-msc.com/api';
 export const QRCodeScanUrl = 'https://cli.im/deqr';
-export const logoUrl = "/static/icons/favicon-96x96.png";
+export const logoUrl = "/static/img/ruanweiwei.jpg";
 export const lazyAvatarUrl = "/static/icons/favicon-16x16.png";
 
 export const XHRTimeout = 5000;           // xhr 的超时

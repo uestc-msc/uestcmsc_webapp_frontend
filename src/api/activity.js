@@ -31,7 +31,7 @@ export function updateActivityAttender(activityId, data) {
 }
 
 export function checkInActivity(activityId, data) {
-  return axios.patch(`/activities/${activityId}/checkin/`, data);
+  return axios.post(`/activities/${activityId}/checkin/`, data);
 }
 
 //////////////////////////////  沙龙链接部分  //////////////////////////////

@@ -254,7 +254,7 @@ export default {
     gotoActivityDetailEdit() {
       this.$router.push({
         name: 'ActivityDetailEdit', params: {
-          userId: this.activity.id,
+          activityId: this.activity.id,
           activity: this.activity
         }
       });
