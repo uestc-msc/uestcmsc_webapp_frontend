@@ -143,6 +143,7 @@ export default {
     getMyProfile().then((res) => {
       that.$store.commit('setProfile', res.data);
     }).catch((res) => {
+      that.$store.commit('clearProfile');
     });
   }
 };

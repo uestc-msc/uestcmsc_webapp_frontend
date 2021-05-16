@@ -1,17 +1,12 @@
 <template>
-  <SimpleCard ripple>
-    <v-card-title>屏幕宽高</v-card-title>
-    <v-card-text>
-      宽：{{$vuetify.breakpoint.width}}<br>
-      高：{{$vuetify.breakpoint.height}}
-    </v-card-text>
-  </SimpleCard>
+  <ScreenInfo/>
 </template>
 
 <script>
-import SimpleCard from "@/components/ui/base/simple-card";
+import ScreenInfo from "@/components/sites/debug/screen-info";
+
 export default {
-  components: {SimpleCard},
+  components: {ScreenInfo},
   activated() {
     this.$store.commit('setTitle', '调试信息');
   },

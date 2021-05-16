@@ -38,32 +38,4 @@ const router = new VueRouter({
   routes
 });
 
-// 检查是否满足路由条件
-// 由于只靠路由、不靠活动信息，只能做简单的鉴权
-// 故统一为在页面内做鉴权
-// router.beforeEach((to, from, next) => {
-//   window.to.push(to);
-//   console.log('try to goto', to);
-//   for (let routeRecord of to.matched) {
-//     if (routeRecord.meta.permission) {
-//       let permitted = routeRecord.meta.permission();
-//       console.assert(typeof permitted === 'boolean');
-//       if (!permitted) {
-//         if (store.getters.isNotAuthenticated) {
-//           console.log('router forbidden');
-//           store.commit('setMsg', '请先登录~')
-//           gotoLogin();
-//         }
-//         else {
-//           goHome();
-//         }
-//         return;
-//       }
-//     }
-//   }
-//   console.log('success');
-//   next();
-//   store.commit('setAppbarLoading', false);
-// });
-
 export default router;

@@ -102,6 +102,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
 import {resetPassword} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import {isNotAuthenticatedOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {ErrorAlert, SimpleCard},
@@ -124,24 +125,6 @@ export default {
       submitting: false,
       errorMsg: null,
     };
-  },
-
-  activated() {
-    let that = this;
-    // 进入页面，填入 token 并验证有效性
-    this.token = this.$route.query.token;
-    resetPassword({token: that.token})
-      .then(() => {
-        that.tokenValid = true;
-      })
-      .catch(response => {
-        console.warn(response);
-        that.tokenValid = false;
-      })
-      .finally(() => {
-        that.checkingToken = false;
-        that.$refs.token.validate(true);
-      });
   },
 
   methods: {
@@ -173,5 +156,27 @@ export default {
         });
     },
   },
+
+  activated() {
+    if (!isNotAuthenticatedOrGoHome())
+      return;
+
+    let that = this;
+    // 进入页面，填入 token 并验证有效性
+    this.token = this.$route.query.token;
+    resetPassword({token: that.token})
+      .then(() => {
+        that.tokenValid = true;
+      })
+      .catch(response => {
+        console.warn(response);
+        that.tokenValid = false;
+      })
+      .finally(() => {
+        that.checkingToken = false;
+        that.$refs.token.validate(true);
+      });
+  },
+
 };
 </script>

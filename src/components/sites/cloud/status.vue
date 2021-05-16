@@ -37,6 +37,7 @@
 <script>
 import SimpleCard from "@/components/ui/base/simple-card";
 import {getOnedriveStatus, redirectToLoginOnedrive} from "@/api/cloud";
+import {isAdminOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {SimpleCard},
@@ -74,6 +75,9 @@ export default {
   },
 
   activated() {
+    if(!isAdminOrGoHome())
+      return;
+
     let that = this;
     this.loading = true;
     getOnedriveStatus().then(res => {

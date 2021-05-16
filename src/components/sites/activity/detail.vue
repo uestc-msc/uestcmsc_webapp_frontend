@@ -65,7 +65,10 @@
               <v-icon color="primary">mdi-qrcode</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-col cols="2" class="pa-0">
+              <ErrorAlert v-if="QRCanvasErrorMsg" as-row>
+                {{QRCanvasErrorMsg}}
+              </ErrorAlert>
+              <v-col v-else cols="2" class="pa-0">
                 <QRCanvas :options="QRCanvasOption"/>
               </v-col>
               <v-list-item-subtitle>签到二维码</v-list-item-subtitle>
@@ -224,6 +227,7 @@ export default {
       },
       hasPhoto: true,
       errorMsg: false,
+      QRCanvasErrorMsg: false,
 
       formatBytes,
       formatUrl,
@@ -302,16 +306,12 @@ export default {
         })
         .catch(response => {
           console.warn(response);
-          that.errorMsg = response.data;
+          that.QRCanvasErrorMsg = response.data;
         })
       // 异步加载二维码中心的图标
       const image = new Image();
       image.src = logoUrl;
-      image.onload = function () {
-        that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
-          logo: image,
-        });
-      }
+      image.onload = () => that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {logo: image});
     }
   },
   deactivated() {

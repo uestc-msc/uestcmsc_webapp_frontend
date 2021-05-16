@@ -93,6 +93,7 @@ import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import BottomLine from "@/components/ui/base/bottom-line";
+import {isPresenterOrAdminOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {
@@ -149,7 +150,7 @@ export default {
     fetchData() {
       this.$store.commit('setAppbarLoading', true);
       let that = this;
-      getActivityDetail(this.activityId)
+      return getActivityDetail(this.activityId)
         .then(response => {
           that.activity = response.data;
           this.$store.commit('setTitle', that.activity.title);
@@ -197,7 +198,7 @@ export default {
     }
   },
 
-  activated() {
+  async activated() {
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.activity = this.$route.params.activity;
@@ -205,7 +206,8 @@ export default {
     if (this.activity)
       this.$store.commit('setTitle', this.activity.title);
     else
-      this.fetchData();
+      await this.fetchData();
+    isPresenterOrAdminOrGoHome(this.activity.presenter);
   },
 
   deactivated() {

@@ -19,9 +19,6 @@ const routeConfig = [
     path: '/activity/create',
     name: 'CreateActivity',
     component: CreateActivity,
-    meta: {
-      permission: () => getters.isAuthenticated,
-    },
   },
   {
     path: '/activity/:activityId',
@@ -34,17 +31,11 @@ const routeConfig = [
     name: 'ActivityDetailEdit',
     component: ActivityDetailEdit,
     props: true,  // props 表示 activityId 参数可以传到组件
-    meta: {
-      permission: () => getters.isAuthenticated,
-    },
   },
   {
     path: '/activity/:activityId/checkin/:checkInCode',
     name: 'ActivityCheckIn',
     component: ActivityCheckIn,
-    meta: {
-      permission: () => getters.isAuthenticated,
-    },
   }
 ];
 

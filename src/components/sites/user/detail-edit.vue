@@ -155,7 +155,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import AdminIcon from "@/components/ui/user/admin-icon";
 import {inputRules} from "@/utils/validators";
-import {hasGreaterPermissions} from "@/utils/permissions";
+import {hasGreaterPermissions, isSelfOrAdminOrGoHome} from "@/utils/permissions";
 import {getUserDetail, updateUserDetail} from "@/api/user";
 import {DEBUG, displaySuccessTime, lazyAvatarUrl} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
@@ -210,6 +210,9 @@ export default {
   },
 
   activated() {
+    if (!isSelfOrAdminOrGoHome(this.userId))
+      return;
+
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
 

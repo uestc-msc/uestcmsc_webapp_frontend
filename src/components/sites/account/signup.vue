@@ -121,6 +121,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
 import {signup} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import {isNotAuthenticatedOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {ErrorAlert, SimpleCard},
@@ -184,5 +185,9 @@ export default {
         });
     },
   },
+
+  activated() {
+    isNotAuthenticatedOrGoHome();
+  }
 };
 </script>

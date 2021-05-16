@@ -1,5 +1,5 @@
 import store from "@/store";
-import {goBack, gotoLogin, goHome} from "@/utils/router";
+import {gotoLogin, goHome} from "@/utils/router";
 
 function permissionValue(user) {
   if (user.is_superuser) return 2;
@@ -27,60 +27,73 @@ const denyTips = Object.freeze({
 
 /**
  * 检查用户是否登录，如果没有登录则跳转到登录页面
+ * @return {boolean} 为 true 时继续执行页面
  */
 export function isAuthenticatedOrGotoLogin() {
   if (!store.getters.isAuthenticated) {
     store.commit('setMsg', denyTips.loginFirst);
     gotoLogin();
+    return false;
   }
+  return true;
 }
 
 
 /**
  * 检查用户是否登录，如果登录了则跳转到首页
+ * @return {boolean} 为 true 时继续执行页面
  */
 export function isNotAuthenticatedOrGoHome() {
-  if (!store.getters.isAuthenticated) {
+  if (store.getters.isAuthenticated) {
     store.commit('setMsg', denyTips.alreadyLoggedIn);
     goHome();
+    return false;
   }
+  return true;
 }
 
 
 /**
- * 检查用户是否是有权进入页面，如果没有登录则跳转到登录页面，如果无权则跳转到上一页
- * @param hasPermission {boolean} 用户是否是有权
+ * 检查用户是否是有权进入页面，如果没有登录则跳转到登录页面，如果无权则跳转到首页
+ * @param hasPermission {boolean} 用户是否有权限
+ * @return {boolean} 为 true 时继续执行页面
  */
-function hasPermissionOrGoBack(hasPermission) {
-  isAuthenticatedOrGotoLogin();
-  if (hasPermission) {
+function hasPermissionOrGoHome(hasPermission) {
+  if (!isAuthenticatedOrGotoLogin())
+    return false;
+  if (!hasPermission) {
     store.commit('setMsg', denyTips.permissionDenied);
-    goBack();
+    goHome();
+    return false;
   }
+  return true;
 }
 
 
 /**
- * 检查用户是否是管理员，如果没有登录则跳转到登录页面，如果不是则跳转到上一页
+ * 检查用户是否是管理员，如果没有登录则跳转到登录页面，如果不是则跳转到首页
+ * @return {boolean} 为 true 时继续执行页面
  */
-export function isAdminOrGoBack() {
-  hasPermissionOrGoBack(store.getters.isAdmin);
+export function isAdminOrGoHome() {
+  return hasPermissionOrGoHome(store.getters.isAdmin);
 }
 
 
 /**
- * 检查用户是否是本人或管理员，如果没有登录则跳转到登录页面，如果不是则跳转到上一页
+ * 检查用户是否是本人或管理员，如果没有登录则跳转到登录页面，如果不是则跳转到首页
  * @param id {number} 本人的 id
+ * @return {boolean} 为 true 时继续执行页面
  */
-export function isSelfOrAdminOrGoBack(id) {
-  hasPermissionOrGoBack(store.getters.isSelfOrAdmin);
+export function isSelfOrAdminOrGoHome(id) {
+  return hasPermissionOrGoHome(store.getters.isSelfOrAdmin);
 }
 
 
 /**
- * 检查用户是否是活动主讲人或管理员，如果没有登录则跳转到登录页面，如果不是则跳转到上一页
+ * 检查用户是否是活动主讲人或管理员，如果没有登录则跳转到登录页面，如果不是则跳转到首页
  * @param presenters {number[]} 主讲人名单
+ * @return {boolean} 为 true 时继续执行页面
  */
-export function isSelfOrAdminOrGoBack(presenters) {
-  hasPermissionOrGoBack(store.getters.isInListOrAdmin(presenters));
+export function isPresenterOrAdminOrGoHome(presenters) {
+  return hasPermissionOrGoHome(store.getters.isInListOrAdmin(presenters));
 }

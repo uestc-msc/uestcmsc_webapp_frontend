@@ -46,7 +46,7 @@
 
         <v-spacer/>
         <v-col>
-          <v-row justify="center">
+          <v-row no-gutters justify="end">
             <ConfirmDialog @confirm="deleteData">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn

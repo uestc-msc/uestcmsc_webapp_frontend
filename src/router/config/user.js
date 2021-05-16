@@ -20,9 +20,6 @@ const routeConfig = [
     name: 'UserDetailEdit',
     component: UserDetailEdit,
     props: true,  // props 表示 userId 参数可以传到组件
-    meta: {
-      permission: () => store.getters.isSelfOrAdmin(userId),
-    },
   },
 ];
 

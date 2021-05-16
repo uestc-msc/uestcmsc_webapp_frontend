@@ -106,9 +106,8 @@ var store = new Vuex.Store({
   }
 });
 
-
-if (localStorage['profile'])
+try {
   store.commit('setProfile', JSON.parse(localStorage['profile']));
-console.log('initial profile:')
-console.log(store.state.profile)
+} catch { }
+
 export default store;

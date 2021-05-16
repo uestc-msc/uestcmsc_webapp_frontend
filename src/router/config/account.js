@@ -12,41 +12,26 @@ const routeConfig = [
     path: '/signup',
     name: 'Signup',
     component: Signup,
-    meta: {
-      permission: () => getters.isNotAuthenticated,
-    },
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: {
-      permission: () => getters.isNotAuthenticated,
-    },
   },
   {
     path: '/logout',
     name: 'Logout',
     component: Logout,
-    meta: {
-      permission: () => getters.isAuthenticated,
-    },
   },
   {
     path: '/forgetpassword',
     name: 'ForgetPassword',
     component: ForgetPassword,
-    meta: {
-      permission: () => getters.isNotAuthenticated,
-    },
   },
   {
     path: '/resetpassword',
     name: 'ResetPassword',
     component: ResetPassword,
-    meta: {
-      permission: () => getters.isNotAuthenticated,
-    },
   }
 ];
 

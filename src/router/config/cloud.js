@@ -6,9 +6,6 @@ const routeConfig = [
     path: '/cloud/status',
     name: 'CloudStatus',
     component: CloudStatus,
-    meta: {
-      permission: () => store.getters.isAdmin,
-    },
   }
 ];
 

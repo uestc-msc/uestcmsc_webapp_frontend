@@ -22,6 +22,7 @@
 <script>
 import ActivityDetail from "@/components/sites/activity/detail";
 import {checkInActivity} from '@/api/activity'
+import {isAuthenticatedOrGotoLogin} from "@/utils/permissions";
 
 export default {
   components: {ActivityDetail},
@@ -44,6 +45,9 @@ export default {
   },
 
   activated() {
+    if (!isAuthenticatedOrGotoLogin())
+      return;
+
     this.showDialog = true;
     const activityId = this.$route.params.activityId;
     const check_in_code = this.$route.params.checkInCode;
