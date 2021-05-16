@@ -30,7 +30,7 @@
             <v-list-item-title>
               <PeopleChipGroup
                 listitem
-                :userId="activity.presenter"
+                :user-id="activity.presenter"
               />
             </v-list-item-title>
             <v-list-item-subtitle>主讲人</v-list-item-subtitle>
@@ -134,7 +134,7 @@
               <PeopleChipGroup
                 v-if="activity.attender && activity.attender.length"
                 listitem
-                :userId="activity.attender"
+                :user-id="activity.attender"
               />
               <span v-else>暂无</span>
             </v-list-item-title>
