@@ -1,0 +1,38 @@
+.shadow-text {
+    text-shadow: rgb(68 68 68) 1px 1px 8px;
+}
+
+.activity-card-title {
+    color: rgb(250, 250, 250);
+    text-shadow: rgb(68, 68, 68) 1px 1px 8px;
+    font-size: 32px !important;
+    line-height: 40px !important;
+    position: absolute;
+    bottom: 0;
+}
+
+.presenter-list-area {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.bottom-tips {
+    text-align: center;
+    font-size: 14px;
+}
+
+.theme--light .bottom-tips {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.theme--dark .bottom-tips {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.icon-on-image {
+    float:right;
+}
+
+.rotate45 {
+    transform: rotate(45deg);
+}
