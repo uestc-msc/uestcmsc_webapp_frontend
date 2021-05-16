@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import {appName, DEBUG, sleep} from "@/utils";
+import {getActivityDetail} from "@/api/activity";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+var store = new Vuex.Store({
   strict: DEBUG,
   state: {
     // 当前登录用户信息
@@ -44,18 +45,20 @@ export default new Vuex.Store({
     isAdmin: state => state.profile.is_staff || state.profile.is_superuser,
     isSuperuser: state => state.profile.is_superuser,
     isSelf: state => (id) => id === state.profile.id,
+    isInList: state => (list) => list.includes(state.profile.id),
     isSelfOrAdmin: (state, getters) => (id) => (getters.isAdmin || getters.isSelf(id)),
-    whiteList: state => (list) => list.includes(state.profile.id),
-    whiteListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.whiteList(list)),
+    isInListOrAdmin: (state, getters) => (list) => (getters.isAdmin || getters.isInList(list)),
   },
 
   mutations: {
     setProfile(state, profile) {
       Vue.set(state, 'profile', profile);
+      localStorage.setItem('profile', JSON.stringify(profile));
     },
     clearProfile(state) {
       // state.profile = {"id": -1};
       Vue.set(state, 'profile', {id: -1});
+      localStorage.removeItem('profile');
     },
 
     setMsg(state, msg) {
@@ -102,3 +105,9 @@ export default new Vuex.Store({
     }
   }
 });
+
+try {
+  store.commit('setProfile', JSON.parse(localStorage['profile']));
+} catch { }
+
+export default store;

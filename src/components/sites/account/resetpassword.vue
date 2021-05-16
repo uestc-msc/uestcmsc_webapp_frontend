@@ -102,6 +102,7 @@ import SimpleCard from "@/components/ui/base/simple-card";
 import {inputRules} from "@/utils/validators";
 import {resetPassword} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import {isNotAuthenticatedOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {ErrorAlert, SimpleCard},
@@ -126,23 +127,6 @@ export default {
     };
   },
 
-  activated() {
-    let that = this;
-    // 进入页面，填入 token 并验证有效性
-    this.token = this.$route.query.token;
-    resetPassword({token: that.token})
-      .then(() => {
-        that.tokenValid = true;
-      })
-      .catch(() => {
-        that.tokenValid = false;
-      })
-      .finally(() => {
-        that.checkingToken = false;
-        that.$refs.token.validate(true);
-      });
-  },
-
   methods: {
     resetPassword() {
       this.formValid = this.$refs.form.validate();
@@ -160,9 +144,10 @@ export default {
         .then(() => {
           this.$store.commit('setMsg', '重置成功！请重新登录~');
           this.$store.commit('clearProfile');
-          this.$router.push('/login/');
+          this.$router.push({name: 'Login'});
         })
         .catch(response => {
+          console.warn(response);
           let detail = response.data;
           this.errorMsg = Object.values(detail).join('；');
         })
@@ -171,5 +156,27 @@ export default {
         });
     },
   },
+
+  activated() {
+    if (!isNotAuthenticatedOrGoHome())
+      return;
+
+    let that = this;
+    // 进入页面，填入 token 并验证有效性
+    this.token = this.$route.query.token;
+    resetPassword({token: that.token})
+      .then(() => {
+        that.tokenValid = true;
+      })
+      .catch(response => {
+        console.warn(response);
+        that.tokenValid = false;
+      })
+      .finally(() => {
+        that.checkingToken = false;
+        that.$refs.token.validate(true);
+      });
+  },
+
 };
 </script>

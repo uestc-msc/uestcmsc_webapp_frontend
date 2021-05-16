@@ -78,14 +78,14 @@
 
 <script>
 import Vue from 'vue'
-import {appName, appVersion, baseUrl, iconPath} from '@/utils'
+import {appName, appVersion, baseUrl, logoUrl} from '@/utils'
 import {mapGetters} from 'vuex'
 
 export default Vue.extend({
   props: ['toggleEvent'],
   data() {
     return {
-      iconPath,
+      iconPath: logoUrl,
       appName,
       appVersion,
       show: null,   //在移动设备上关闭，在桌面环境下打开

@@ -4,6 +4,10 @@ import CreateActivity from '@/components/sites/activity/create'
 import ActivityDetail from '@/components/sites/activity/detail'
 import ActivityDetailEdit from '@/components/sites/activity/detail-edit/detail-edit'
 import ActivityCheckIn from '@/components/sites/activity/check-in'
+import store from '@/store';
+
+const getters = store.getters;
+window.getters = getters;
 
 const routeConfig = [
   {
@@ -29,9 +33,9 @@ const routeConfig = [
     props: true,  // props 表示 activityId 参数可以传到组件
   },
   {
-    path: '/activity/checkin',
+    path: '/activity/:activityId/checkin/:checkInCode',
     name: 'ActivityCheckIn',
-    component: ActivityCheckIn
+    component: ActivityCheckIn,
   }
 ];
 

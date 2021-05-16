@@ -189,7 +189,7 @@ export default {
           if (that.isSelf) {
             that.$store.commit('setMsg', '修改成功！请重新登录~');
             that.$store.commit('clearProfile');
-            that.$router.push('/login/');
+            that.$router.push({name: 'Login'});
           } else {
             that.$store.commit('setMsg', '修改成功！');
             that.success = true;
@@ -198,6 +198,7 @@ export default {
           }
         })
         .catch(response => {
+          console.warn(response);
           that.error = response.data;
           if (response.status === 403)
             that.error = "旧密码错误。";

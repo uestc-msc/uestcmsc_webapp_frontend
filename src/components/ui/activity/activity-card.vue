@@ -11,6 +11,7 @@
         <PicturePlaceholderAlt/>
       </template>
       <v-card-title class="activity-card-title">{{ activity.title }}</v-card-title>
+      <CheckInStatusButton :activity="activity"/>
     </v-img>
 
     <v-card-text>
@@ -37,9 +38,10 @@ import moment from "@/utils/moment";
 import {generateTopPhoto} from "@/utils/activity";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
+import CheckInStatusButton from "@/components/ui/activity/check-in-status-button";
 
 export default {
-  components: {PicturePlaceholderAlt, PicturePlaceholder, PeopleChipGroup},
+  components: {CheckInStatusButton, PicturePlaceholderAlt, PicturePlaceholder, PeopleChipGroup},
   props: {
     activity: {
       type: Object,

@@ -40,6 +40,7 @@
           <ActivityFile
             ref="file"
             :disabled="status === Status.submitting"
+            @update:disabled="(val) => status = val ? Status.submitting : Status.editing"
             :activity.sync="activity"
           />
           <v-divider/>
@@ -56,7 +57,6 @@
             ref="photo"
             :disabled="status === Status.submitting"
             :activity.sync="activity"
-            :toggle-upload-photo="toggleUploadPhoto"
           />
           <div class="bottom-tips">{{ tabsInfo[3].tips }}</div>
         </v-tab-item>
@@ -71,14 +71,6 @@
     </SimpleCard>
 
     <FloatingActionButton
-      v-if="currentTab === 3"
-      icon="mdi-upload"
-      color="primary"
-      tooltip="上传图片"
-      @click="toggleUploadPhoto=!toggleUploadPhoto"
-    />
-    <FloatingActionButton
-      v-else
       :icon="StatusIcon[status]"
       :color="StatusColor[status]"
       :loading="status === Status.submitting"
@@ -100,9 +92,12 @@ import FloatingActionButton from "@/components/ui/base/button/floating-action-bu
 import {DEBUG, displayErrorTime, displaySuccessTime, sleep} from "@/utils";
 import {Status, StatusColor, StatusIcon} from "@/utils/status";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import BottomLine from "@/components/ui/base/bottom-line";
+import {isPresenterOrAdminOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {
+    BottomLine,
     ErrorAlert,
     FloatingActionButton,
     ActivityPhoto, ActivityLink, ActivityFile, ActivityPresenterAndAttender, ActivityInfo, SimpleCard
@@ -142,7 +137,6 @@ export default {
       Status,
       StatusColor,
       StatusIcon,
-      toggleUploadPhoto: false
     };
   },
 
@@ -156,12 +150,13 @@ export default {
     fetchData() {
       this.$store.commit('setAppbarLoading', true);
       let that = this;
-      getActivityDetail(this.activityId)
+      return getActivityDetail(this.activityId)
         .then(response => {
           that.activity = response.data;
           this.$store.commit('setTitle', that.activity.title);
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
           that.status = Status.error;
         })
@@ -194,8 +189,8 @@ export default {
           this.status = Status.editing;
         })
         .catch(async res => {
+          console.warn(res);
           this.status = Status.error;
-          console.log(res.data)
           this.errorMsg = res.data;
           await sleep(displayErrorTime);
           this.status = Status.editing;
@@ -203,7 +198,7 @@ export default {
     }
   },
 
-  activated() {
+  async activated() {
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.activity = this.$route.params.activity;
@@ -211,7 +206,8 @@ export default {
     if (this.activity)
       this.$store.commit('setTitle', this.activity.title);
     else
-      this.fetchData();
+      await this.fetchData();
+    isPresenterOrAdminOrGoHome(this.activity.presenter);
   },
 
   deactivated() {

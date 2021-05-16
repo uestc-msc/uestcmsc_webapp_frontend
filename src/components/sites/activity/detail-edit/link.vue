@@ -227,6 +227,7 @@ export default {
           that.updateData();
         })
         .catch(async res => {
+          console.warn(res);
           link.status = Status.error;
           link.msg = res.data;
           await sleep(displayErrorTime);
@@ -248,7 +249,6 @@ export default {
         await sleep(displayErrorTime);
         link.errorMsg = '';
         return;
-        // todo 还没写
       }
 
       link.status = Status.submitting;
@@ -259,19 +259,19 @@ export default {
           link.info = res.data;
           that.updateData();
           await sleep(displaySuccessTime);
-          link.status = Status.default;
-          link.msg = '';
-          that.updateData();
         })
         .catch(async res => {
+          console.warn(res);
           link.status = Status.error;
           link.msg = res.data;
           that.updateData();
           await sleep(displayErrorTime);
+        })
+        .finally(() => {
           link.status = Status.default;
           link.msg = '';
           that.updateData();
-        });
+        })
     },
 
     deleteLink(link) {
@@ -288,6 +288,7 @@ export default {
           that.updateData();
         })
         .catch(async res => {
+          console.warn(res);
           link.status = Status.error;
           link.msg = res.data;
           await sleep(displayErrorTime);

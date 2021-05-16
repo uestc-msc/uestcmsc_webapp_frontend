@@ -48,7 +48,6 @@
 </template>
 
 <style scoped>
-/*todo 还能更小吗*/
 .key-prompt {
   font-size: 12px !important;
   height: 6px;

@@ -47,11 +47,11 @@
 </template>
 
 <script>
-
-import {inputRules, isEmail} from "@/utils/validators";
+import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
 import {forgetPassword} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import {isNotAuthenticatedOrGoHome, isSelfOrAdminOrGoHome} from "@/utils/permissions";
 
 export default {
   components: {ErrorAlert, SimpleCard},
@@ -87,6 +87,7 @@ export default {
           that.submitting = false;
         })
         .catch((response) => {
+          console.warn(response);
           that.msg = response.data;
           if (that.msg.detail) that.msg = that.msg.detail
           that.status = 'error';
@@ -94,5 +95,9 @@ export default {
         })
     },
   },
+
+  activated() {
+    isNotAuthenticatedOrGoHome();
+  }
 };
 </script>

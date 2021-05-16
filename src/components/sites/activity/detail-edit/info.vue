@@ -33,7 +33,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters align="center">
         <v-col>
           <v-switch
             prepend-icon="mdi-checkbox-marked-circle-outline"
@@ -42,6 +42,25 @@
             label="开放二维码签到"
             @change="updateData"
           />
+        </v-col>
+
+        <v-spacer/>
+        <v-col>
+          <v-row no-gutters justify="end">
+            <ConfirmDialog @confirm="deleteData">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  :disabled="disabled"
+                  :loading="deleting"
+                  color="error"
+                  v-on="on"
+                  v-bind="attrs"
+                >
+                  删除活动
+                </v-btn>
+              </template>
+            </ConfirmDialog>
+          </v-row>
         </v-col>
       </v-row>
     </v-form>
@@ -52,9 +71,11 @@
 import moment from "@/utils/moment";
 import DatetimePicker from "@/components/ui/base/input/datetime-picker";
 import {inputRules} from "@/utils/validators";
+import ConfirmDialog from "@/components/ui/base/confirm-dialog";
+import {deleteActivity} from '@/api/activity'
 
 export default {
-  components: {DatetimePicker},
+  components: {ConfirmDialog, DatetimePicker},
   props: {
     activity: {
       // type: Object, 刚进入时可能还没加载 activity 因此不做检查
@@ -75,6 +96,8 @@ export default {
         check_in_open: false,
       },
 
+      deleting: false,
+
       titleRules: inputRules.activity.titleRules,
       locationRules: inputRules.activity.locationRules
     }
@@ -84,19 +107,31 @@ export default {
     fetchData() {   // 根据 activity 更新 data
       if (!this.activity)
         return;
-
-      for (let attr in this.formData) {
+      for (let attr in this.formData)
         this.formData[attr] = this.activity[attr];
-      }
     },
 
     updateData() {   // 根据 data 更新 activity
       console.log(`updateData, datetime is ${this.formData.datetime}`);
       let new_activity = {...this.activity};
-      for (let attr in this.formData) {
+      for (let attr in this.formData)
         new_activity[attr] = this.formData[attr];
-      }
       this.$emit('update:activity', new_activity);
+    },
+
+    deleteData() { // 删除活动
+      this.deleting = true;
+      this.$emit('update:disabled', true);
+      let that = this;
+      deleteActivity(this.activity.id)
+        .then(res => {
+          that.$store.commit('setMsg', '删除成功~');
+          that.$router.push({name: 'ActivityList'});
+        })
+        .catch(res => {
+          console.warn(res);
+          that.$store.commit('setMsg', res.data);
+        });
     }
   },
 

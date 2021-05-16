@@ -8,7 +8,6 @@
     />
     <SettingsDrawer :toggleEvent="toggleSettings"/>
   </div>
-  <!-- TODO: localstorage 的存储以及读取-->
 </template>
 
 <script>

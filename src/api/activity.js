@@ -19,7 +19,7 @@ export function updateActivityDetail(activityId, data) {
 }
 
 export function deleteActivity(activityId) {
-  return deleteData(() => axios.delete(`/activities/${activityId}/`), true);
+  return axios.delete(`/activities/${activityId}/`);
 }
 
 export function getActivityAdminDetail(activityId) {
@@ -31,7 +31,7 @@ export function updateActivityAttender(activityId, data) {
 }
 
 export function checkInActivity(activityId, data) {
-  return axios.patch(`/activities/${activityId}/checkin/`, data);
+  return axios.post(`/activities/${activityId}/checkin/`, data);
 }
 
 //////////////////////////////  沙龙链接部分  //////////////////////////////

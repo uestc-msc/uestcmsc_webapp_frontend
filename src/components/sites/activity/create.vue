@@ -79,6 +79,7 @@ import {inputRules} from "@/utils/validators";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import moment from "@/utils/moment";
+import {isAuthenticatedOrGotoLogin} from "@/utils/permissions";
 
 export default {
   components: {ErrorAlert, FloatingActionButton, DatetimePicker, PeopleSelector, SimpleCard},
@@ -135,6 +136,7 @@ export default {
           });
         })
         .catch(async res => {
+          console.warn(res);
           this.errorMsg = res.data;
           this.status = Status.error;
           await sleep(displayErrorTime);
@@ -144,6 +146,9 @@ export default {
   },
 
   activated() {
+    if (!isAuthenticatedOrGotoLogin())
+      return false;
+
     if (!DEBUG)
       window.onbeforeunload = () => '系统可能不会保存您所做的更改。'
     this.$store.commit('setTitle', '创建沙龙');

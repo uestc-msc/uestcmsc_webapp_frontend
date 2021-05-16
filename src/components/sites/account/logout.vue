@@ -15,6 +15,7 @@ export default Vue.extend({
         that.$store.commit('setMsg', '再会~');
       })
       .catch(res => {
+        console.warn(response);
         that.$store.commit('setMsg', '登出失败，请清除 cookie 后登录，或联系管理员 :(');
       })
       .finally(() => {

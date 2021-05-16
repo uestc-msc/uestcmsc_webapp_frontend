@@ -1,5 +1,3 @@
-<!--  TODO: detail 和 detail-edit  的 v-img 转圈圈不知道转到哪里去了 反正看不见  nmdwsm
-推荐断网测试  -->
 <template>
   <div>
     <ErrorAlert v-if="errorMsg">
@@ -125,7 +123,7 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import {isEmail} from "@/utils/validators";
 import {mapGetters} from 'vuex'
 import {getUserDetail} from "@/api/user";
-import {lazyAvatar} from "@/utils";
+import {lazyAvatarUrl} from "@/utils";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
@@ -145,7 +143,7 @@ export default {
     return {
       userProfile: null,
       errorMsg: false,
-      lazyAvatar,
+      lazyAvatar: lazyAvatarUrl,
     }
   },
 
@@ -195,6 +193,7 @@ export default {
           that.userProfile = response.data;
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {

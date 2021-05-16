@@ -92,6 +92,7 @@ import SimpleCard from '@/components/ui/base/simple-card'
 import Cookies from 'js-cookie';
 import {login} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import {isNotAuthenticatedOrGoHome} from "@/utils/permissions";
 
 export default Vue.extend({
   components: {ErrorAlert, SimpleCard},
@@ -129,6 +130,7 @@ export default Vue.extend({
           goBack();
         })
         .catch((response) => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {
@@ -136,5 +138,9 @@ export default Vue.extend({
         });
     },
   },
+
+  activated() {
+    isNotAuthenticatedOrGoHome();
+  }
 });
 </script>

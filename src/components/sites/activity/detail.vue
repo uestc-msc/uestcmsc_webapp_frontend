@@ -8,8 +8,6 @@
       md="10"
     >
       <template v-slot:before-card-text>
-        <!-- 不使用 parallax 的原因，一是效果不明显，二是 parallax 不支持 placeholder -->
-        <!--  这里也可以改成轮播图 v-carousel，不过都可以  -->
         <v-img
           height="240"
           :src="activity.bannerUrl"
@@ -17,7 +15,8 @@
           <template v-slot:placeholder>
             <PicturePlaceholderAlt/>
           </template>
-          <v-card-title class="activity-card-title">{{activity.title}}</v-card-title>
+          <v-card-title class="activity-card-title">{{ activity.title }}</v-card-title>
+          <CheckInStatusButton :activity="activity"/>
         </v-img>
       </template>
 
@@ -60,19 +59,23 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-qrcode</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <div
-              id="qrcode"
-            />
-            <v-list-item-subtitle>签到二维码（签到已开放2333）</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-divider inset></v-divider>
+        <template v-if="QRCanvasOption.data">
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon color="primary">mdi-qrcode</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <ErrorAlert v-if="QRCanvasErrorMsg" as-row>
+                {{QRCanvasErrorMsg}}
+              </ErrorAlert>
+              <v-col v-else cols="2" class="pa-0">
+                <QRCanvas :options="QRCanvasOption"/>
+              </v-col>
+              <v-list-item-subtitle>签到二维码</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider inset></v-divider>
+        </template>
 
         <template v-if="activity.file.length">
           <v-list-item
@@ -160,12 +163,7 @@
         </v-list-item>
 
       </v-list>
-
     </SimpleCard>
-
-    <!-- todo 图片上传、活动签到、活动删除
-    用一个 https://vuetifyjs.com/zh-Hans/api/v-speed-dial/ ？
-    -->
 
     <FloatingActionButton
       v-if="isPresenterOrAdmin"
@@ -178,24 +176,27 @@
 </template>
 
 <script>
+import {QRCanvas} from "qrcanvas-vue";
+import {DEBUG, logoUrl} from "@/utils";
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import AdminIcon from "@/components/ui/user/admin-icon";
-import {getActivityDetail} from "@/api/activity";
+import {getActivityAdminDetail, getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
 import {downloadFile, formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
-import {DEBUG} from "@/utils";
 import {getTimeIcon} from '@/utils/datetime';
 import ActivityGallery from "@/components/ui/photo/activity-gallery";
 import MultipleFloatingActionButton from "@/components/ui/base/button/multiple-floating-action-button";
+import CheckInStatusButton from "@/components/ui/activity/check-in-status-button";
 
 export default {
   components: {
+    CheckInStatusButton,
     MultipleFloatingActionButton,
     ActivityGallery,
     PicturePlaceholderAlt,
@@ -204,14 +205,29 @@ export default {
     AdminIcon,
     ErrorAlert,
     FloatingActionButton,
-    SimpleCard
+    SimpleCard,
+    // Documents: https://github.com/gera2ld/qrcanvas
+    QRCanvas
   },
 
   data() {
     return {
       activity: null,
+      checkInStatus: {
+        text: '',
+        icon: '',
+        color: ''
+      },
+      QRCanvasOption: {
+        cellSize: 4,
+        correctLevel: 'H',
+        data: '',
+        logo: '',
+        background: 'white',
+      },
       hasPhoto: true,
       errorMsg: false,
+      QRCanvasErrorMsg: false,
 
       formatBytes,
       formatUrl,
@@ -224,22 +240,21 @@ export default {
       return this.$route.params.activityId;
     },
     isPresenterOrAdmin() {
-      return this.activity && this.$store.getters.whiteListOrAdmin(this.activity.presenter)
+      return this.activity && this.$store.getters.isInListOrAdmin(this.activity.presenter)
     },
-
     clockIcon() {
       return getTimeIcon(moment(this.activity.datetime).hour());
     },
     formattedTime() {
       return moment(this.activity.datetime).toChinese();
-    }
+    },
   },
 
   methods: {
     gotoActivityDetailEdit() {
       this.$router.push({
         name: 'ActivityDetailEdit', params: {
-          userId: this.activity.id,
+          activityId: this.activity.id,
           activity: this.activity
         }
       });
@@ -257,26 +272,50 @@ export default {
     }
   },
 
-  activated() {
+  async activated() {
     if (DEBUG)
       window.activity = this;
     let that = this;
     this.hasPhoto = true;
     this.activity = this.$route.params.activity;
+    // 加载活动信息
     if (!this.activity) {
       this.$store.commit('setAppbarLoading', true);
-
-      getActivityDetail(this.activityId)
+      try {
+        let response = await getActivityDetail(this.activityId);
+        this.activity = response.data;
+      }
+      catch (response) {
+        console.warn(response);
+        that.errorMsg = response.data;
+        return;
+      }
+      that.$store.commit('setAppbarLoading', false);
+    }
+    // 设置 Appbar Title
+    this.$store.commit('setTitle', this.activity.title);
+    if (this.isPresenterOrAdmin) {
+      // 异步加载签到码 然后生成二维码
+      getActivityAdminDetail(this.activityId)
         .then(response => {
-          that.activity = response.data;
+          const checkInCode = response.data.check_in_code;
+          const checkInUrl = `${window.location.origin}/activity/${that.activityId}/checkin/${checkInCode}`;
+          that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
+            data: checkInUrl,
+          });
         })
         .catch(response => {
-          that.errorMsg = response.data;
+          console.warn(response);
+          that.QRCanvasErrorMsg = response.data;
         })
-        .finally(() => {
-          that.$store.commit('setAppbarLoading', false)
-        })
+      // 异步加载二维码中心的图标
+      const image = new Image();
+      image.src = logoUrl;
+      image.onload = () => that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {logo: image});
     }
+  },
+  deactivated() {
+    this.$store.commit('clearTitle');
   }
 };
 </script>

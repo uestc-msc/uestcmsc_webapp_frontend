@@ -1,6 +1,6 @@
 <!--  定义在一个 row 里的 DateTimePicker，返回 TZ 形式  -->
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col>
       <DatePicker
         v-model="date"

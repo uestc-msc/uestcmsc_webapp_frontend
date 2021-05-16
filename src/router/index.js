@@ -1,5 +1,6 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from '@/store';
 
 import userRouteConfig from "./config/user";
 import accountRouteConfig from "./config/account";
@@ -8,7 +9,7 @@ import galleryRouteConfig from "./config/gallery";
 import cloudRouteConfig from "./config/cloud";
 import debugRouteConfig from "./config/debug";
 import notFound from '@/components/sites/404.vue';
-import {goHome} from '@/utils/router';
+import {goHome, gotoLogin} from '@/utils/router';
 
 Vue.use(VueRouter)
 
@@ -35,25 +36,6 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
-
-// 检查是否满足路由条件
-// todo 路由加载前后搞进度条，检查用户权限
-router.beforeEach((to, from, next) => {
-  for (let i = 0; i < to.matched.length; i++)
-  {
-    let routeRecord = to.matched[i];
-    if (routeRecord.meta.need !== undefined) {
-      for (let j = 0; j < routeRecord.meta.need.length; j++) {
-        let permissionFunction = routeRecord.meta.need[j];      
-        if (!permissionFunction()) {
-          goHome();
-          return;
-        }
-      }
-    }
-  }
-  next();
 });
 
-export default router
+export default router;

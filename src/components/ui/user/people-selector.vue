@@ -63,7 +63,7 @@
 <script>
 import {getUserDetail, getUserList} from "@/api/user";
 import debounce from "lodash/debounce";
-import {debounceTime, lazyAvatar} from "@/utils";
+import {debounceTime, lazyAvatarUrl} from "@/utils";
 import AdminIcon from "@/components/ui/user/admin-icon";
 
 export default {
@@ -103,7 +103,7 @@ export default {
       keyword: '',
       search_loading: false,
       debouncedFetchData: null,
-      lazyAvatar
+      lazyAvatar: lazyAvatarUrl
     }
   },
 

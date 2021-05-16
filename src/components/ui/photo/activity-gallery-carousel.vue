@@ -8,19 +8,12 @@
     @click:outside="show = mobile ? show : !show"
   >
     <!--  在移动端点击 snackbar 会触发 click:outside
-          只能先用 prevent 禁止自带的，然后自己处理 click:outside  -->
-    <v-carousel :value="indexInternal" :height="photoHeight" hide-delimiters>
-      <template v-slot:prev="{on, attrs}">
-        <v-btn absolute left icon v-on="on" v-bind="attrs" @click="prevPhoto">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-      </template>
-      <template v-slot:next="{on, attrs}">
-        <v-btn absolute right icon v-on="on" v-bind="attrs" @click="nextPhoto">
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-      </template>
-
+          只能先用 prevent 禁用默认 click:outside，然后自己处理 click:outside  -->
+    <v-carousel
+      v-model="indexInternal"
+      :height="photoHeight"
+      hide-delimiters
+    >
       <v-carousel-item
         v-for="(photo, i) in photos"
         :key="photo.id"
@@ -52,19 +45,21 @@
       class="mb-0"
       :height="photoInfoHeight"
     >
+      <!-- 标题和封面图标  -->
       <v-card-title>
         {{ photos[indexInternal].filename }}
         <v-icon class="rotate45" v-if="isBanner">mdi-pin</v-icon>
       </v-card-title>
 
       <v-card-actions>
+        <!--  上传者  -->
         <PeopleChip :user-id="photos[indexInternal].uploader_id"/>
         <v-spacer/>
         <!--  下载按钮  -->
         <v-btn icon @click="downloadOnedriveFile(photos[indexInternal].id)">
           <v-icon>mdi-download</v-icon>
         </v-btn>
-        <!--  取消置顶按钮  -->
+        <!--  取消封面按钮  -->
         <template v-if="isPresenterOrAdmin">
           <v-btn icon
             v-if="isBanner"
@@ -74,7 +69,7 @@
           >
             <v-icon>mdi-pin-off</v-icon>
           </v-btn>
-          <!--  置顶按钮  -->
+          <!--  设为封面按钮  -->
           <v-btn
             icon
             v-else
@@ -107,6 +102,7 @@
   position: absolute;
   bottom: 0;
   text-align: center;
+  text-shadow: rgb(68 68 68) 1px 1px 8px;
 }
 </style>
 
@@ -144,8 +140,8 @@ export default {
     return {
       // 是否显示轮播图
       show: false,
-      // 图片下标，设置为 -1 表示不显示
-      indexInternal: -1,
+      // 图片下标
+      indexInternal: 0,
       settingBannerIndex: -1,
       deletingIndex: -1,
 
@@ -175,7 +171,7 @@ export default {
     },
 
     isPresenterOrAdmin() {
-      return this.activity && this.$store.getters.whiteListOrAdmin(this.activity.presenter)
+      return this.activity && this.$store.getters.isInListOrAdmin(this.activity.presenter)
     },
     isBanner() {
       return this.activity.banner_id === this.photos[this.indexInternal].id;
@@ -203,6 +199,7 @@ export default {
           this.settingBannerIndex = -1;
         })
         .catch(res => {
+          console.warn(res);
           that.$store.commit('setMsg', res.data);
           this.settingBannerIndex = -1;
         })
@@ -224,11 +221,18 @@ export default {
           new_photos.splice(indexInternal, 1);
           that.$emit('update:photos', new_photos);
           // 如果正在浏览后面的照片，需要移动下标
-          if (that.deletingIndex > that.indexInternal)
+          if (that.deletingIndex < that.indexInternal)
             that.indexInternal--;
+          // 删除操作时，carousel 会出现乱动的情况（会修改 indexInternal 为 length-1）
+          // 所以利用 nextTick 在下一时刻改回去
+          let new_indexInternal = that.indexInternal;
+          this.$nextTick().then(() => {
+            that.indexInternal = new_indexInternal;
+          })
           that.deletingIndex = -1;
         })
         .catch(res => {
+          console.warn(res);
           that.$store.commit('setMsg', res.data);
           this.deletingIndex = -1;
         })
@@ -236,12 +240,20 @@ export default {
   },
   watch: {
     index() {
-      if (this.indexInternal !== this.index) {
+      if (this.index >= 0) {
         this.indexInternal = this.index;
-        this.show = this.indexInternal >= 0;
+        this.show = true;
+      } else {
+        this.show = false;
       }
     },
     indexInternal() {
+      // carousel 会在退出的时候乱改 indexInternal
+      // 如果 show 为 false，不仅不让他改，还把他改回去
+      if (this.show === false) {
+        if (this.indexInternal !== -1) this.indexInternal = -1;
+        return;
+      }
       if (this.indexInternal >= this.photos.length - 2)
         this.$emit('fetchNextPageData')
       if (this.indexInternal !== this.index) {
@@ -250,7 +262,7 @@ export default {
     },
     show() {
       if (this.show !== (this.index >= 0)) {
-        this.$emit('update:index', this.show ? this.index : -1);
+        this.$emit('update:index', this.show ? this.indexInternal : -1);
       }
     }
   }
