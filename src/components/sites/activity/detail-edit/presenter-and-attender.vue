@@ -70,7 +70,6 @@ export default {
   },
 
   methods: {
-    // todo 感觉管理员修改名单和普通用户签到并行起来以后很容易出 bug，有时间一定多测试
     async updateAttenderArray() {
       function arrayDiff(newArr, oldArr) {
         // 由于子组件保证有序，这里直接使用双指针

@@ -80,6 +80,7 @@ export default {
       that.status = res.data.status;
       that.loading = false;
     }).catch(res => {
+      console.warn(res);
       that.status = res.data;
       that.loading = false;
     })

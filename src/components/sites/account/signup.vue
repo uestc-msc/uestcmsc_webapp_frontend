@@ -84,7 +84,7 @@
           <v-col>
             <v-alert type="success" icon="mdi-wechat" dismissible>
               我们已将“阮薇薇点名啦”微信小程序 v1 的数据迁移到了 Web App。<br>
-              您只需在注册时，使用和小程序相同的姓名与学号，即可自动绑定信息。
+              您只需在注册时，使用和小程序相同的<strong>姓名</strong>与<strong>学号</strong>，即可自动绑定信息。
             </v-alert>
           </v-col>
         </v-row>
@@ -172,6 +172,7 @@ export default {
           goBack();
         })
         .catch(response => {
+          console.warn(response);
           let detail = response.data;
           if (typeof (detail) == 'string')
             that.error = detail;

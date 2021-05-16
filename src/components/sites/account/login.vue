@@ -129,6 +129,7 @@ export default Vue.extend({
           goBack();
         })
         .catch((response) => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {

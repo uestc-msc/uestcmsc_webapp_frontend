@@ -135,6 +135,7 @@ export default {
           });
         })
         .catch(async res => {
+          console.warn(res);
           this.errorMsg = res.data;
           this.status = Status.error;
           await sleep(displayErrorTime);

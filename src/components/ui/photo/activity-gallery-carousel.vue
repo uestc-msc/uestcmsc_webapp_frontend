@@ -199,6 +199,7 @@ export default {
           this.settingBannerIndex = -1;
         })
         .catch(res => {
+          console.warn(res);
           that.$store.commit('setMsg', res.data);
           this.settingBannerIndex = -1;
         })
@@ -231,6 +232,7 @@ export default {
           that.deletingIndex = -1;
         })
         .catch(res => {
+          console.warn(res);
           that.$store.commit('setMsg', res.data);
           this.deletingIndex = -1;
         })

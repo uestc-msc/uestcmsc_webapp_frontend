@@ -4,6 +4,10 @@ import CreateActivity from '@/components/sites/activity/create'
 import ActivityDetail from '@/components/sites/activity/detail'
 import ActivityDetailEdit from '@/components/sites/activity/detail-edit/detail-edit'
 import ActivityCheckIn from '@/components/sites/activity/check-in'
+import store from '@/store';
+
+const getters = store.getters;
+window.getters = getters;
 
 const routeConfig = [
   {
@@ -15,6 +19,9 @@ const routeConfig = [
     path: '/activity/create',
     name: 'CreateActivity',
     component: CreateActivity,
+    meta: {
+      permission: () => getters.isAuthenticated,
+    },
   },
   {
     path: '/activity/:activityId',
@@ -27,11 +34,17 @@ const routeConfig = [
     name: 'ActivityDetailEdit',
     component: ActivityDetailEdit,
     props: true,  // props 表示 activityId 参数可以传到组件
+    meta: {
+      permission: () => getters.isAuthenticated,
+    },
   },
   {
     path: '/activity/:activityId/checkin/:checkInCode',
     name: 'ActivityCheckIn',
-    component: ActivityCheckIn
+    component: ActivityCheckIn,
+    meta: {
+      permission: () => getters.isAuthenticated,
+    },
   }
 ];
 

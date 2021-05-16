@@ -221,6 +221,7 @@ export default {
         that.userProfile = response.data;
       })
       .catch(response => {
+        console.warn(response);
         that.error = response.data;
       })
       .finally(() => {
@@ -257,6 +258,7 @@ export default {
           that.success = false;
         })
         .catch(response => {
+          console.warn(response);
           let detail = response.data;
           if (typeof (detail) == 'string')
             that.error = detail;

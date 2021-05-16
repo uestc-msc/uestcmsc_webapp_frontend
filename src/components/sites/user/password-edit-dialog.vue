@@ -198,6 +198,7 @@ export default {
           }
         })
         .catch(response => {
+          console.warn(response);
           that.error = response.data;
           if (response.status === 403)
             that.error = "旧密码错误。";

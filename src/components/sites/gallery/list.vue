@@ -81,6 +81,7 @@ export default {
             this.$set(activity, 'hasPhoto', true);
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {

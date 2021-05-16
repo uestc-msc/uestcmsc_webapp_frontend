@@ -13,7 +13,6 @@ export function goHome() {
 }
 
 export function gotoLogin() {
-  if (!store.getters.user.isAuthenticated)
-    router.push({name: 'Login'});
+  router.push({name: 'Login'});
 }
 

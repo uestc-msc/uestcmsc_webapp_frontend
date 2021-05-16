@@ -1,5 +1,6 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from '@/store';
 
 import userRouteConfig from "./config/user";
 import accountRouteConfig from "./config/account";
@@ -8,7 +9,7 @@ import galleryRouteConfig from "./config/gallery";
 import cloudRouteConfig from "./config/cloud";
 import debugRouteConfig from "./config/debug";
 import notFound from '@/components/sites/404.vue';
-import {goHome} from '@/utils/router';
+import {goHome, gotoLogin} from '@/utils/router';
 
 Vue.use(VueRouter)
 
@@ -35,25 +36,34 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
-
-// 检查是否满足路由条件
-// todo 路由加载前后搞进度条，检查用户权限
-router.beforeEach((to, from, next) => {
-  for (let i = 0; i < to.matched.length; i++)
-  {
-    let routeRecord = to.matched[i];
-    if (routeRecord.meta.need !== undefined) {
-      for (let j = 0; j < routeRecord.meta.need.length; j++) {
-        let permissionFunction = routeRecord.meta.need[j];      
-        if (!permissionFunction()) {
-          goHome();
-          return;
-        }
-      }
-    }
-  }
-  next();
 });
 
-export default router
+// 检查是否满足路由条件
+// 由于只靠路由、不靠活动信息，只能做简单的鉴权
+// 故统一为在页面内做鉴权
+// router.beforeEach((to, from, next) => {
+//   window.to.push(to);
+//   console.log('try to goto', to);
+//   for (let routeRecord of to.matched) {
+//     if (routeRecord.meta.permission) {
+//       let permitted = routeRecord.meta.permission();
+//       console.assert(typeof permitted === 'boolean');
+//       if (!permitted) {
+//         if (store.getters.isNotAuthenticated) {
+//           console.log('router forbidden');
+//           store.commit('setMsg', '请先登录~')
+//           gotoLogin();
+//         }
+//         else {
+//           goHome();
+//         }
+//         return;
+//       }
+//     }
+//   }
+//   console.log('success');
+//   next();
+//   store.commit('setAppbarLoading', false);
+// });
+
+export default router;

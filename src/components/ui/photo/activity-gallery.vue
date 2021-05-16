@@ -3,7 +3,7 @@
     <v-container v-if="value">
       <v-row>
         <!--  上传按钮  -->
-        <v-col :cols="cols" v-if="!readOnly">
+        <v-col :cols="cols" v-if="!$_readOnly">
           <!--  需要一个 img 框住 icon 的 ripple  -->
           <v-img v-ripple>
             <v-icon
@@ -47,7 +47,7 @@
         <template v-for="(photo, i) in cloudPhoto">
           <!--  当可以上传时，开头会多一个上传图片  -->
           <v-col
-            v-if="readOnly || cloudPhoto.length === cloudCount || i !== cloudPhoto.length-1"
+            v-if="$_readOnly || cloudPhoto.length === cloudCount || i !== cloudPhoto.length-1"
             :key="photo.id"
             :cols="cols">
             <v-img
@@ -150,6 +150,7 @@ export default {
       type: [String, Number],
       default: 4
     },
+    // 此项为 true，或用户未登录时不能上传图片
     readOnly: {
       type: Boolean,
       default: false
@@ -184,6 +185,9 @@ export default {
   computed: {
     progressCircularSize() {
       return this.$vuetify.breakpoint.xs ? 32 : 64;
+    },
+    $_readOnly() {
+      return this.readOnly || this.$store.getters.isNotAuthenticated;
     }
   },
 
@@ -240,7 +244,7 @@ export default {
       getActivityPhotoList(this.activityId, curPage + 1, pageSize)
         .then(res => {
           that.cloudCount = res.data.count;
-          if (that.cloudCount === 0 && that.readOnly)
+          if (that.cloudCount === 0 && that.$_readOnly)
             this.$emit('input', false);
           const result = res.data.results;
           that.cloudPhoto.splice(curPage * pageSize);
@@ -248,6 +252,7 @@ export default {
           this.loading = false;
         })
         .catch(res => {
+          console.warn(res);
           this.loading = false;
           this.errorMsg = res.data;
         })

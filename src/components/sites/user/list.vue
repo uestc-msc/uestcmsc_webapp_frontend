@@ -86,6 +86,7 @@ export default {
           that.userData = response.data.results;
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {

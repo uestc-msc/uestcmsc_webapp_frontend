@@ -282,31 +282,36 @@ export default {
         this.activity = response.data;
       }
       catch (response) {
+        console.warn(response);
         that.errorMsg = response.data;
+        return;
       }
       that.$store.commit('setAppbarLoading', false);
     }
     // 设置 Appbar Title
     this.$store.commit('setTitle', this.activity.title);
-    // 异步加载签到码 然后生成二维码
-    getActivityAdminDetail(this.activityId)
-      .then(response => {
-        const checkInCode = response.data.check_in_code;
-        const checkInUrl = `${window.location.origin}/activity/${that.activityId}/checkin/${checkInCode}`;
+    if (this.isPresenterOrAdmin) {
+      // 异步加载签到码 然后生成二维码
+      getActivityAdminDetail(this.activityId)
+        .then(response => {
+          const checkInCode = response.data.check_in_code;
+          const checkInUrl = `${window.location.origin}/activity/${that.activityId}/checkin/${checkInCode}`;
+          that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
+            data: checkInUrl,
+          });
+        })
+        .catch(response => {
+          console.warn(response);
+          that.errorMsg = response.data;
+        })
+      // 异步加载二维码中心的图标
+      const image = new Image();
+      image.src = logoUrl;
+      image.onload = function () {
         that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
-          data: checkInUrl,
+          logo: image,
         });
-      })
-      .catch(response => {
-        that.errorMsg = response.data;
-      })
-    // 异步加载二维码中心的图标
-    const image = new Image();
-    image.src = logoUrl;
-    image.onload = function () {
-      that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
-        logo: image,
-      });
+      }
     }
   },
   deactivated() {

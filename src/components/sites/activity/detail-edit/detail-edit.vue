@@ -155,6 +155,7 @@ export default {
           this.$store.commit('setTitle', that.activity.title);
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
           that.status = Status.error;
         })
@@ -187,8 +188,8 @@ export default {
           this.status = Status.editing;
         })
         .catch(async res => {
+          console.warn(res);
           this.status = Status.error;
-          console.log(res.data)
           this.errorMsg = res.data;
           await sleep(displayErrorTime);
           this.status = Status.editing;

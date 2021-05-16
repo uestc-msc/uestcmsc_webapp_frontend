@@ -134,7 +134,8 @@ export default {
       .then(() => {
         that.tokenValid = true;
       })
-      .catch(() => {
+      .catch(response => {
+        console.warn(response);
         that.tokenValid = false;
       })
       .finally(() => {
@@ -163,6 +164,7 @@ export default {
           this.$router.push({name: 'Login'});
         })
         .catch(response => {
+          console.warn(response);
           let detail = response.data;
           this.errorMsg = Object.values(detail).join('；');
         })

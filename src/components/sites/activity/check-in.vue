@@ -43,7 +43,7 @@ export default {
     },
   },
 
-  created() {
+  activated() {
     this.showDialog = true;
     const activityId = this.$route.params.activityId;
     const check_in_code = this.$route.params.checkInCode;
@@ -52,8 +52,9 @@ export default {
       .then(res => {
         that.$store.commit('setMsg', res.data.detail);
       })
-      .catch(err => {
-        that.$store.commit('setMsg', err.data);
+      .catch(response => {
+        console.warn(response);
+        that.$store.commit('setMsg', response.data);
       })
       .finally(() => {
         that.$router.push({

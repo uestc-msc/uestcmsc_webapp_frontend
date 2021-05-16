@@ -129,6 +129,7 @@ export default {
           that.$router.push({name: 'ActivityList'});
         })
         .catch(res => {
+          console.warn(res);
           that.$store.commit('setMsg', res.data);
         });
     }

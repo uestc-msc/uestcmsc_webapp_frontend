@@ -193,6 +193,7 @@ export default {
           that.userProfile = response.data;
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {

@@ -70,6 +70,7 @@ export default {
           that.activityData = response.data.results;
         })
         .catch(response => {
+          console.warn(response);
           that.errorMsg = response.data;
         })
         .finally(() => {
