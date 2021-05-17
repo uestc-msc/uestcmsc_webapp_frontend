@@ -93,7 +93,7 @@
               <v-btn
                 text
                 icon
-                @click="downloadFile(file.download_url)"
+                :href="file.download_link"
                 target="_blank"
               >
                 <v-icon color="primary">mdi-download</v-icon>
