@@ -47,7 +47,7 @@
     >
       <!-- 标题和封面图标  -->
       <v-card-title>
-        {{ photos[indexInternal].filename }}
+        <div class="ellipsis-text" v-text="photos[indexInternal].filename"/>
         <v-icon class="rotate45" v-if="isBanner">mdi-pin</v-icon>
       </v-card-title>
 
@@ -107,6 +107,7 @@
 </style>
 
 <script>
+import '@/assets/common/common.css';
 import {getOnedriveFileUrl} from "@/api/cloud";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import PeopleChip from "@/components/ui/user/people-chip";
