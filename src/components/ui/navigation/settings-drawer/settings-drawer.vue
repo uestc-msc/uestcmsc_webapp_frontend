@@ -1,7 +1,6 @@
 <template>
   <v-navigation-drawer
     v-model="show"
-
     disable-route-watcher
     right
     fixed
