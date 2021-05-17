@@ -44,7 +44,7 @@
           />
         </v-col>
 
-        <v-spacer/>
+        <v-spacer v-if="!mobile"/>
         <v-col>
           <v-row no-gutters justify="end">
             <ConfirmDialog @confirm="deleteData">
@@ -100,6 +100,12 @@ export default {
 
       titleRules: inputRules.activity.titleRules,
       locationRules: inputRules.activity.locationRules
+    }
+  },
+
+  computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.xs;
     }
   },
 

@@ -106,8 +106,7 @@
                 </template>
               </PasswordEditDialog>
             </v-row>
-          </v-col>
-
+          </v-
           <v-col cols="4">
             <v-row justify="center">
               <v-switch

@@ -257,17 +257,19 @@ export async function deleteFileFromOnedrive(fileStatus, statusArray, apiFunctio
 
 /**
  * 自动下载 url 对应的文件
- * @param url {String}
+ * @param url {String} 链接
+ * @param filename {String} 文件名
  */
-export function downloadFile(url) {
-  // 其实设定 <a :href="url" target="_blank"> 就可以了
-  window.open(url);
-  // let a = document.createElement('A');
-  // a.href = url;
-  // a.download = url.substr(url.lastIndexOf('/') + 1);
-  // document.body.appendChild(a);
-  // a.click();
-  // document.body.removeChild(a);
+export function downloadUrl(url, filename)
+{
+  var link = document.createElement("a");
+  // If you don't know the name or want to use
+  // the webserver default set name = ''
+  link.setAttribute('download', filename);
+  link.href = url;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 /**

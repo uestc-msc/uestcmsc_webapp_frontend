@@ -55,9 +55,15 @@ service.interceptors.response.use(
         status: 401,
         data: "账户或密码错误"
       });
+
     // 一些错误信息在 response.data 里，一些在 response.data.detail
     // 这里统一放在 response.data 里
     if (error.response.data && error.response.data.detail) {
+      if (error.response.status === 403 && error.response.data.detail.includes('CSRF'))
+        return Promise.reject({
+          status: 403,
+          data: "CSRF 错误，这个 bug 我也不知道怎么修，麻烦清除一下 cookie 叭~"
+        });
       return Promise.reject({
         status: error.response.status,
         data: error.response.data.detail

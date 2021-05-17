@@ -120,6 +120,13 @@ export default Vue.extend({
           requireLogin: true,
           value: false,
         },
+        {
+          title: 'RSS',
+          iconOn: 'mdi-rss',
+          iconOff: 'mdi-rss',
+          href: baseUrl + '/feed',
+          value: false,
+        },
       ],
       itemsAdmin: [
         {

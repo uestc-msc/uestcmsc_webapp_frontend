@@ -2,6 +2,12 @@
     text-shadow: rgb(68 68 68) 1px 1px 8px;
 }
 
+.ellipsis-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .activity-card-title {
     color: rgb(250, 250, 250);
     text-shadow: rgb(68, 68, 68) 1px 1px 8px;
