@@ -9,7 +9,7 @@ export function login(data) {
 }
 
 export function logout(data) {
-  return axios.post('/accounts/logout/');
+  return axios.get('/accounts/logout/');
 }
 
 export function forgetPassword(data) {

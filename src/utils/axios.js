@@ -62,8 +62,9 @@ service.interceptors.response.use(
       if (error.response.status === 403 && error.response.data.detail.includes('CSRF'))
         return Promise.reject({
           status: 403,
-          data: "CSRF 错误，这个 bug 我也不知道怎么修，麻烦清除一下 cookie 叭~"
+          data: "CSRF 错误，请注销以后重新登录~"
         });
+
       return Promise.reject({
         status: error.response.status,
         data: error.response.data.detail
