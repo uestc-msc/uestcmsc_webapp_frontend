@@ -22,7 +22,7 @@
                 text
                 icon
                 :disabled="disabled"
-                @click="downloadFile(fileStatus.info.download_link)"
+                @click="downloadUrl(fileStatus.info.download_link)"
               >
                 <v-icon color="grey">mdi-download</v-icon>
               </v-btn>
@@ -96,7 +96,7 @@
 <script>
 import {
   cancelUploadFileToOnedrive,
-  deleteFileFromOnedrive, downloadFile,
+  deleteFileFromOnedrive, downloadUrl,
   FileStatus,
   formatBytes,
   uploadFileToOnedrive
@@ -126,7 +126,7 @@ export default {
 
       Status,
       StatusColor,
-      downloadFile,
+      downloadUrl,
     };
   },
 

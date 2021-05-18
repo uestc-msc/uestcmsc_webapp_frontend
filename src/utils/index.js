@@ -7,7 +7,7 @@ export const QRCodeScanUrl = 'https://cli.im/deqr';
 export const logoUrl = "/img/ruanweiwei.png";
 export const lazyAvatarUrl = "/static/icons/favicon-16x16.png";
 
-export const XHRTimeout = 5000;           // xhr 的超时
+export const XHRTimeout = 10000;           // xhr 的超时
 export const OnedriveXHRTimeout = 0;      // onedrive 相关 xhr 的超时
 export const debounceTime = 500;          // 频繁请求被转换为 0.5 秒请求一次
 export const displaySuccessTime = 1500;   // 操作成功提示的持续时间

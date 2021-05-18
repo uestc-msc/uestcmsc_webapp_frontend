@@ -68,9 +68,9 @@
               <ErrorAlert v-if="QRCodeErrorMsg" as-row>
                 {{ QRCodeErrorMsg }}
               </ErrorAlert>
-              <v-col v-else cols="2" class="pa-0">
-                <v-img :src="QRCodeData"/>
-              </v-col>
+              <v-responsive v-else>
+                <v-img :src="QRCodeData" height="150" width="150"/>
+              </v-responsive>
               <v-list-item-subtitle>签到二维码</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
@@ -177,7 +177,7 @@
 
 <script>
 import {qrcanvas} from "qrcanvas";
-import {DEBUG, logoUrl, QRCodeScanUrl} from "@/utils";
+import {DEBUG, logoUrl} from "@/utils";
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
 import FloatingActionButton from "@/components/ui/base/button/floating-action-button";
@@ -216,7 +216,7 @@ export default {
         icon: '',
         color: ''
       },
-
+      // https://github.com/gera2ld/qrcanvas
       QRCodeOption: {
         cellSize: 4,
         correctLevel: 'H',
@@ -255,7 +255,11 @@ export default {
 
   methods: {
     downloadQRCode() {
-      downloadUrl(this.QRCodeData, this.activity.title+'.png');
+      let downloadQRCodeOption = Object.assign({}, this.QRCodeOption);
+      downloadQRCodeOption.padding = downloadQRCodeOption.cellSize;
+      const canvas = qrcanvas(downloadQRCodeOption);
+      const data = canvas.toDataURL();
+      downloadUrl(data, this.activity.title + '.png');
     },
     gotoActivityDetailEdit() {
       this.$router.push({

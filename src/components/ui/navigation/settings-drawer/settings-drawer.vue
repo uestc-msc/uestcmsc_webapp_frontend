@@ -40,6 +40,8 @@
         <v-divider/>
       </div>
 
+      <SettingsTips/>
+
     </v-container>
 
   </v-navigation-drawer>
@@ -50,11 +52,13 @@ import {mapGetters} from "vuex";
 import ThemeSettings from './theme-settings'
 import UserSettings from "@/components/ui/navigation/settings-drawer/user-settings";
 import UserInfo from "@/components/ui/navigation/settings-drawer/user-info";
+import SettingsTips from "@/components/ui/navigation/settings-drawer/settings-tips";
 
 export default {
   props: ['toggleEvent'],
 
   components: {
+    SettingsTips,
     UserInfo,
     UserSettings,
     ThemeSettings,
