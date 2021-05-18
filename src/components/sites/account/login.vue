@@ -124,7 +124,8 @@ export default Vue.extend({
       login(data)
         .then((response) => {
           that.$store.commit('setProfile', response.data);
-          Cookies.set('csrftoken', response.data.csrftoken);
+          // 如果前后端没有跨站就不需要手动管理 CSRFToken
+          // Cookies.set('csrftoken', response.data.csrftoken, { expires: 364 });
           let first_name = response.data.first_name;
           that.$store.commit('setMsg', `欢迎回来，${first_name}~`)
           goBack();
