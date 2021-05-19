@@ -2,15 +2,14 @@
 
 <script>
 import Vue from 'vue'
-
 import {goBack} from '@/utils/router';
-import {logout} from "@/api/account";
+import {logoutUser} from "@/api/account";
 
 export default Vue.extend({
   activated() {
     this.$store.commit('setAppbarLoading', true);
     let that = this;
-    logout()
+    logoutUser()
       .then(res => {
         that.$store.commit('setMsg', '再会~');
       })
@@ -18,7 +17,6 @@ export default Vue.extend({
         that.$store.commit('setMsg', res.data);
       })
       .finally(() => {
-        that.$store.commit('clearProfile');
         that.$store.commit('setAppbarLoading', false);
         goBack();
       });
