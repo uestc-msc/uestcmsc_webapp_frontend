@@ -15,7 +15,7 @@ export async function loginUser(username, password) {
   let data = {username, password};
   let res = await login(data)
   store.commit('setProfile', res.data);
-  Cookies.set('csrftoken', res.data.csrftoken, { expires: 364 }); // 不能获取到跨域的域名，就需要自己设置
+  // Cookies.set('csrftoken', res.data.csrftoken, { expires: 364 }); // 不能获取到跨域的域名，就需要自己设置
   return res;
 }
 
