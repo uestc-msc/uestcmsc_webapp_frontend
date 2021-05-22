@@ -262,9 +262,9 @@ export default {
         .catch(response => {
           let detail = response.data;
           if (typeof (detail) == 'string')
-            that.error = detail;
+            that.errorMsg = detail;
           else if (typeof (detail) == 'object')
-            that.error = Object.values(detail).join('；');
+            that.errorMsg = Object.values(detail).join('；');
         })
         .finally(() => {
           that.submitting = false;
