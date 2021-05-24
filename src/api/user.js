@@ -31,6 +31,7 @@ export async function getUserDetail(userId, useCache = false) {
 export async function updateUserDetail(userId, data) {
   let res = await axios.patch(`/users/${userId}/`, data);
   setUserCache(res.data);
+  return res;
 }
 
 export async function deleteUser(userId) {

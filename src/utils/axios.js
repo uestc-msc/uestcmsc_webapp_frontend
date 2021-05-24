@@ -28,7 +28,7 @@ service.interceptors.response.use(
       console.log(response);
     return response;
   },
-  error => {
+  async error => {
     if (DEBUG)
     {
       console.warn("error: ", error);
@@ -36,34 +36,46 @@ service.interceptors.response.use(
       console.warn("error.message: ", error.message);
     }
     if (error.message === "Network Error")
-      return Promise.reject({
+      throw {
         status: -1,
         data: "网络错误，请检查网络或稍后再试"
-      });
+      };
     if (error.message.startsWith('timeout'))
-      return Promise.reject({
+      throw {
         status: -2,
         data: "网络超时，请检查网络或稍后再试"
-      });
+      };
     if (error.response.status === 500)
-      return Promise.reject({
+      throw {
         status: 500,
         data: "服务器端错误，请联系管理员"
-      });
+      };
     if (error.response.status === 401)
-      return Promise.reject({
+      throw {
         status: 401,
         data: "账户或密码错误"
-      });
+      };
+
     // 一些错误信息在 response.data 里，一些在 response.data.detail
     // 这里统一放在 response.data 里
     if (error.response.data && error.response.data.detail) {
-      return Promise.reject({
-        status: error.response.status,
-        data: error.response.data.detail
-      });
+      if (error.response.status === 403 && error.response.data.detail.includes('CSRF Failed')) {
+        // 如果 csrf 错误，就自动帮用户注销，然后重新登录吧
+        let module = await import('@/api/account');
+        await module.logoutUser();
+        throw{
+          status: 403,
+          data: "身份认证过期，请重新登录~"
+        }
+      }
+      else {
+        throw {
+          status: error.response.status,
+          data: error.response.data.detail
+        }
+      }
     }
-    return Promise.reject(error.response)
+    throw error.response;
   }
 );
 

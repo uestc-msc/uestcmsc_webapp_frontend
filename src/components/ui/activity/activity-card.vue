@@ -26,7 +26,7 @@
     <v-divider></v-divider>
 
     <v-card-text class="presenter-list-area">
-      <PeopleChipGroup :userId="activity.presenter"/>
+      <PeopleChipGroup :user-id="activity.presenter"/>
     </v-card-text>
 
   </v-card>

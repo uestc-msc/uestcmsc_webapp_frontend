@@ -44,7 +44,7 @@
           />
         </v-col>
 
-        <v-spacer/>
+        <v-spacer v-if="!mobile"/>
         <v-col>
           <v-row no-gutters justify="end">
             <ConfirmDialog @confirm="deleteData">
@@ -103,6 +103,12 @@ export default {
     }
   },
 
+  computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.xs;
+    }
+  },
+
   methods: {
     fetchData() {   // 根据 activity 更新 data
       if (!this.activity)
@@ -112,7 +118,6 @@ export default {
     },
 
     updateData() {   // 根据 data 更新 activity
-      console.log(`updateData, datetime is ${this.formData.datetime}`);
       let new_activity = {...this.activity};
       for (let attr in this.formData)
         new_activity[attr] = this.formData[attr];

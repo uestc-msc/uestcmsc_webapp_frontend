@@ -89,8 +89,7 @@ import router from "@/router/index";
 import md5 from "md5";
 import {inputRules} from "@/utils/validators";
 import SimpleCard from '@/components/ui/base/simple-card'
-import Cookies from 'js-cookie';
-import {login} from "@/api/account";
+import {loginUser} from "@/api/account";
 import ErrorAlert from "@/components/ui/base/error-alert";
 import {isNotAuthenticatedOrGoHome} from "@/utils/permissions";
 
@@ -117,14 +116,8 @@ export default Vue.extend({
       this.submitting = true;
       this.errorMsg = null;
       let that = this;
-      let data = {
-        username: this.username,
-        password: md5(this.password)
-      };
-      login(data)
+      loginUser(this.username, md5(this.password))
         .then((response) => {
-          that.$store.commit('setProfile', response.data);
-          Cookies.set('csrftoken', response.data.csrftoken);
           let first_name = response.data.first_name;
           that.$store.commit('setMsg', `欢迎回来，${first_name}~`)
           goBack();

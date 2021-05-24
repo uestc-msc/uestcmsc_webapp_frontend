@@ -30,7 +30,7 @@
             <v-list-item-title>
               <PeopleChipGroup
                 listitem
-                :userId="activity.presenter"
+                :user-id="activity.presenter"
               />
             </v-list-item-title>
             <v-list-item-subtitle>主讲人</v-list-item-subtitle>
@@ -59,20 +59,25 @@
 
         <v-divider inset></v-divider>
 
-        <template v-if="QRCanvasOption.data">
+        <template v-if="isPresenterOrAdmin">
           <v-list-item>
             <v-list-item-icon>
               <v-icon color="primary">mdi-qrcode</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <ErrorAlert v-if="QRCanvasErrorMsg" as-row>
-                {{QRCanvasErrorMsg}}
+              <ErrorAlert v-if="QRCodeErrorMsg" as-row>
+                {{ QRCodeErrorMsg }}
               </ErrorAlert>
-              <v-col v-else cols="2" class="pa-0">
-                <QRCanvas :options="QRCanvasOption"/>
-              </v-col>
+              <v-responsive v-else>
+                <v-img :src="QRCodeData" height="150" width="150"/>
+              </v-responsive>
               <v-list-item-subtitle>签到二维码</v-list-item-subtitle>
             </v-list-item-content>
+            <v-list-item-action>
+              <v-btn text icon @click="downloadQRCode">
+                <v-icon color="primary">mdi-download</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
           <v-divider inset></v-divider>
         </template>
@@ -90,12 +95,7 @@
               <v-list-item-subtitle>{{ formatBytes(file.size) }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn
-                text
-                icon
-                @click="downloadFile(file.download_url)"
-                target="_blank"
-              >
+              <v-btn text icon :href="file.download_link" target="_blank">
                 <v-icon color="primary">mdi-download</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -134,7 +134,7 @@
               <PeopleChipGroup
                 v-if="activity.attender && activity.attender.length"
                 listitem
-                :userId="activity.attender"
+                :user-id="activity.attender"
               />
               <span v-else>暂无</span>
             </v-list-item-title>
@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import {QRCanvas} from "qrcanvas-vue";
+import {qrcanvas} from "qrcanvas";
 import {DEBUG, logoUrl} from "@/utils";
 import moment from '@/utils/moment'
 import SimpleCard from "@/components/ui/base/simple-card";
@@ -186,7 +186,7 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import {getActivityAdminDetail, getActivityDetail} from "@/api/activity";
 import {generateTopPhoto} from "@/utils/activity";
 import PeopleChipGroup from "@/components/ui/user/people-chip-group";
-import {downloadFile, formatBytes, formatUrl} from "@/utils/file";
+import {downloadUrl, formatBytes, formatUrl} from "@/utils/file";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
 import {getTimeIcon} from '@/utils/datetime';
@@ -206,8 +206,6 @@ export default {
     ErrorAlert,
     FloatingActionButton,
     SimpleCard,
-    // Documents: https://github.com/gera2ld/qrcanvas
-    QRCanvas
   },
 
   data() {
@@ -218,20 +216,21 @@ export default {
         icon: '',
         color: ''
       },
-      QRCanvasOption: {
+      // https://github.com/gera2ld/qrcanvas
+      QRCodeOption: {
         cellSize: 4,
         correctLevel: 'H',
         data: '',
         logo: '',
         background: 'white',
       },
+      QRCodeErrorMsg: false,
+
       hasPhoto: true,
       errorMsg: false,
-      QRCanvasErrorMsg: false,
 
       formatBytes,
       formatUrl,
-      downloadFile,
     }
   },
 
@@ -248,9 +247,20 @@ export default {
     formattedTime() {
       return moment(this.activity.datetime).toChinese();
     },
+    QRCodeData() {
+      const canvas = qrcanvas(this.QRCodeOption);
+      return canvas.toDataURL();
+    }
   },
 
   methods: {
+    downloadQRCode() {
+      let downloadQRCodeOption = Object.assign({}, this.QRCodeOption);
+      downloadQRCodeOption.padding = downloadQRCodeOption.cellSize;
+      const canvas = qrcanvas(downloadQRCodeOption);
+      const data = canvas.toDataURL();
+      downloadUrl(data, this.activity.title + '.png');
+    },
     gotoActivityDetailEdit() {
       this.$router.push({
         name: 'ActivityDetailEdit', params: {
@@ -269,7 +279,7 @@ export default {
     activity() {
       if (this.activity)
         generateTopPhoto(this.activity);
-    }
+    },
   },
 
   async activated() {
@@ -300,18 +310,18 @@ export default {
         .then(response => {
           const checkInCode = response.data.check_in_code;
           const checkInUrl = `${window.location.origin}/activity/${that.activityId}/checkin/${checkInCode}`;
-          that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {
+          that.QRCodeOption = Object.assign({}, that.QRCodeOption, {
             data: checkInUrl,
           });
         })
         .catch(response => {
           console.warn(response);
-          that.QRCanvasErrorMsg = response.data;
+          that.QRCodeOption = response.data;
         })
       // 异步加载二维码中心的图标
       const image = new Image();
       image.src = logoUrl;
-      image.onload = () => that.QRCanvasOption = Object.assign({}, that.QRCanvasOption, {logo: image});
+      image.onload = () => that.QRCodeOption = Object.assign({}, that.QRCodeOption, {logo: image});
     }
   },
   deactivated() {

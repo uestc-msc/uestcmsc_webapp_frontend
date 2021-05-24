@@ -27,6 +27,16 @@
         </v-col>
       </v-row>
 
+      <v-row no-gutters>
+        <LuckyDraw :user-list="attenderArray">
+          <template v-slot:activator="{on, attrs}">
+            <v-btn block v-on="on" v-bind="attrs" color="primary">
+              抽奖！
+            </v-btn>
+          </template>
+        </LuckyDraw>
+      </v-row>
+
       <ErrorAlert
         as-row
         v-if="attenderUpdateError"
@@ -43,6 +53,7 @@ import {DEBUG, totalRetryTimes} from "@/utils";
 import {updateActivityAttender} from "@/api/activity";
 import {inputRules} from "@/utils/validators";
 import ErrorAlert from "@/components/ui/base/error-alert";
+import LuckyDraw from "@/components/ui/activity/lucky-draw";
 
 export default {
   props: {
@@ -55,7 +66,7 @@ export default {
       default: false
     },
   },
-  components: {ErrorAlert, SimpleCard, PeopleSelector},
+  components: {LuckyDraw, ErrorAlert, SimpleCard, PeopleSelector},
   data() {
     return {
       presenterArray: [],

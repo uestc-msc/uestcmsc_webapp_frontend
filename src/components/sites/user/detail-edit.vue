@@ -107,7 +107,6 @@
               </PasswordEditDialog>
             </v-row>
           </v-col>
-
           <v-col cols="4">
             <v-row justify="center">
               <v-switch
@@ -157,7 +156,7 @@ import AdminIcon from "@/components/ui/user/admin-icon";
 import {inputRules} from "@/utils/validators";
 import {hasGreaterPermissions, isSelfOrAdminOrGoHome} from "@/utils/permissions";
 import {getUserDetail, updateUserDetail} from "@/api/user";
-import {DEBUG, displaySuccessTime, lazyAvatarUrl} from "@/utils";
+import {DEBUG, displaySuccessTime, lazyAvatarUrl, sleep} from "@/utils";
 import PicturePlaceholder from "@/components/ui/base/picture-placeholder";
 import PasswordEditDialog from "@/components/sites/user/password-edit-dialog";
 import PicturePlaceholderAlt from "@/components/ui/base/picture-placeholder-alt";
@@ -261,12 +260,11 @@ export default {
           that.success = false;
         })
         .catch(response => {
-          console.warn(response);
           let detail = response.data;
           if (typeof (detail) == 'string')
-            that.error = detail;
+            that.errorMsg = detail;
           else if (typeof (detail) == 'object')
-            that.error = Object.values(detail).join('；');
+            that.errorMsg = Object.values(detail).join('；');
         })
         .finally(() => {
           that.submitting = false;

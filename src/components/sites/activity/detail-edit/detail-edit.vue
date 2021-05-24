@@ -65,7 +65,7 @@
       <ErrorAlert
         as-row
         v-if="status === Status.error"
-        :msg="errorMsg || '信息有误，请检查后提交'"
+        :msg="errorMsg || '好像发生了什么错误，但是好像又什么都没说'"
       />
 
     </SimpleCard>
