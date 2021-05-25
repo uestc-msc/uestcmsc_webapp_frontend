@@ -3,6 +3,7 @@
     <v-row class="justify-center">
       <v-col cols="12" md="8">
           <v-expansion-panels>
+            <ProxyGuide/>
             <ScreenInfo/>
             <RecentErrorRequests/>
           </v-expansion-panels>
@@ -12,11 +13,12 @@
 </template>
 
 <script>
-import ScreenInfo from "@/components/sites/debug/screen-info";
-import RecentErrorRequests from "@/components/sites/debug/recent-error-requests";
+import ScreenInfo from "@/components/sites/debug/module/screen-info";
+import RecentErrorRequests from "@/components/sites/debug/module/recent-error-requests";
+import ProxyGuide from "@/components/sites/debug/module/proxy-guide";
 
 export default {
-  components: {RecentErrorRequests, ScreenInfo},
+  components: {ProxyGuide, RecentErrorRequests, ScreenInfo},
 
   activated() {
     this.$store.commit('setTitle', '调试信息');
