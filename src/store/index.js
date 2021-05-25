@@ -37,6 +37,8 @@ var store = new Vuex.Store({
     searchKeyword: '',
     // appbar 下的 Loading 滚动条
     appbarLoading: false,
+    // 近期的错误请求
+    recentErrorRequests: [],
   },
 
   getters: {
@@ -102,6 +104,13 @@ var store = new Vuex.Store({
 
     setAppbarLoading(state, bool) {
       state.appbarLoading = bool;
+    },
+
+    appendFailRequest(state, request) {
+      // 只保留最近的 5 条错误请求
+      if (state.recentErrorRequests.length > 5)
+        state.recentErrorRequests.splice(0, 1);
+      state.recentErrorRequests.push(request);
     }
   }
 });

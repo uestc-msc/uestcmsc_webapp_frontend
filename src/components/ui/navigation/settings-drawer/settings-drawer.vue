@@ -40,7 +40,7 @@
         <v-divider/>
       </div>
 
-      <SettingsTips/>
+      <SettingsTips :show="show"/>
 
     </v-container>
 

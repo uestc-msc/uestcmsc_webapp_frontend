@@ -29,53 +29,39 @@ service.interceptors.response.use(
     return response;
   },
   async error => {
-    if (DEBUG)
-    {
+    if (DEBUG) {
       console.warn("error: ", error);
       console.warn("error.response: ", error.response);
       console.warn("error.message: ", error.message);
     }
-    if (error.message === "Network Error")
-      throw {
-        status: -1,
-        data: "网络错误，请检查网络或稍后再试"
-      };
-    if (error.message.startsWith('timeout'))
-      throw {
-        status: -2,
-        data: "网络超时，请检查网络或稍后再试"
-      };
-    if (error.response.status === 500)
-      throw {
-        status: 500,
-        data: "服务器端错误，请联系管理员"
-      };
-    if (error.response.status === 401)
-      throw {
-        status: 401,
-        data: "账户或密码错误"
-      };
 
-    // 一些错误信息在 response.data 里，一些在 response.data.detail
-    // 这里统一放在 response.data 里
-    if (error.response.data && error.response.data.detail) {
-      if (error.response.status === 403 && error.response.data.detail.includes('CSRF Failed')) {
-        // 如果 csrf 错误，就自动帮用户注销，然后重新登录吧
-        let module = await import('@/api/account');
-        await module.logoutUser();
-        throw{
-          status: 403,
-          data: "身份认证过期，请重新登录~"
-        }
-      }
-      else {
-        throw {
-          status: error.response.status,
-          data: error.response.data.detail
+    if (error.message === "Network Error") {
+      error.status = -1;
+      error.data = "网络错误，请检查网络或稍后再试";
+    } else if (error.message.startsWith('timeout')) {
+      error.status = -2;
+      error.data = "网络超时，请检查网络或稍后再试";
+    } else if (error.response) {
+      error = error.response;
+      if (error.status === 500) {
+        error.data = "服务器端错误，请联系管理员";
+      } else if (error.status === 401) {
+        error.data = "账户或密码错误";
+      } else if (error.data && error.data.detail) {
+        // 一些错误信息在 error.data 里，一些在 error.data.detail
+        // 这里统一放在 error.data 里
+        if (error.status === 403 && error.data.detail.includes('CSRF Failed')) {
+          // 如果 csrf 错误，就自动帮用户注销，然后让用户重新登录
+          let module = await import('@/api/account');
+          await module.logoutUser();
+          error.data = "身份认证过期，请重新登录~";
+        } else {
+          error.data = error.data.detail
         }
       }
     }
-    throw error.response;
+    store.commit('appendFailRequest', error);
+    throw error;
   }
 );
 

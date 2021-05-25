@@ -6,7 +6,7 @@
     app
     v-model="show"
   >
-    <v-list-item class="px-2">
+    <v-list-item class="px-2" ripple @click="gotoDebug">
       <v-list-item-avatar>
         <v-img :src="iconPath"/>
       </v-list-item-avatar>
@@ -85,6 +85,8 @@ export default Vue.extend({
   props: ['toggleEvent'],
   data() {
     return {
+      clickTotal: 0,
+      latestClick: 0,
       iconPath: logoUrl,
       appName,
       appVersion,
@@ -168,7 +170,17 @@ export default Vue.extend({
     hasPermission(item) {
       return (!item.requireLogin || this.isAuthenticated)
         && (!item.requireSuperuser || this.isSuperuser)
-    }
+    },
+
+    // 连续点击五次跳转到 debug 页面
+    gotoDebug() {
+      let now = Date.now();
+      if (now - this.latestClick > 500) // 0.5 秒未点击就视为不连续
+        this.clickTotal = 0;
+      this.clickTotal++;
+      if (this.clickTotal > 5) this.$router.push({name: 'Debug'});
+      this.latestClick = now;
+    },
   },
 
   watch: {
