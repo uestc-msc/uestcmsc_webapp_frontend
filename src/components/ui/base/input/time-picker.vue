@@ -5,7 +5,6 @@
     :disabled="disabled"
     :close-on-content-click="false"
     :nudge-right="40"
-    :return-value.sync="time"
     transition="scale-transition"
     offset-y
     max-width="290px"
@@ -30,23 +29,6 @@
       format="24hr"
       full-width
     >
-      <v-spacer></v-spacer>
-      <v-btn
-        text
-        color="primary"
-        @click="menu = false"
-        :disabled="disabled"
-      >
-        取消
-      </v-btn>
-      <v-btn
-        text
-        color="primary"
-        @click="$refs.menu.save(time)"
-        :disabled="disabled"
-      >
-        确定
-      </v-btn>
     </v-time-picker>
   </v-menu>
 </template>
