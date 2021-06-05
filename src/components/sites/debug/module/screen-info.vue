@@ -15,7 +15,3 @@ export default {
   name: "ScreenInfo",
 }
 </script>
-
-<style scoped>
-
-</style>

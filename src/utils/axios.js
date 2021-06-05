@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import {baseUrl, DEBUG, XHRTimeout} from "@/utils";
+import store from "@/store/index";
 
 // 创建axios实例
 const service = axios.create({

@@ -22,7 +22,3 @@ export default {
   name: "RecentErrorRequests",
 }
 </script>
-
-<style scoped>
-
-</style>
