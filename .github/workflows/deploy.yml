@@ -1,0 +1,39 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: "yarn"
+      - name: Generate Static Websites
+        env:
+          TZ: Asia/Shanghai
+        run: yarn && yarn build
+      - name: Setup SSH env
+        env:
+          ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
+        run: |
+          # set up private key for deploy
+          mkdir -p ~/.ssh/
+          echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
+          chmod 600 ~/.ssh/id_rsa
+          # ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan app.uestc-msc.com >> ~/.ssh/known_hosts
+          # set git infomation
+          # git config --global user.name 'lyh543' # 换成你自己的邮箱和名字
+          # git config --global user.email 'lyh543@outlook.com'
+      - name: Deploy 🚀 To Server
+        run: |
+          rsync --archive --verbose --human-readable --delete \
+            dist/* \
+            app.uestc-msc.com:/home/lyh543/git/github/uestcmsc_webapp/uestcmsc_webapp_frontend/dist
