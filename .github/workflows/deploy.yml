@@ -10,15 +10,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
         with:
-          node-version: "16.x"
-          cache: "yarn"
+          version: 6.10.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'pnpm'
       - name: Generate Static Websites
         env:
           TZ: Asia/Shanghai
-        run: yarn && yarn build
+        run: pnpm i && pnpm run build
       - name: Setup SSH env
         env:
           ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
