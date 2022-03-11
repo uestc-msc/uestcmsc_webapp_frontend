@@ -3,7 +3,6 @@
     ref="menu"
     v-model="menu"
     :close-on-content-click="false"
-    :return-value.sync="date"
     transition="scale-transition"
     offset-y
     min-width="auto"
@@ -27,23 +26,6 @@
       scrollable
       :disabled="disabled"
     >
-      <v-spacer></v-spacer>
-      <v-btn
-        text
-        color="primary"
-        @click="menu = false"
-        :disabled="disabled"
-      >
-        取消
-      </v-btn>
-      <v-btn
-        text
-        color="primary"
-        @click="$refs.menu.save(date)"
-        :disabled="disabled"
-      >
-        确定
-      </v-btn>
     </v-date-picker>
   </v-menu>
 </template>

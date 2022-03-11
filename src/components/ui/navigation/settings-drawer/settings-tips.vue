@@ -1,22 +1,36 @@
 <template>
-  <div class="bottom-tips" v-text="dailyTips"/>
+  <div class="bottom-tips" v-text="tips[index]"/>
 </template>
 
 <script>
 import moment from "@/utils/moment";
 
 export default {
+  props: {
+    show: {
+      type: Boolean
+    },
+  },
   data: () => ({
     tips: [
       `阮薇薇 ${new Date().getFullYear() - 2019} 岁啦~`,
-      '据说不使用梯子反而会变快喔',
+      '听说不使用梯子反而会变快喔~',
+      '怎么还有一堆 bug 没有修啊啊啊啊',
+      'tljj 女装赛高！',
+      '你很菜的时候会焦虑 当你像我这么强的时候就不会了'
     ],
-    dailyTips: '',
+    index: 0,
   }),
 
   created() {
-    let index = moment().dayOfYear() % this.tips.length;
-    this.dailyTips = this.tips[index];
+    this.index = moment().dayOfYear() % this.tips.length;
+  },
+
+  watch: {
+    show() {
+      if (this.show)
+        this.index = (this.index + 1) % this.tips.length;
+    }
   }
 }
 </script>

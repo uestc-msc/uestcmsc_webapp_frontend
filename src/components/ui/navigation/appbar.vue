@@ -12,7 +12,7 @@
     <template v-if="searchCallback && showSearchBar">
       <!--  如果搜索框可以使用，并且用户希望展示，就展示给用户  -->
       <v-fade-transition hide-on-leave>
-      <v-btn icon @click="showSearchBar=false">
+      <v-btn icon @click="showSearchBar=false; $store.commit('setSearchKeyword', '')">
         <v-icon>
           mdi-arrow-left
         </v-icon>
