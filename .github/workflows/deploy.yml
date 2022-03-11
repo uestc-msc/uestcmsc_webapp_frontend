@@ -38,4 +38,4 @@ jobs:
         run: |
           rsync --archive --verbose --human-readable --delete \
             dist/* \
-            app.uestc-msc.com:/home/lyh543/git/github/uestcmsc_webapp/uestcmsc_webapp_frontend/dist
+            lyh543@app.uestc-msc.com:/home/lyh543/git/github/uestcmsc_webapp/uestcmsc_webapp_frontend/dist
